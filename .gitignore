@@ -5,3 +5,4 @@ backup/
 www/
 *.spec
 *.json
+*.iss
