@@ -153,3 +153,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Built with CustomTkinter for the modern UI components
 - Inspired by the need for better guitar teaching tools
 - Thanks to all musicians and educators who provide feedback
+- The app currently features German text
