@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.png" alt="FretTool" width="200">
+</p>
+
 # FretTool - Professional Guitar Fretboard Designer
 
 FretTool is a comprehensive Python application for designing and visualizing guitar fretboards, chords, scales, and custom fingerings. Built with CustomTkinter and featuring modern UI design, it's perfect for guitar teachers, students, and musicians who need to create professional-quality fretboard diagrams.
