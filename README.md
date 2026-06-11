@@ -45,6 +45,7 @@ FretTool is a comprehensive Python application for designing and visualizing gui
 - **Responsive Design**: Works on various screen sizes and resolutions
 - **Keyboard Shortcuts**: 
   - Ctrl+P: Export current fretboard as PDF
+  - ↑/↓ (Arrow keys): Disconnect the dot above/below the hovered barre dot
   - Modifier keys for special note types
 - **Visual Feedback**: 
   - Hover previews for note placement
@@ -90,6 +91,13 @@ FretTool is a comprehensive Python application for designing and visualizing gui
    - Save your work automatically
 
 ## Advanced Features
+
+### Barre Edge Removal
+Hover over a specific dot within a barre and press:
+- **↑ (Arrow Up)**: Disconnects the dot **above** the hovered dot from the barre, turning it into a standalone dot
+- **↓ (Arrow Down)**: Disconnects the dot **below** the hovered dot from the barre, turning it into a standalone dot
+
+This lets you split barres into separate individual dots without deleting notes. The disconnected dot remains as a regular circle dot on the fretboard, while the remaining notes may still form a barre if enough contiguous notes remain.
 
 ### Barre Detection Algorithm
 The application intelligently detects when you're creating barre chords:

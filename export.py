@@ -1,6 +1,7 @@
 from constants import CONFIG, FRET_MARKERS, hex_to_rgb01
 from models import FretboardData, ProjectData
 from tkinter import messagebox
+from barre_utils import get_barre_groups
 
 class ExportManager:
     @staticmethod
@@ -36,6 +37,17 @@ class ExportManager:
         dot_colors = getattr(fretboard, "dot_colors", {}) or {}
         dot_types = getattr(fretboard, "dot_types", {}) or {}
         dot_small = getattr(fretboard, "dot_small", {}) or {}
+        barre_groups = get_barre_groups(fretboard)
+        barre_positions = {pos for group in barre_groups for pos in group.notes}
+
+        def barre_geometry(group):
+            cx = margin + (group.fret - 0.5) * f_space
+            half_width = max(12, CONFIG["dimensions"]["dot_radius"] + 4)
+            top_string_y = CONFIG["dimensions"]["margin_top"] + group.start_string * s_space
+            bottom_string_y = CONFIG["dimensions"]["margin_top"] + group.end_string * s_space
+            top = top_string_y - half_width
+            bottom = bottom_string_y + half_width
+            return cx, half_width, top, bottom
 
         for s, f in sorted(getattr(fretboard, "x_positions", set()) or set()):
             if f == 0:
@@ -45,7 +57,30 @@ class ExportManager:
             y = CONFIG["dimensions"]["margin_top"] + s * s_space
             svg_content += f'<text x="{x}" y="{y + 6}" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#ff6b6b">X</text>'
 
+        for group in barre_groups:
+            cx, half_width, top, bottom = barre_geometry(group)
+            fill = group.color
+            outline = "#ffffff"
+            body_height = max(half_width * 2, bottom - top)
+            svg_content += f'<rect x="{cx - half_width}" y="{top}" width="{half_width * 2}" height="{body_height}" rx="{half_width}" ry="{half_width}" fill="{fill}" stroke="{outline}" stroke-width="2" />'
+
+            marker_radius = max(3, CONFIG["dimensions"]["dot_radius"] // 5)
+            for string_idx in group.strings:
+                cy = CONFIG["dimensions"]["margin_top"] + string_idx * s_space
+                svg_content += f'<circle cx="{cx}" cy="{cy}" r="{marker_radius}" fill="{fill}" stroke="#ffffff" stroke-width="1" />'
+                label = group.labels.get(string_idx, "")
+                if label:
+                    from constants import apply_symbol_map
+                    label = apply_symbol_map(label[:2])
+                    r, g, b = hex_to_rgb01(fill)
+                    luminance = (0.2126 * r) + (0.7152 * g) + (0.0722 * b)
+                    text_fill = "#0f172a" if luminance > 0.62 else "#ffffff"
+                    font_size = "9" if len(label) > 1 else "11"
+                    svg_content += f'<text x="{cx}" y="{cy + 4}" text-anchor="middle" font-family="Arial" font-size="{font_size}" font-weight="bold" fill="{text_fill}">{label}</text>'
+
         for s, f in fretboard.positions:
+            if (s, f) in barre_positions and f > 0:
+                continue
             if f == 0:
                 cx = margin - 25
                 r_circle = 10
@@ -79,7 +114,7 @@ class ExportManager:
 
         with open(filename, "w", encoding="utf-8") as f:
             f.write(svg_content)
-        messagebox.showinfo("Erfolg", "SVG erfolgreich exportiert!")
+        messagebox.showinfo("Success", "SVG exported successfully!")
 
     @staticmethod
     def _draw_fretboard_on_pdf(c, fb: FretboardData, x_offset, y_offset, fretboard_width, fretboard_height):
@@ -142,6 +177,40 @@ class ExportManager:
                 pos_y = y_offset - s * pdf_string_spacing - 4
                 c.drawCentredString(pos_x, pos_y, "X")
 
+        barre_groups = get_barre_groups(fb)
+        barre_positions = {pos for group in barre_groups for pos in group.notes}
+
+        for group in barre_groups:
+            pos_x = x_offset + (group.fret - 0.5) * pdf_fret_spacing
+            half_width = max(10, CONFIG["dimensions"]["dot_radius"] / 1.1)
+            top_y = y_offset - group.start_string * pdf_string_spacing
+            bottom_y = y_offset - group.end_string * pdf_string_spacing
+            rect_bottom = bottom_y - half_width
+            rect_height = (top_y - bottom_y) + (half_width * 2)
+
+            c.setFillColorRGB(*hex_to_rgb01(group.color))
+            c.setStrokeColorRGB(1.0, 1.0, 1.0)
+            c.setLineWidth(0.7)
+            c.roundRect(pos_x - half_width, rect_bottom, half_width * 2, rect_height, half_width, fill=1, stroke=1)
+
+            marker_radius = max(2.2, CONFIG["dimensions"]["dot_radius"] / 6)
+            for string_idx in group.strings:
+                pos_y = y_offset - string_idx * pdf_string_spacing
+                c.setFillColorRGB(*hex_to_rgb01(group.color))
+                c.setStrokeColorRGB(1.0, 1.0, 1.0)
+                c.circle(pos_x, pos_y, marker_radius, fill=1, stroke=1)
+                label = group.labels.get(string_idx, "")
+                if label:
+                    from constants import apply_symbol_map
+                    label = apply_symbol_map(label[:2])
+                    r, g, b = hex_to_rgb01(group.color)
+                    luminance = (0.2126 * r) + (0.7152 * g) + (0.0722 * b)
+                    text_rgb = (0.06, 0.06, 0.08) if luminance > 0.62 else (1.0, 1.0, 1.0)
+                    c.setFillColorRGB(*text_rgb)
+                    font_size = 7 if len(label) > 1 else 9
+                    c.setFont("Helvetica-Bold", font_size)
+                    c.drawCentredString(pos_x, pos_y - 2.5, label)
+
         dot_radius = 0.25 * cm
         default_dot_color = getattr(fb, "dot_color", CONFIG["colors"]["dot"]) or CONFIG["colors"]["dot"]
         dot_colors = getattr(fb, "dot_colors", {}) or {}
@@ -150,6 +219,8 @@ class ExportManager:
         dot_small = getattr(fb, "dot_small", {}) or {}
 
         for s, f in fb.positions:
+            if (s, f) in barre_positions and f > 0:
+                continue
             if f == 0:
                 pos_x = x_offset - 0.5 * cm
                 r_circle = dot_radius * 0.75
@@ -295,8 +366,8 @@ class ExportManager:
                 y_top = y0 - card_gap
 
             c.save()
-            messagebox.showinfo("Erfolg", f"PDF gespeichert!")
+            messagebox.showinfo("Success", "PDF saved!")
         except ImportError:
-            messagebox.showwarning("Bibliothek fehlt", "Bitte installiere reportlab: pip install reportlab")
+            messagebox.showwarning("Library missing", "Please install reportlab: pip install reportlab")
         except Exception as e:
-            messagebox.showerror("Fehler", str(e))
+            messagebox.showerror("Error", str(e))

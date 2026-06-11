@@ -77,11 +77,11 @@ class EditorView(ctk.CTkFrame):
         self.title_frame = ctk.CTkFrame(self.canvas_container, fg_color="transparent")
         self.title_frame.grid(row=0, column=0, sticky="ew", pady=(0, 5))
 
-        lbl_title_hint = ctk.CTkLabel(self.title_frame, text="Akkord / Skala Name",
+        lbl_title_hint = ctk.CTkLabel(self.title_frame, text="Chord / Scale Name",
                                      font=("Arial", 13), text_color=CONFIG["colors"]["text_muted"])
         lbl_title_hint.pack(anchor="w")
 
-        self.entry_title = ctk.CTkEntry(self.title_frame, placeholder_text="z.B. C-Dur oder A-Moll Pentatonik",
+        self.entry_title = ctk.CTkEntry(self.title_frame, placeholder_text="e.g. C major or A minor pentatonic",
                                        font=("Arial", 20, "bold"), height=45)
         self.entry_title.pack(fill="x", pady=(5, 0))
         self.entry_title.bind("<KeyRelease>", lambda e: self.save_state())
@@ -91,7 +91,7 @@ class EditorView(ctk.CTkFrame):
         self.desc_frame = ctk.CTkFrame(self.canvas_container, fg_color="transparent")
         self.desc_frame.grid(row=2, column=0, sticky="ew", pady=(15, 0))
 
-        lbl_desc_hint = ctk.CTkLabel(self.desc_frame, text="Beschreibung / Notizen",
+        lbl_desc_hint = ctk.CTkLabel(self.desc_frame, text="Description / Notes",
                                     font=("Arial", 13), text_color=CONFIG["colors"]["text_muted"])
         lbl_desc_hint.pack(anchor="w")
 
@@ -106,7 +106,7 @@ class EditorView(ctk.CTkFrame):
         lbl = ctk.CTkLabel(sidebar, text="Fretboards", font=("Arial", 16, "bold"))
         lbl.pack(pady=20, padx=20, anchor="w")
 
-        btn_add = ctk.CTkButton(sidebar, text="+ Neues Fretboard", height=40, command=self.add_new_fretboard)
+        btn_add = ctk.CTkButton(sidebar, text="+ New Fretboard", height=40, command=self.add_new_fretboard)
         btn_add.pack(pady=10, padx=20, fill="x")
 
         self.list_frame = ctk.CTkScrollableFrame(sidebar, fg_color="transparent")
@@ -116,25 +116,34 @@ class EditorView(ctk.CTkFrame):
         settings_frame = ctk.CTkFrame(sidebar, fg_color="transparent")
         settings_frame.pack(fill="x", padx=20, pady=20)
 
-        lbl_settings = ctk.CTkLabel(settings_frame, text="Einstellungen", font=("Arial", 14, "bold"))
+        lbl_settings = ctk.CTkLabel(settings_frame, text="Settings", font=("Arial", 14, "bold"))
         lbl_settings.pack(anchor="w", pady=(0, 10))
 
         self.btn_dot_color = ctk.CTkButton(settings_frame, text="Dot color", height=34, command=self.pick_dot_color)
         self.btn_dot_color.pack(fill="x", pady=(0, 8))
 
-        lbl_hint = ctk.CTkLabel(settings_frame, text="Right click: toggle X markers\nCtrl+click: square dot\nShift+click: triangle dot\nAlt+click: smaller dot",
+        lbl_hint = ctk.CTkLabel(settings_frame, text="Right click: toggle X markers\nCtrl+click: square dot\nShift+click: triangle dot\nAlt+click: smaller dot\nBarres form automatically from adjacent standard dots",
                                 text_color=CONFIG["colors"]["text_muted"], font=("Arial", 10))
         lbl_hint.pack(anchor="w", pady=(0, 8))
 
-        self.entry_strings = ctk.CTkEntry(settings_frame, placeholder_text="Saiten (z.B. 6)")
+        self.barres_disabled_var = ctk.BooleanVar(value=False)
+        self.chk_disable_barres = ctk.CTkCheckBox(
+            settings_frame,
+            text="Disable barres (show individual dots)",
+            variable=self.barres_disabled_var,
+            command=self.on_barres_toggle,
+        )
+        self.chk_disable_barres.pack(anchor="w", pady=(0, 8))
+
+        self.entry_strings = ctk.CTkEntry(settings_frame, placeholder_text="Strings (e.g. 6)")
         self.entry_strings.pack(fill="x", pady=5)
         self.entry_strings.bind("<KeyRelease>", lambda e: self.save_state())
 
-        self.entry_frets = ctk.CTkEntry(settings_frame, placeholder_text="Anzahl Bünde (z.B. 12)")
+        self.entry_frets = ctk.CTkEntry(settings_frame, placeholder_text="Number of Frets (e.g. 12)")
         self.entry_frets.pack(fill="x", pady=5)
         self.entry_frets.bind("<KeyRelease>", lambda e: self.save_state())
 
-        btn_del = ctk.CTkButton(sidebar, text="🗑 Fretboard löschen", height=40, fg_color="#e74c3c",
+        btn_del = ctk.CTkButton(sidebar, text="🗑 Delete Fretboard", height=40, fg_color="#e74c3c",
                                hover_color="#c0392b", command=self.delete_current_fretboard)
         btn_del.pack(pady=20, padx=20, fill="x")
 
@@ -149,7 +158,7 @@ class EditorView(ctk.CTkFrame):
                                 command=lambda f=fb: self.select_fretboard(f))
             btn.pack(fill="x", pady=3)
 
-            lbl_count = ctk.CTkLabel(btn, text=f"{len(fb.positions)} Noten",
+            lbl_count = ctk.CTkLabel(btn, text=f"{len(fb.positions)} notes",
                                     font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"])
             lbl_count.place(relx=1, rely=0.5, anchor="e", x=-15)
 
@@ -172,6 +181,8 @@ class EditorView(ctk.CTkFrame):
         self.entry_strings.delete(0, 'end')
         self.entry_strings.insert(0, str(getattr(fb, "string_count", CONFIG["string_count"])))
 
+        self.barres_disabled_var.set(getattr(fb, "barres_disabled", False))
+
         if self.canvas_widget:
             self.canvas_widget.destroy()
 
@@ -189,7 +200,7 @@ class EditorView(ctk.CTkFrame):
 
     def delete_current_fretboard(self):
         if self.current_fretboard in self.project.fretboards:
-            if messagebox.askyesno("Löschen", "Dieses Fretboard wirklich löschen?"):
+            if messagebox.askyesno("Delete", "Really delete this fretboard?"):
                 self.project.fretboards.remove(self.current_fretboard)
                 self.current_fretboard = None
                 if self.project.fretboards:
@@ -243,6 +254,8 @@ class EditorView(ctk.CTkFrame):
                     self.canvas_widget.update_dimensions()
         except: pass
 
+        self.current_fretboard.barres_disabled = self.barres_disabled_var.get()
+
     def push_history(self):
         if self.current_fretboard:
             self.history_stack.append(copy.deepcopy(self.current_fretboard))
@@ -288,6 +301,8 @@ class EditorView(ctk.CTkFrame):
         self.entry_strings.delete(0, 'end')
         self.entry_strings.insert(0, str(getattr(fb_data, "string_count", CONFIG["string_count"])))
 
+        self.barres_disabled_var.set(getattr(self.current_fretboard, "barres_disabled", False))
+
         if self.canvas_widget: self.canvas_widget.destroy()
         self.canvas_widget = FretboardCanvas(self.canvas_container, self.current_fretboard, on_change_callback=lambda: self.push_history())
         self.canvas_widget.grid(row=1, column=0, pady=(5, 20))
@@ -316,8 +331,15 @@ class EditorView(ctk.CTkFrame):
                 self.canvas_widget.draw()
             self.push_history()
 
+    def on_barres_toggle(self):
+        if self.current_fretboard:
+            self.current_fretboard.barres_disabled = self.barres_disabled_var.get()
+            if self.canvas_widget:
+                self.canvas_widget.draw()
+            self.push_history()
+
     def rename_project(self):
-        dialog = ctk.CTkInputDialog(text="Projektname:", title="Projekt umbenennen")
+        dialog = ctk.CTkInputDialog(text="Project name:", title="Rename project")
         new_name = dialog.get_input()
         if new_name and new_name.strip():
             self.project.name = new_name.strip()
@@ -361,7 +383,7 @@ class DashboardView(ctk.CTkFrame):
                                      command=self.open_settings)
         btn_settings.pack(side="right", padx=(0, 10))
 
-        btn_new = ctk.CTkButton(header, text="+ Neues Projekt", height=45, font=("Arial", 14),
+        btn_new = ctk.CTkButton(header, text="+ New Project", height=45, font=("Arial", 14),
                                 command=self.create_new_project)
         btn_new.pack(side="right")
 
@@ -376,7 +398,7 @@ class DashboardView(ctk.CTkFrame):
 
         projects = ProjectStore.load_projects()
         if not projects:
-            lbl = ctk.CTkLabel(self.project_grid, text="Keine Projekte gefunden.\nErstelle dein erstes Projekt!",
+            lbl = ctk.CTkLabel(self.project_grid, text="No projects found.\nCreate your first project!",
                               text_color="gray", font=("Arial", 16))
             lbl.pack(pady=100)
             return
@@ -412,7 +434,7 @@ class DashboardView(ctk.CTkFrame):
             lbl_date.bind("<Button-1>", lambda e, p=proj: self.on_open(p))
 
     def create_new_project(self):
-        dialog = ctk.CTkInputDialog(text="Projektname:", title="Neues Projekt")
+        dialog = ctk.CTkInputDialog(text="Project name:", title="New Project")
         name = dialog.get_input()
         if name:
             new_proj = ProjectData(name)
@@ -421,12 +443,12 @@ class DashboardView(ctk.CTkFrame):
             self.on_open(new_proj)
 
     def delete_project(self, project: ProjectData):
-        if messagebox.askyesno("Löschen", f"Projekt '{project.name}' wirklich löschen?"):
+        if messagebox.askyesno("Delete", f"Really delete project '{project.name}'?"):
             ProjectStore.delete_project(project.id)
             self.load_projects()
 
     def rename_project(self, project: ProjectData):
-        dialog = ctk.CTkInputDialog(text="Neuer Projektname:", title="Projekt umbenennen")
+        dialog = ctk.CTkInputDialog(text="New project name:", title="Rename project")
         new_name = dialog.get_input()
         if new_name and new_name.strip():
             ProjectStore.rename_project(project.id, new_name.strip())

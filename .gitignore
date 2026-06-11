@@ -6,3 +6,4 @@ www/
 *.spec
 *.json
 *.iss
+Output/

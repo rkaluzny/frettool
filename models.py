@@ -5,7 +5,7 @@ from uuid import uuid4
 from constants import CONFIG
 
 class FretboardData:
-    def __init__(self, title: str = "Neuer Akkord", description: str = "", num_frets: int = None):
+    def __init__(self, title: str = "New Chord", description: str = "", num_frets: int = None):
         self.id = datetime.now().timestamp()
         self.title = title
         self.description = description
@@ -19,6 +19,8 @@ class FretboardData:
         self.dot_colors: Dict[str, str] = {}
         self.dot_types: Dict[str, str] = {}  # "s,f" -> "circle", "square", "triangle"
         self.dot_small: Dict[str, bool] = {}  # "s,f" -> True if alt+click (smaller dot)
+        self.barre_excluded: Set[Tuple[int, int]] = set()  # positions disconnected from barres
+        self.barres_disabled: bool = False  # global disable for barre rendering
 
     def to_dict(self):
         return {
@@ -35,6 +37,8 @@ class FretboardData:
             "dot_colors": self.dot_colors,
             "dot_types": self.dot_types,
             "dot_small": self.dot_small,
+            "barre_excluded": list(self.barre_excluded),
+            "barres_disabled": self.barres_disabled,
         }
 
     @staticmethod
@@ -57,10 +61,12 @@ class FretboardData:
             fb.dot_small = data.get("dot_dark", {}) or {}
         else:
             fb.dot_small = data.get("dot_small", {}) or {}
+        fb.barre_excluded = set(tuple(p) for p in data.get("barre_excluded", []))
+        fb.barres_disabled = bool(data.get("barres_disabled", False))
         return fb
 
 class ProjectData:
-    def __init__(self, name: str = "Unbenanntes Projekt"):
+    def __init__(self, name: str = "Untitled Project"):
         self.id = str(uuid4())
         self.name = name
         self.created_at = datetime.now().strftime("%Y-%m-%d %H:%M")
