@@ -1,14 +1,21 @@
+import os
+import sys
 import customtkinter as ctk
-from PIL import Image, ImageTk
 from views import DashboardView, EditorView
 from models import ProjectData
+
+
+def resource_path(relative_path):
+    if getattr(sys, "frozen", False):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)
+
 
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         try:
-            self.icon_img = ImageTk.PhotoImage(Image.open("icon.ico"))
-            self.iconphoto(True, self.icon_img)
+            self.iconbitmap(resource_path("icon.ico"))
         except:
             pass
         from constants import CONFIG

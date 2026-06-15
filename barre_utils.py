@@ -45,7 +45,6 @@ def _note_meta(fb, string_idx: int, fret_idx: int) -> Dict[str, object]:
 
 
 def _is_visually_standard(fb, string_idx: int, fret_idx: int) -> bool:
-    """A note that looks like a standard circle (ignoring barre_excluded)."""
     if fret_idx <= 0:
         return False
     positions = getattr(fb, "positions", set()) or set()
@@ -53,16 +52,6 @@ def _is_visually_standard(fb, string_idx: int, fret_idx: int) -> bool:
         return False
     meta = _note_meta(fb, string_idx, fret_idx)
     return meta["type"] == "circle" and not meta["is_small"]
-
-
-def _is_barre_eligible(fb, string_idx: int, fret_idx: int) -> bool:
-    """A note that can participate in barre formation (visually standard + not excluded)."""
-    if not _is_visually_standard(fb, string_idx, fret_idx):
-        return False
-    barre_excluded = getattr(fb, "barre_excluded", set()) or set()
-    if (string_idx, fret_idx) in barre_excluded:
-        return False
-    return True
 
 
 def _fret_has_mixed_notes(fb, fret_idx: int) -> bool:
@@ -88,6 +77,23 @@ def _contiguous_runs(strings: Sequence[int]) -> List[Tuple[int, ...]]:
     return [tuple(run) for run in runs if len(run) >= 2]
 
 
+def _make_group(fb, fret_idx, string_run):
+    notes = tuple((string_idx, fret_idx) for string_idx in string_run)
+    first_meta = _note_meta(fb, string_run[0], fret_idx)
+    labels = {}
+    for string_idx in string_run:
+        label = _note_meta(fb, string_idx, fret_idx)["label"].strip()[:2]
+        if label:
+            labels[string_idx] = label
+    return BarreGroup(
+        fret=fret_idx,
+        strings=string_run,
+        color=str(first_meta["color"]),
+        notes=notes,
+        labels=labels,
+    )
+
+
 def build_barre_groups_for_fret(fb, fret_idx: int, extra_standard_string: Optional[int] = None) -> List[BarreGroup]:
     if fret_idx <= 0:
         return []
@@ -98,37 +104,44 @@ def build_barre_groups_for_fret(fb, fret_idx: int, extra_standard_string: Option
     if _fret_has_mixed_notes(fb, fret_idx):
         return []
 
-    standard_strings = sorted(
+    positions = getattr(fb, "positions", set()) or set()
+
+    all_strings = sorted(
         string_idx
-        for string_idx, pos_fret in (getattr(fb, "positions", set()) or set())
-        if pos_fret == fret_idx and _is_barre_eligible(fb, string_idx, pos_fret)
+        for string_idx, pos_fret in positions
+        if pos_fret == fret_idx
     )
 
-    if extra_standard_string is not None and extra_standard_string not in standard_strings:
-        standard_strings = sorted(standard_strings + [extra_standard_string])
+    if extra_standard_string is not None and extra_standard_string not in all_strings:
+        all_strings = sorted(all_strings + [extra_standard_string])
+
+    if len(all_strings) < 2:
+        return []
+
+    breaks = getattr(fb, "barre_excluded", set()) or set()
 
     groups: List[BarreGroup] = []
-    for run in _contiguous_runs(standard_strings):
-        if len(run) < 2:
-            continue
+    for run in _contiguous_runs(all_strings):
+        segments = []
+        current = [run[0]]
+        for i in range(1, len(run)):
+            prev_s = run[i - 1]
+            curr_s = run[i]
+            if (prev_s, fret_idx) in breaks:
+                segments.append(current)
+                current = [curr_s]
+            else:
+                current.append(curr_s)
+        segments.append(current)
 
-        notes = tuple((string_idx, fret_idx) for string_idx in run)
-        first_meta = _note_meta(fb, run[0], fret_idx)
-        labels = {}
-        for string_idx in run:
-            label = _note_meta(fb, string_idx, fret_idx)["label"].strip()[:2]
-            if label:
-                labels[string_idx] = label
-
-        groups.append(
-            BarreGroup(
-                fret=fret_idx,
-                strings=run,
-                color=str(first_meta["color"]),
-                notes=notes,
-                labels=labels,
-            )
-        )
+        for segment in segments:
+            eligible = [
+                s for s in segment
+                if _is_visually_standard(fb, s, fret_idx)
+                   or (extra_standard_string is not None and s == extra_standard_string)
+            ]
+            if len(eligible) >= 2:
+                groups.append(_make_group(fb, fret_idx, tuple(eligible)))
 
     return groups
 
@@ -157,4 +170,3 @@ def get_preview_barre_groups(fb, hovered_pos: Optional[Tuple[int, int]]) -> List
         return []
 
     return build_barre_groups_for_fret(fb, fret_idx, extra_standard_string=string_idx)
-

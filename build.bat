@@ -15,7 +15,7 @@ if exist "build" rmdir /s /q "build"
 if exist "dist" rmdir /s /q "dist"
 
 REM Build the executable
-pyinstaller --onefile --windowed --name=FretTool %ICON_FLAG% main.py
+pyinstaller --onefile --windowed --name=FretTool %ICON_FLAG% --add-data "icon.ico;." main.py
 
 echo.
 if exist "dist\FretTool.exe" (

@@ -16,7 +16,7 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.hitboxes = []
         self.x_hitboxes = []
         self.barre_hitboxes = []
-        self.grid_hover = None  # (string, fret) where mouse is hovering on empty grid
+        self.grid_hover = None
 
         base_frets = max(CONFIG["default_frets"], self.data.num_frets)
         self.required_width = CONFIG["dimensions"]["margin_side"] * 2 + base_frets * CONFIG["dimensions"]["fret_spacing"]
@@ -107,7 +107,6 @@ class FretboardCanvas(ctk.CTkCanvas):
             body_width = 1
         fill_stipple = "gray50" if preview else ""
 
-        # Central shaft
         if bottom - top > cap_diameter:
             self.create_rectangle(
                 left, top + half_width,
@@ -118,7 +117,6 @@ class FretboardCanvas(ctk.CTkCanvas):
                 width=body_width,
             )
 
-        # Rounded ends
         self.create_oval(left, top, right, top + cap_diameter, fill=body_fill,
                          stipple=fill_stipple,
                          outline=body_outline if selected or hovered else "", width=body_width)
@@ -126,7 +124,6 @@ class FretboardCanvas(ctk.CTkCanvas):
                          stipple=fill_stipple,
                          outline=body_outline if selected or hovered else "", width=body_width)
 
-        # Subtle highlight for selected or hovered states.
         if selected or hovered:
             glow_color = outline_color if selected else fill_color
             glow_width = 4 if selected else 2
@@ -168,6 +165,21 @@ class FretboardCanvas(ctk.CTkCanvas):
                 if bottom - top < 34:
                     label_y = cy + 10
                 self.create_text(geom["cx"], label_y, text=label, fill=text_color, font=("Arial", font_size, "bold"))
+
+    def _remove_dot(self, s, f):
+        key = f"{s},{f}"
+        self.data.positions.discard((s, f))
+        if hasattr(self.data, "dot_texts") and self.data.dot_texts:
+            self.data.dot_texts.pop(key, None)
+        if hasattr(self.data, "dot_colors") and self.data.dot_colors:
+            self.data.dot_colors.pop(key, None)
+        if hasattr(self.data, "dot_types") and self.data.dot_types:
+            self.data.dot_types.pop(key, None)
+        if hasattr(self.data, "dot_small") and self.data.dot_small:
+            self.data.dot_small.pop(key, None)
+        if hasattr(self.data, "barre_excluded") and self.data.barre_excluded:
+            self.data.barre_excluded.discard((s, f))
+        self.selected_barre_key = None
 
     def _remove_note_and_recompute_barre(self, s, f):
         key = f"{s},{f}"
@@ -214,13 +226,11 @@ class FretboardCanvas(ctk.CTkCanvas):
         fret_w = (w - 2 * margin_x) / self.data.num_frets
         string_h = (h - margin_y_top - CONFIG["dimensions"]["margin_bottom"]) / (string_count - 1)
 
-        # Check if in X marker area (left of margin)
         if event_x <= margin_x - 10:
             s_idx = int((event_y - margin_y_top) / string_h)
             if 0 <= s_idx < string_count:
                 return (s_idx, 0)
 
-        # Check if in fretboard area
         if event_x < margin_x or event_x > w - margin_x:
             return None
 
@@ -243,30 +253,27 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.hovered_barre_key = None
         self.grid_hover = None
 
-        # Barres should take precedence over individual note hover states.
+        x_positions = getattr(self.data, "x_positions", set()) or set()
+
         barre_hit = self._find_hitbox(self.barre_hitboxes, event.x, event.y)
         if barre_hit:
             self.hovered_barre_key = barre_hit["key"]
 
-        # Check if hovering over existing dot
-        for hb in self.hitboxes:
-            x1, y1, x2, y2 = hb['rect']
-            if x1 <= event.x <= x2 and y1 <= event.y <= y2:
-                if self.hovered_barre_key is None or hb.get("barre_key") == self.hovered_barre_key:
-                    self.hovered_pos = hb['pos']
-                break
-
-        # Check if hovering over X marker
-        if self.hovered_pos is None and self.hovered_barre_key is None:
-            for hb in self.x_hitboxes:
-                x1, y1, x2, y2 = hb['rect']
-                if x1 <= event.x <= x2 and y1 <= event.y <= y2:
-                    self.hovered_xpos = hb['pos']
-                    break
-
-        # Calculate grid hover position (where a new dot would be placed)
-        if self.hovered_pos is None and self.hovered_xpos is None and self.hovered_barre_key is None:
-            self.grid_hover = self.get_grid_position(event.x, event.y)
+        pos = self.get_grid_position(event.x, event.y)
+        if pos:
+            if pos in x_positions and self.hovered_barre_key is None:
+                self.hovered_xpos = pos
+            elif pos in self.data.positions:
+                if self.hovered_barre_key is None:
+                    self.hovered_pos = pos
+                else:
+                    groups = get_barre_groups(self.data)
+                    group = self._is_note_part_of_barre(pos, groups)
+                    if group and group.key == self.hovered_barre_key:
+                        self.hovered_pos = pos
+            else:
+                if self.hovered_barre_key is None:
+                    self.grid_hover = pos
 
         if (old_hovered_dot != self.hovered_pos) or (old_hovered_x != self.hovered_xpos) or (old_hovered_barre != self.hovered_barre_key) or (old_grid_hover != self.grid_hover):
             self.draw()
@@ -288,21 +295,18 @@ class FretboardCanvas(ctk.CTkCanvas):
         s, f = self.hovered_pos
         key = f"{s},{f}"
 
-        # Get current color index
         current_color = (getattr(self.data, "dot_colors", {}) or {}).get(key, self.data.dot_color)
         if current_color in PRESET_COLORS:
             idx = PRESET_COLORS.index(current_color)
         else:
             idx = 0
 
-        # Determine direction (Windows uses event.delta)
         delta = event.delta
         if delta > 0:
             new_idx = (idx + 1) % len(PRESET_COLORS)
         else:
             new_idx = (idx - 1) % len(PRESET_COLORS)
 
-        # Update color
         if not hasattr(self.data, "dot_colors") or self.data.dot_colors is None:
             self.data.dot_colors = {}
         self.data.dot_colors[key] = PRESET_COLORS[new_idx]
@@ -311,47 +315,28 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.on_change()
 
     def on_barre_edge_key(self, event):
-        if not self.hovered_barre_key and not self.selected_barre_key:
-            return
-
-        key = self.hovered_barre_key or self.selected_barre_key
-        barre_group = None
-        for hb in self.barre_hitboxes:
-            if hb["key"] == key:
-                barre_group = hb["group"]
-                break
-
-        if barre_group is None or not self.hovered_pos:
+        if not self.hovered_pos:
             return
 
         s, f = self.hovered_pos
-        strings = barre_group.strings
-        try:
-            idx = strings.index(s)
-        except ValueError:
-            return
+        string_count = max(2, int(getattr(self.data, "string_count", CONFIG["string_count"])))
 
         if event.keysym == "Up":
-            if idx == 0:
+            if s == 0:
                 return
-            target_s = strings[idx - 1]
+            break_pos = (s - 1, f)
         else:
-            if idx == len(strings) - 1:
+            if s >= string_count - 1:
                 return
-            target_s = strings[idx + 1]
-
-        target_pos = (target_s, f)
-
-        if target_pos not in self.data.positions:
-            return
+            break_pos = (s, f)
 
         if not hasattr(self.data, "barre_excluded") or self.data.barre_excluded is None:
             self.data.barre_excluded = set()
 
-        if target_pos in self.data.barre_excluded:
-            self.data.barre_excluded.discard(target_pos)
+        if break_pos in self.data.barre_excluded:
+            self.data.barre_excluded.discard(break_pos)
         else:
-            self.data.barre_excluded.add(target_pos)
+            self.data.barre_excluded.add(break_pos)
 
         self.selected_barre_key = None
         self.draw()
@@ -392,7 +377,6 @@ class FretboardCanvas(ctk.CTkCanvas):
                     cy = margin_y_top + s * string_h
                     radius = CONFIG["dimensions"]["dot_radius"]
 
-                # Draw preview dot (semi-transparent effect using lighter color)
                 self.create_oval(cx - radius, cy - radius, cx + radius, cy + radius,
                                fill=CONFIG["colors"]["dot_hover"], outline="", stipple="gray50")
                 self.create_oval(cx - radius, cy - radius, cx + radius, cy + radius,
@@ -451,7 +435,7 @@ class FretboardCanvas(ctk.CTkCanvas):
             else:
                 cx = margin_x + (f - 0.5) * fret_w
             cy = margin_y_top + s * string_h
-            hit_radius = 18
+            hit_radius = 20
             self.x_hitboxes.append({'rect': (cx-hit_radius, cy-hit_radius, cx+hit_radius, cy+hit_radius), 'pos': (s, f)})
 
             if self.hovered_xpos == (s, f):
@@ -505,7 +489,7 @@ class FretboardCanvas(ctk.CTkCanvas):
 
             if f == 0:
                 cx = margin_x - 25
-                hit_radius = 18
+                hit_radius = 20
                 self.hitboxes.append({'rect': (cx-hit_radius, cy-hit_radius, cx+hit_radius, cy+hit_radius), 'pos': (s, f)})
 
                 key = f"{s},{f}"
@@ -535,7 +519,7 @@ class FretboardCanvas(ctk.CTkCanvas):
                 if group is not None:
                     geom = self._barre_geometry(group, margin_x, margin_y_top, fret_w, string_h)
                     cx = geom["cx"]
-                    hit_radius = max(10, CONFIG["dimensions"]["dot_radius"] // 5 + 6)
+                    hit_radius = 20
                     self.hitboxes.append({
                         'rect': (cx-hit_radius, cy-hit_radius, cx+hit_radius, cy+hit_radius),
                         'pos': (s, f),
@@ -571,7 +555,7 @@ class FretboardCanvas(ctk.CTkCanvas):
             is_small = getattr(self.data, "dot_small", {}).get(key, False)
 
             if self.hovered_pos == (s, f):
-                color = dot_color  # Use actual dot color
+                color = dot_color
                 radius = (CONFIG["dimensions"]["dot_small_radius"] if is_small else CONFIG["dimensions"]["dot_radius"]) + 3
             else:
                 color = dot_color
@@ -621,21 +605,16 @@ class FretboardCanvas(ctk.CTkCanvas):
                     self.on_change()
 
     def on_right_click(self, event):
-        margin_x = CONFIG["dimensions"]["margin_side"]
-        margin_y_top = CONFIG["dimensions"]["margin_top"]
-        string_count = max(2, int(getattr(self.data, "string_count", CONFIG["string_count"])))
-        string_h = (self.winfo_height() - margin_y_top - CONFIG["dimensions"]["margin_bottom"]) / (string_count - 1)
-        fret_w = (self.winfo_width() - 2 * margin_x) / self.data.num_frets
+        pos = self.get_grid_position(event.x, event.y)
+        if not pos:
+            return
 
-        clicked_dot = None
-        for hb in self.hitboxes:
-            x1, y1, x2, y2 = hb['rect']
-            if x1 <= event.x <= x2 and y1 <= event.y <= y2:
-                clicked_dot = hb['pos']
-                break
-        if clicked_dot:
-            s, f = clicked_dot
-            key = f"{s},{f}"
+        s, f = pos
+        key = f"{s},{f}"
+        x_positions = getattr(self.data, "x_positions", set()) or set()
+
+        # Right-click on existing dot -> properties dialog
+        if pos in self.data.positions:
             current_label = (getattr(self.data, "dot_texts", {}) or {}).get(key, "")[:2]
             current_color = (getattr(self.data, "dot_colors", {}) or {}).get(key, "")
             default_color = getattr(self.data, "dot_color", CONFIG["colors"]["dot"]) or CONFIG["colors"]["dot"]
@@ -666,41 +645,25 @@ class FretboardCanvas(ctk.CTkCanvas):
                 self.on_change()
             return
 
-        clicked_x = None
-        for hb in self.x_hitboxes:
-            x1, y1, x2, y2 = hb['rect']
-            if x1 <= event.x <= x2 and y1 <= event.y <= y2:
-                clicked_x = hb['pos']
-                break
-        if clicked_x:
-            self.data.x_positions.discard(clicked_x)
+        # Right-click on existing X -> remove it
+        if pos in x_positions:
+            self.data.x_positions.discard(pos)
             self.selected_barre_key = None
             self.draw()
             self.on_change()
             return
 
-        s_idx = int((event.y - margin_y_top) / string_h)
-        if not (0 <= s_idx < string_count):
-            return
-
-        if event.x <= margin_x - 10:
-            f_idx = 0
-        else:
-            f_idx = int((event.x - margin_x) / fret_w) + 1
-            if not (1 <= f_idx <= self.data.num_frets):
-                return
-
-        self.data.x_positions.add((s_idx, f_idx))
-        self.data.positions.discard((s_idx, f_idx))
-        if f_idx == 0:
-            self.data.positions = set((s, f) for (s, f) in self.data.positions if s != s_idx)
+        # Right-click on empty space -> add X
+        self.data.x_positions.add(pos)
+        self.data.positions.discard(pos)
+        if f == 0:
+            self.data.positions = set((ss, ff) for (ss, ff) in self.data.positions if ss != s)
+            prefix = f"{s},"
             if hasattr(self.data, "dot_texts") and self.data.dot_texts:
-                prefix = f"{s_idx},"
                 for k in list(self.data.dot_texts.keys()):
                     if k.startswith(prefix):
                         self.data.dot_texts.pop(k, None)
             if hasattr(self.data, "dot_colors") and self.data.dot_colors:
-                prefix = f"{s_idx},"
                 for k in list(self.data.dot_colors.keys()):
                     if k.startswith(prefix):
                         self.data.dot_colors.pop(k, None)
@@ -710,98 +673,77 @@ class FretboardCanvas(ctk.CTkCanvas):
 
     def on_click(self, event):
         self.focus_set()
-        barre_groups = get_barre_groups(self.data)
-        clicked_barre = self._find_hitbox(self.barre_hitboxes, event.x, event.y)
-        clicked_note = self._find_hitbox(self.hitboxes, event.x, event.y)
-        clicked_group = None
 
-        if clicked_barre:
-            clicked_group = clicked_barre.get("group")
-        elif clicked_note:
-            clicked_group = self._is_note_part_of_barre(clicked_note["pos"], barre_groups)
-
-        if clicked_group is not None:
-            key = clicked_group.key
-            if self.selected_barre_key == key and clicked_note and clicked_note["pos"] in clicked_group.notes:
-                # Second click on a barre note removes just that note.
-                s, f = clicked_note["pos"]
-                self._remove_note_and_recompute_barre(s, f)
-                self.draw()
-                self.on_change()
-                return
-
-            # First click selects the whole barre.
-            self.selected_barre_key = key
-            self.draw()
+        pos = self.get_grid_position(event.x, event.y)
+        if not pos:
             return
 
-        if clicked_note:
-            clicked_pos = clicked_note["pos"]
-            self.data.positions.discard(clicked_pos)
-            k = f"{clicked_pos[0]},{clicked_pos[1]}"
-            if hasattr(self.data, "dot_texts") and self.data.dot_texts:
-                self.data.dot_texts.pop(k, None)
-            if hasattr(self.data, "dot_colors") and self.data.dot_colors:
-                self.data.dot_colors.pop(k, None)
-            if hasattr(self.data, "dot_types") and self.data.dot_types:
-                self.data.dot_types.pop(k, None)
-            if hasattr(self.data, "dot_small") and self.data.dot_small:
-                self.data.dot_small.pop(k, None)
-            if hasattr(self.data, "barre_excluded") and self.data.barre_excluded:
-                self.data.barre_excluded.discard(clicked_pos)
+        s, f = pos
+        key = f"{s},{f}"
+        x_positions = getattr(self.data, "x_positions", set()) or set()
+
+        # 1. Click on X marker -> remove it
+        if pos in x_positions:
+            self.data.x_positions.discard(pos)
             self.selected_barre_key = None
             self.draw()
             self.on_change()
             return
 
-        margin_x = CONFIG["dimensions"]["margin_side"]
-        margin_y_top = CONFIG["dimensions"]["margin_top"]
-        string_count = max(2, int(getattr(self.data, "string_count", CONFIG["string_count"])))
-        fret_w = (self.winfo_width() - 2 * margin_x) / self.data.num_frets
-        string_h = (self.winfo_height() - margin_y_top - CONFIG["dimensions"]["margin_bottom"]) / (string_count - 1)
+        # 2. Click on existing dot -> remove or barre interaction
+        if pos in self.data.positions:
+            barre_groups = get_barre_groups(self.data)
+            group = self._is_note_part_of_barre(pos, barre_groups)
 
-        s_idx = int((event.y - margin_y_top) / string_h)
-        if 0 <= s_idx < string_count:
-            if event.x <= margin_x - 10:
-                f_idx = 0
+            if group is not None:
+                if self.selected_barre_key == group.key:
+                    self._remove_note_and_recompute_barre(s, f)
+                else:
+                    self.selected_barre_key = group.key
             else:
-                f_idx = int((event.x - margin_x) / fret_w) + 1
-                if not (1 <= f_idx <= self.data.num_frets):
-                    f_idx = None
+                self._remove_dot(s, f)
 
-            if f_idx is not None:
-                self.data.positions.add((s_idx, f_idx))
-                self.data.x_positions.discard((s_idx, f_idx))
-                self.data.x_positions.discard((s_idx, 0))
+            self.draw()
+            self.on_change()
+            return
 
-                if not hasattr(self.data, "dot_colors") or self.data.dot_colors is None:
-                    self.data.dot_colors = {}
-                if not hasattr(self.data, "dot_types") or self.data.dot_types is None:
-                    self.data.dot_types = {}
-                if not hasattr(self.data, "dot_small") or self.data.dot_small is None:
-                    self.data.dot_small = {}
+        # 3. Click on empty position -> add a new dot (if valid)
+        string_count = max(2, int(getattr(self.data, "string_count", CONFIG["string_count"])))
+        if not (0 <= s < string_count and 1 <= f <= self.data.num_frets):
+            if f == 0 and 0 <= s < string_count:
+                pass
+            else:
+                return
 
-                k = f"{s_idx},{f_idx}"
-                self.data.dot_colors[k] = getattr(self.data, "dot_color", CONFIG["colors"]["dot"]) or CONFIG["colors"]["dot"]
+        self.data.positions.add(pos)
+        self.data.x_positions.discard(pos)
+        self.data.x_positions.discard((s, 0))
 
-                # Handle modifier keys
-                dot_type = "circle"
-                is_small = False
+        if not hasattr(self.data, "dot_colors") or self.data.dot_colors is None:
+            self.data.dot_colors = {}
+        if not hasattr(self.data, "dot_types") or self.data.dot_types is None:
+            self.data.dot_types = {}
+        if not hasattr(self.data, "dot_small") or self.data.dot_small is None:
+            self.data.dot_small = {}
 
-                if event.state & 0x0004:  # Ctrl key
-                    dot_type = "square"
-                if event.state & 0x0001:  # Shift key
-                    dot_type = "triangle"
-                if event.state & 0x20000:  # Alt key
-                    is_small = True
+        default_color = getattr(self.data, "dot_color", CONFIG["colors"]["dot"]) or CONFIG["colors"]["dot"]
+        self.data.dot_colors[key] = default_color
 
-                # Mix: if both ctrl and shift, prioritize square
-                if event.state & 0x0004 and event.state & 0x0001:
-                    dot_type = "square"
+        dot_type = "circle"
+        is_small = False
 
-                self.data.dot_types[k] = dot_type
-                if is_small:
-                    self.data.dot_small[k] = True
+        if event.state & 0x0004:
+            dot_type = "square"
+        if event.state & 0x0001:
+            dot_type = "triangle"
+        if event.state & 0x0004 and event.state & 0x0001:
+            dot_type = "square"
+        if event.state & 0x20000:
+            is_small = True
+
+        self.data.dot_types[key] = dot_type
+        if is_small:
+            self.data.dot_small[key] = True
 
         self.selected_barre_key = None
         self.draw()
