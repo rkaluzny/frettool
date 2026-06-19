@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+from persistence import get_data_dir
 
 DEFAULT_SETTINGS = {
     "dark_mode": True,
@@ -34,10 +35,9 @@ DEFAULT_SETTINGS = {
 class SettingsManager:
     @staticmethod
     def get_settings_filepath():
-        if getattr(sys, 'frozen', False):
-            return os.path.join(os.path.dirname(sys.executable), "settings.json")
-        else:
-            return os.path.join(os.path.dirname(os.path.abspath(__file__)), "settings.json")
+        from persistence import _migrate_file
+        _migrate_file("settings.json")
+        return os.path.join(get_data_dir(), "settings.json")
 
     @staticmethod
     def load_settings():
