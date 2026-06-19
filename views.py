@@ -100,7 +100,7 @@ class EditorView(ctk.CTkFrame):
         self.entry_desc.bind("<KeyRelease>", lambda e: self.save_state())
 
     def setup_sidebar(self):
-        sidebar = ctk.CTkFrame(self, width=280, corner_radius=0, fg_color=CONFIG["colors"]["surface"])
+        sidebar = ctk.CTkScrollableFrame(self, width=280, corner_radius=0, fg_color=CONFIG["colors"]["surface"])
         sidebar.grid(row=1, column=1, sticky="ns")
 
         lbl = ctk.CTkLabel(sidebar, text="Fretboards", font=("Arial", 16, "bold"))
@@ -109,8 +109,8 @@ class EditorView(ctk.CTkFrame):
         btn_add = ctk.CTkButton(sidebar, text="+ New Fretboard", height=40, command=self.add_new_fretboard)
         btn_add.pack(pady=10, padx=20, fill="x")
 
-        self.list_frame = ctk.CTkScrollableFrame(sidebar, fg_color="transparent")
-        self.list_frame.pack(fill="both", expand=True, padx=15, pady=10)
+        self.list_frame = ctk.CTkFrame(sidebar, fg_color="transparent")
+        self.list_frame.pack(fill="x", padx=15, pady=10)
         self.refresh_list()
 
         settings_frame = ctk.CTkFrame(sidebar, fg_color="transparent")

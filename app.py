@@ -15,7 +15,16 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         try:
-            self.iconbitmap(resource_path("icon.ico"))
+            if sys.platform == "linux":
+                try:
+                    from PIL import Image, ImageTk
+                    img = Image.open(resource_path("icon.ico"))
+                    self.icon = ImageTk.PhotoImage(img)
+                    self.wm_iconphoto(True, self.icon)
+                except:
+                    pass
+            else:
+                self.iconbitmap(resource_path("icon.ico"))
         except:
             pass
         from constants import CONFIG

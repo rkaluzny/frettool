@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 echo "Building FretTool executable with PyInstaller..."
 echo ""
 
@@ -15,13 +17,23 @@ fi
 
 rm -rf build dist
 
-# Use ; separator on Windows, : on Unix
-pyinstaller --onefile --windowed --name=FretTool $ICON_FLAG --add-data "icon.ico;." main.py 2>/dev/null || \
-    pyinstaller --onefile --windowed --name=FretTool $ICON_FLAG --add-data "icon.ico:." main.py
+# Determine path separator for --add-data
+case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*)
+        SEP=";"
+        ;;
+    *)
+        SEP=":"
+        ;;
+esac
+
+pyinstaller --onefile --windowed --name=FretTool $ICON_FLAG --add-data "icon.ico${SEP}." main.py
 
 echo ""
 if [ -f "dist/FretTool" ]; then
     echo "Build successful! Executable created at: dist/FretTool"
+elif [ -f "dist/FretTool.exe" ]; then
+    echo "Build successful! Executable created at: dist/FretTool.exe"
 else
     echo "Build failed. Check the output above for errors."
 fi
