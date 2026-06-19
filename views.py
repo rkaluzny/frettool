@@ -465,7 +465,6 @@ class DashboardView(ctk.CTkFrame):
         dialog.geometry("650x750")
         dialog.resizable(False, False)
         dialog.transient(self)
-        dialog.grab_set()
 
         scroll = ctk.CTkScrollableFrame(dialog)
         scroll.pack(fill="both", expand=True, padx=20, pady=20)
@@ -597,6 +596,7 @@ class DashboardView(ctk.CTkFrame):
         btn_save.pack(pady=(10, 20))
 
         dialog.update_idletasks()
+        dialog.grab_set()
         x = self.winfo_rootx() + (self.winfo_width() // 2) - (650 // 2)
         y = self.winfo_rooty() + (self.winfo_height() // 2) - (750 // 2)
         dialog.geometry(f"+{x}+{y}")
