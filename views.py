@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox, filedialog
 import copy
-from constants import CONFIG
+from constants import CONFIG, VERSION
 from models import FretboardData, ProjectData
 from persistence import ProjectStore
 from export import ExportManager
@@ -56,11 +56,11 @@ class EditorView(ctk.CTkFrame):
 
         btn_pdf = ctk.CTkButton(toolbar, text="📄 PDF", width=70, height=35, fg_color="#e74c3c", command=lambda: self.export("pdf"))
         btn_pdf.pack(side="left", padx=5)
-        btn_svg = ctk.CTkButton(toolbar, text="📐 SVG", width=70, height=35, fg_color="#3498db", command=lambda: self.export("svg"))
-        btn_svg.pack(side="left", padx=5)
 
-        btn_print = ctk.CTkButton(toolbar, text="Ctrl+P Print", width=100, height=35, fg_color="#2ecc71", command=lambda: self.export("pdf"))
-        btn_print.pack(side="left", padx=5)
+        btn_help = ctk.CTkButton(toolbar, text="?", width=35, height=35,
+                                 fg_color="transparent", border_width=1, text_color="#000000",
+                                 command=self.show_help)
+        btn_help.pack(side="left", padx=5)
 
         btn_back = ctk.CTkButton(toolbar, text="← Dashboard", width=100, height=35,
                                  fg_color="transparent", border_width=1, text_color="#000000", command=self.back_to_dashboard)
@@ -276,6 +276,10 @@ class EditorView(ctk.CTkFrame):
             next_state = self.redo_stack.pop()
             self.restore_fretboard(next_state)
 
+    def show_help(self):
+        from constants import show_help
+        show_help(self)
+
     def restore_fretboard(self, fb_data):
         self.current_fretboard.title = fb_data.title
         self.current_fretboard.description = fb_data.description
@@ -383,6 +387,12 @@ class DashboardView(ctk.CTkFrame):
                                      command=self.open_settings)
         btn_settings.pack(side="right", padx=(0, 10))
 
+        btn_help = ctk.CTkButton(header, text="? Help", height=45, font=("Arial", 14),
+                                 fg_color="transparent", border_width=1,
+                                 text_color="#000000",
+                                 command=self.show_help)
+        btn_help.pack(side="right", padx=(0, 10))
+
         btn_new = ctk.CTkButton(header, text="+ New Project", height=45, font=("Arial", 14),
                                 command=self.create_new_project)
         btn_new.pack(side="right")
@@ -454,6 +464,10 @@ class DashboardView(ctk.CTkFrame):
             ProjectStore.rename_project(project.id, new_name.strip())
             self.load_projects()
 
+    def show_help(self):
+        from constants import show_help
+        show_help(self)
+
     def open_settings(self):
         from settings import SettingsManager, DEFAULT_SETTINGS
         import customtkinter as ctk
@@ -497,6 +511,22 @@ class DashboardView(ctk.CTkFrame):
         strings_entry = ctk.CTkEntry(strings_frame, textvariable=strings_var, width=100)
         strings_entry.pack(anchor="w")
 
+        # Barre settings
+        ctk.CTkLabel(scroll, text="Barre Behaviour", font=("Arial", 16, "bold")).pack(anchor="w", pady=(10, 10))
+
+        barres_def_var = ctk.BooleanVar(value=settings.get("barres_enabled_default", True))
+        barres_def_frame = ctk.CTkFrame(scroll, fg_color="transparent")
+        barres_def_frame.pack(fill="x", pady=(0, 10))
+        ctk.CTkLabel(barres_def_frame, text="Barres Enabled by Default", font=("Arial", 14, "bold")).pack(side="left")
+        ctk.CTkSwitch(barres_def_frame, text="", variable=barres_def_var).pack(side="right")
+
+        min_str_var = ctk.StringVar(value=str(settings.get("barre_min_strings", 2)))
+        min_str_frame = ctk.CTkFrame(scroll, fg_color="transparent")
+        min_str_frame.pack(fill="x", pady=(0, 15))
+        ctk.CTkLabel(min_str_frame, text="Minimum Strings for Barre", font=("Arial", 14, "bold")).pack(anchor="w")
+        ctk.CTkLabel(min_str_frame, text="Number of adjacent strings needed to form a barre (2-12)", font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"]).pack(anchor="w", pady=(0, 5))
+        ctk.CTkEntry(min_str_frame, textvariable=min_str_var, width=100).pack(anchor="w")
+
         # Dimensions
         ctk.CTkLabel(scroll, text="Dimensions", font=("Arial", 16, "bold")).pack(anchor="w", pady=(10, 10))
         dim_settings = settings.get("dimensions", DEFAULT_SETTINGS["dimensions"])
@@ -510,7 +540,10 @@ class DashboardView(ctk.CTkFrame):
             "nut_width": "Width of nut line (pixels)",
             "dot_radius": "Radius of normal dots (pixels)",
             "dot_small_radius": "Radius of small dots (pixels)",
-            "marker_radius": "Radius of fret markers (pixels)"
+            "marker_radius": "Radius of fret markers (pixels)",
+            "barre_half_width": "Barre thickness / half-width (pixels)",
+            "barre_outline_width": "Barre outline width (pixels)",
+            "barre_marker_radius": "Barre string marker radius (pixels)"
         }
         for key, desc in dim_descriptions.items():
             frame = ctk.CTkFrame(scroll, fg_color="transparent")
@@ -571,6 +604,8 @@ class DashboardView(ctk.CTkFrame):
                 settings["dark_mode"] = dark_var.get()
                 settings["default_frets"] = int(frets_var.get())
                 settings["default_string_count"] = int(strings_var.get())
+                settings["barres_enabled_default"] = barres_def_var.get()
+                settings["barre_min_strings"] = max(2, int(min_str_var.get()))
                 dims = {}
                 for key, var in dim_entries.items():
                     dims[key] = int(var.get())

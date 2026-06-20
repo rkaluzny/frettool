@@ -32,6 +32,8 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.bind("<Button-1>", self.on_click)
         self.bind("<Button-3>", self.on_right_click)
         self.bind("<MouseWheel>", self.on_mousewheel)
+        self.bind("<Button-4>", self.on_mousewheel)
+        self.bind("<Button-5>", self.on_mousewheel)
         self.bind("<Up>", self.on_barre_edge_key)
         self.bind("<Down>", self.on_barre_edge_key)
         self.draw()
@@ -59,7 +61,7 @@ class FretboardCanvas(ctk.CTkCanvas):
 
     def _barre_geometry(self, group: BarreGroup, margin_x, margin_y_top, fret_w, string_h):
         cx = margin_x + (group.fret - 0.5) * fret_w
-        half_width = max(14, int(CONFIG["dimensions"]["dot_radius"] * 1.35))
+        half_width = CONFIG["dimensions"]["barre_half_width"]
         cap_diameter = half_width * 2
         top_string_y = margin_y_top + group.start_string * string_h
         bottom_string_y = margin_y_top + group.end_string * string_h
@@ -100,7 +102,7 @@ class FretboardCanvas(ctk.CTkCanvas):
         half_width = geom["half_width"]
         cap_diameter = geom["cap_diameter"]
 
-        body_width = 3 if selected else 2
+        body_width = CONFIG["dimensions"]["barre_outline_width"] + (1 if selected else 0)
         body_outline = outline_color
         body_fill = fill_color
         if preview:
@@ -135,7 +137,7 @@ class FretboardCanvas(ctk.CTkCanvas):
             "group": group,
         })
 
-        marker_radius = max(3, CONFIG["dimensions"]["dot_radius"] // 5)
+        marker_radius = CONFIG["dimensions"]["barre_marker_radius"]
         marker_outline = "#ffffff"
         for string_idx in group.strings:
             cy = margin_y_top + string_idx * string_h
@@ -288,28 +290,56 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.configure(cursor="arrow")
 
     def on_mousewheel(self, event):
-        """Handle mousewheel to cycle through preset colors on hovered dot"""
+        """Cycle through preset colors on hovered dot / barre (mouse wheel / touchpad)."""
+        if self.hovered_pos is None and self.hovered_barre_key is None:
+            return
+
+        if event.num == 4:
+            direction = 1
+        elif event.num == 5:
+            direction = -1
+        elif event.delta > 0:
+            direction = 1
+        elif event.delta < 0:
+            direction = -1
+        else:
+            return
+
+        if not hasattr(self.data, "dot_colors") or self.data.dot_colors is None:
+            self.data.dot_colors = {}
+
+        presets = PRESET_COLORS
+
+        if self.hovered_barre_key is not None:
+            groups = get_barre_groups(self.data)
+            group = next((g for g in groups if g.key == self.hovered_barre_key), None)
+            if group is None or not group.notes:
+                return
+
+            s0, f0 = group.notes[0]
+            first_key = f"{s0},{f0}"
+            current_color = self.data.dot_colors.get(first_key, self.data.dot_color)
+            idx = presets.index(current_color) if current_color in presets else 0
+            new_idx = (idx + direction) % len(presets)
+            new_color = presets[new_idx]
+
+            for s, f in group.notes:
+                self.data.dot_colors[f"{s},{f}"] = new_color
+
+            self.draw()
+            self.on_change()
+            return
+
         if self.hovered_pos is None:
             return
 
         s, f = self.hovered_pos
         key = f"{s},{f}"
 
-        current_color = (getattr(self.data, "dot_colors", {}) or {}).get(key, self.data.dot_color)
-        if current_color in PRESET_COLORS:
-            idx = PRESET_COLORS.index(current_color)
-        else:
-            idx = 0
-
-        delta = event.delta
-        if delta > 0:
-            new_idx = (idx + 1) % len(PRESET_COLORS)
-        else:
-            new_idx = (idx - 1) % len(PRESET_COLORS)
-
-        if not hasattr(self.data, "dot_colors") or self.data.dot_colors is None:
-            self.data.dot_colors = {}
-        self.data.dot_colors[key] = PRESET_COLORS[new_idx]
+        current_color = self.data.dot_colors.get(key, self.data.dot_color)
+        idx = presets.index(current_color) if current_color in presets else 0
+        new_idx = (idx + direction) % len(presets)
+        self.data.dot_colors[key] = presets[new_idx]
 
         self.draw()
         self.on_change()
@@ -530,7 +560,7 @@ class FretboardCanvas(ctk.CTkCanvas):
                         self.create_rectangle(cx-hit_radius-3, cy-hit_radius-3, cx+hit_radius+3, cy+hit_radius+3,
                                                fill="", outline=CONFIG["colors"]["dot_hover"], width=2)
 
-                    marker_radius = max(3, CONFIG["dimensions"]["dot_radius"] // 5)
+                    marker_radius = CONFIG["dimensions"]["barre_marker_radius"]
                     self.create_oval(cx - marker_radius, cy - marker_radius, cx + marker_radius, cy + marker_radius,
                                      fill=group.color, outline="#ffffff", width=1)
 

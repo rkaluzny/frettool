@@ -7,6 +7,8 @@ DEFAULT_SETTINGS = {
     "dark_mode": True,
     "default_frets": 12,
     "default_string_count": 6,
+    "barres_enabled_default": True,
+    "barre_min_strings": 2,
     "dimensions": {
         "string_spacing": 55,
         "fret_spacing": 65,
@@ -16,7 +18,10 @@ DEFAULT_SETTINGS = {
         "nut_width": 12,
         "dot_radius": 14,
         "dot_small_radius": 8,
-        "marker_radius": 8
+        "marker_radius": 8,
+        "barre_half_width": 18,
+        "barre_outline_width": 2,
+        "barre_marker_radius": 3
     },
     "preset_colors": [
         "#4cc9f0",
@@ -73,6 +78,8 @@ class SettingsManager:
 
         CONFIG["default_frets"] = settings["default_frets"]
         CONFIG["string_count"] = settings["default_string_count"]
+        CONFIG["barres_enabled_default"] = settings.get("barres_enabled_default", True)
+        CONFIG["barre_min_strings"] = settings.get("barre_min_strings", 2)
 
         if "dimensions" in settings:
             for key, value in settings["dimensions"].items():

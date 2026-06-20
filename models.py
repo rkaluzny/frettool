@@ -20,7 +20,7 @@ class FretboardData:
         self.dot_types: Dict[str, str] = {}  # "s,f" -> "circle", "square", "triangle"
         self.dot_small: Dict[str, bool] = {}  # "s,f" -> True if alt+click (smaller dot)
         self.barre_excluded: Set[Tuple[int, int]] = set()  # positions disconnected from barres
-        self.barres_disabled: bool = False  # global disable for barre rendering
+        self.barres_disabled: bool = not CONFIG.get("barres_enabled_default", True)  # global disable for barre rendering
 
     def to_dict(self):
         return {

@@ -2,163 +2,127 @@
   <img src="logo.png" alt="FretTool" width="200">
 </p>
 
-# FretTool - Professional Guitar Fretboard Designer
+# FretTool — v1.0.0
 
-FretTool is a comprehensive Python application for designing and visualizing guitar fretboards, chords, scales, and custom fingerings. Built with CustomTkinter and featuring modern UI design, it's perfect for guitar teachers, students, and musicians who need to create professional-quality fretboard diagrams.
+A Python application for designing guitar (and other string instrument) fretboard diagrams, chords, scales, and custom fingerings. Built with CustomTkinter.
 
 ## Features
 
-### Core Functionality
-- **Interactive Fretboard Design**: Click to place notes, click again to remove, and use modifier keys for special notation
-- **Multiple Instrument Support**: Configure for different string counts (guitar, bass, ukulele, etc.)
-- **Adjustable Fret Range**: Set the number of frets displayed (default 12, expandable as needed)
-- **Position Markings**: Automatic fret markers at standard positions (3, 5, 7, 9, 12, etc.)
+### Core
+- **Interactive Fretboard**: Click on string/fret intersections to place/remove notes
+- **Multiple Instruments**: 2–12 strings, adjustable fret count (1–24)
+- **Fret Markers**: Automatic position markers at standard frets (3, 5, 7, 9, 12, etc.)
+- **Muted / X Markers**: Right-click on any position to mark as muted/open string
 
 ### Note Input & Editing
-- **Standard Dots**: Left-click to place notes on strings and frets
-- **Muted Strings**: Right-click on string left of nut to mark as muted (X)
-- **Special Notation**: 
-  - **Ctrl+Click**: Square notes
-  - **Shift+Click**: Triangle notes
-  - **Alt+Click**: Smaller dots
-  - **Combinations**: Ctrl+Shift prioritizes square notation
-- **Note Labels**: Add text labels to notes (double-click on fret for fret labels, right-click on note for note labels)
-- **Color Customization**: 
-  - Global dot color setting
-  - Per-note color customization (right-click on note)
-  - Mouse wheel color cycling on hovered notes
-  - Preset color palette for quick selection
+- **Standard Dots**: Left-click to place circular dots
+- **Barres**: Form automatically when 2+ adjacent standard (circle) dots exist on the same fret
+- **Barre Color Cycling**: Hover anywhere on a barre and scroll the mouse wheel (or two-finger touchpad) to change colour for all barre dots at once
+- **Barre Splitting**: Hover a dot within a barre and press ↑/↓ to split the barre at that string boundary
+- **Special Notation**:
+  - Ctrl+Click: square note
+  - Shift+Click: triangle note
+  - Alt+Click: smaller dot
+- **Note Labels**: Right-click an existing dot to set a 2-character label and/or per-dot colour
+- **Fret Labels**: Double-click above the fret numbers to add text labels to frets
+- **Colour Cycling**: Hover any dot and scroll the mouse wheel to cycle through preset colours
 
 ### Project Management
-- **Save/Load Projects**: Store multiple fretboards in a single project
-- **Project Metadata**: Name, creation date, and description for each project
-- **Fretboard Organization**: Multiple fretboards per project for comparing variations
-- **Persistent Storage**: Automatic saving of projects between sessions
+- **Save/Load**: JSON-based project files stored in the platform data directory
+- **Multiple Fretboards**: Many fretboards per project
+- **Auto-Save**: Automatic saving on every change
+- **Rename/Delete**: Manage projects and fretboards from the dashboard
 
-### Export & Sharing
-- **PDF Export**: Export individual fretboards or entire projects as high-quality PDFs
-- **Print Ready**: Optimized layouts for printing and sharing
-- **Data Portability**: JSON-based project files for easy sharing and version control
+### Export
+- **PDF Export**: Vector-quality fretboard diagrams via ReportLab
+- **Ctrl+P**: Keyboard shortcut for PDF export
+- **Symbol Mapping**: `b`/`#` converted to `♭`/`♯` in PDF output
 
 ### User Experience
-- **Modern Interface**: Clean, dark/light mode adaptive UI built with CustomTkinter
-- **Responsive Design**: Works on various screen sizes and resolutions
-- **Keyboard Shortcuts**: 
-  - Ctrl+P: Export current fretboard as PDF
-  - ↑/↓ (Arrow keys): Disconnect the dot above/below the hovered barre dot
-  - Modifier keys for special note types
-- **Visual Feedback**: 
-  - Hover previews for note placement
-  - Selection highlights for editing
-  - Grid snap for precise positioning
-- **Contextual Help**: Intuitive right-click menus and dialogs
+- **Dark/Light Mode**: Adaptive UI follows system preference
+- **Scrollable Sidebar**: Settings not cropped on small windows
+- **Dynamic Fretboard**: Automatically resizes to fill available width
+- **Built-in Help**: `?` button available from both dashboard and editor
 
-### Technical Features
-- **Cross-Platform**: Runs on Windows, macOS, and Linux
-- **Extensible Design**: Modular architecture for easy feature addition
-- **Performance Optimized**: Efficient rendering for smooth interaction
-- **Configuration System**: Adjustable dimensions, colors, and defaults
-- **Symbol Mapping**: Automatic conversion of b/# to ♭/♯ for proper music notation
+## Getting Started (from source)
 
-## Getting Started
+Run FretTool directly from source without a pre-built binary.
 
-### Installation
-1. Ensure you have Python 3.7+ installed
-2. Install required dependencies:
-   ```
-   pip install customtkinter pillow
-   ```
-3. Run the application:
-   ```
-   python main.py
-   ```
+### Prerequisites
+- Python 3.7+
+- pip
 
-### Basic Usage
-1. **Creating Notes**: Click on any string/fret intersection to place a dot
-2. **Creating Barres**: Click multiple strings on the same fret - they'll automatically join into a barre
-3. **Special Notes**: Use modifier keys while clicking:
-   - Ctrl: Square note
-   - Shift: Triangle note  
-   - Alt: Smaller dot
-   - Ctrl+Shift: Square (takes priority)
-4. **Muting Strings**: Right-click on the string area left of the nut
-5. **Adding Labels**: 
-   - Double-click a fret number to add fret labels
-   - Right-click on a note to add note labels and change colors
-6. **Navigating Projects**: 
-   - Use the dashboard to create/open projects
-   - Switch between fretboards within a project
-   - Save your work automatically
+### Windows
+```powershell
+git clone https://github.com/yourusername/FretTool.git
+cd FretTool
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python main.py
+```
 
-## Advanced Features
+### macOS / Linux
+```bash
+git clone https://github.com/yourusername/FretTool.git
+cd FretTool
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python3 main.py
+```
 
-### Barre Edge Removal
-Hover over a specific dot within a barre and press:
-- **↑ (Arrow Up)**: Disconnects the dot **above** the hovered dot from the barre, turning it into a standalone dot
-- **↓ (Arrow Down)**: Disconnects the dot **below** the hovered dot from the barre, turning it into a standalone dot
+### Linux (Debian/Ubuntu) — Tkinter dependency
+```bash
+sudo apt install python3-tk
+# then follow the macOS/Linux steps above
+```
 
-This lets you split barres into separate individual dots without deleting notes. The disconnected dot remains as a regular circle dot on the fretboard, while the remaining notes may still form a barre if enough contiguous notes remain.
+### Fedora
+```bash
+sudo dnf install python3-tkinter
+```
 
-### Barre Detection Algorithm
-The application intelligently detects when you're creating barre chords:
-- When multiple strings are selected on the same fret
-- AND none of those strings have special types (triangle/square)
-- THEN displays them as a connected barre rather than individual dots
-- Special note types (triangle/square) always display individually to preserve their distinct visual meaning
+## Usage
 
-### Color System
-- **Global Settings**: Set default dot color in settings
-- **Per-Note Overrides**: Right-click any note to set custom color
-- **Preset Palette**: Scroll through predefined colors with mouse wheel on hovered notes
-- **Appearance Adaptive**: Colors automatically adjust for light/dark mode
+1. **Create a project** from the dashboard via `+ New Project`
+2. **Place dots** by left-clicking on string/fret intersections
+3. **Barres form automatically** — place standard (circle) dots on adjacent strings at the same fret
+4. **Add labels** by right-clicking an existing dot
+5. **Remove notes** by left-clicking an existing dot (first click selects barres, second removes)
+6. **Export** with the `PDF` button or Ctrl+P
+7. **Open help** via the `?` button in the dashboard or editor toolbar
 
-### Export Quality
-- Vector-based PDF output for crisp, scalable graphics
-- Proper text rendering for labels and symbols
-- Optimized layout for standard paper sizes
-- Transparent backgrounds available upon request
+## Data Storage
 
-## Development
+Projects and settings are stored per-user in the platform data directory:
 
-FretTool is built with:
-- **Python 3.7+**: Core language
-- **CustomTkinter**: Modern Tkinter wrapper for beautiful UI
-- **Pillow**: Image handling for icons and exports
-- **JSON**: Project file format for easy parsing and sharing
+| Platform | Path |
+|----------|------|
+| Windows  | `%APPDATA%\FretTool\` |
+| macOS    | `~/Library/Application Support/FretTool/` |
+| Linux    | `~/.local/share/FretTool/` |
 
-### Project Structure
+## Project Structure
+
 ```
 FretTool/
-├── main.py              # Application entry point
+├── main.py              # Entry point
 ├── app.py               # Main application class
-├── models.py            # Data models (ProjectData, FretboardData)
+├── models.py            # Data models
 ├── canvas.py            # Fretboard rendering and interaction
-├── views.py             # UI components (Dashboard, Editor)
-├── persistence.py       # Project save/load functionality
-├── settings.py          # User settings management
-├── constants.py         # Configuration, colors, and utilities
-├── www/                 # Web assets (if applicable)
+├── views.py             # Dashboard and editor UI
+├── persistence.py       # Project save/load
+├── settings.py          # User settings
+├── constants.py         # Config, version, colors, dialogs
+├── export.py            # PDF export
+├── barre_utils.py       # Barre grouping algorithm
+├── FretTool.spec        # PyInstaller spec
 ├── icon.ico             # Application icon
-└── README.md            # This file
+├── requirements.txt     # Python dependencies
+└── README.md
 ```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit pull requests, open issues, or suggest features.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- Built with CustomTkinter for the modern UI components
-- Inspired by the need for better guitar teaching tools
-- Thanks to all musicians and educators who provide feedback
-- The app currently features German text
+MIT

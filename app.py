@@ -27,8 +27,8 @@ class App(ctk.CTk):
                 self.iconbitmap(resource_path("icon.ico"))
         except:
             pass
-        from constants import CONFIG
-        self.title(CONFIG["app_name"])
+        from constants import CONFIG, VERSION
+        self.title(f"{CONFIG['app_name']} v{VERSION}")
         self.geometry("1400x900")
         self.minsize(1200, 700)
         self.current_project: ProjectData = None

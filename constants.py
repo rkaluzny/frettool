@@ -4,7 +4,138 @@ from typing import Tuple, Optional
 import customtkinter as ctk
 from typing import Tuple, Optional
 
-# --- KONFIGURATION & KONSTANTEN ---
+VERSION = "1.0.0"
+
+HELP_TEXT = """\
+FretTool — Fretboard Diagram Editor
+====================================
+
+Create and edit guitar (or other string instrument) fretboard diagrams.
+Place notes, form barres, add labels, and export to PDF.
+
+--- GETTING STARTED ---
+• Click "+ New Project" on the dashboard to start.
+• Click a project to open the editor.
+• Use the fretboard tabs in the sidebar to switch between fretboards.
+
+--- PLACING & REMOVING NOTES ---
+• Left-click on any string/fret intersection -> places a circular dot.
+• Left-click an existing dot -> removes it.
+• Left-click a dot that is part of a barre: first click selects the
+  barre (highlights it red), second click removes that note.
+• Modifier keys while left-clicking:
+  Ctrl+Click  -> square note
+  Shift+Click -> triangle note
+  Alt+Click   -> smaller dot
+  Ctrl+Shift+Click -> square (takes priority over triangle)
+
+--- SPECIAL NOTATION ---
+• Double-click in the empty area above the fret numbers -> add a
+  text label to a fret (e.g. "C", "Am").
+• Right-click on an existing note -> open the dot properties dialog
+  to set a 2-character label and/or override the dot colour.
+
+--- MUTED / X MARKERS ---
+• Right-click on any string/fret intersection -> adds an X marker
+  (muted/open string notation).
+• Right-click on a string to the left of the nut (fret 0 area) -> also
+  adds an X marker and removes any existing dot on that string.
+• Left-click or right-click an X marker -> removes it.
+
+--- BARRES ---
+Barres are formed AUTOMATICALLY when you place 2 or more adjacent
+standard (circle) dots on the same fret. Non-circle or small dots
+break the barre grouping on that fret.
+
+• Hover over any note in a barre and scroll the mouse wheel (or
+  two-finger touchpad) to cycle all barre dots through the preset
+  colours at once.
+• To split a barre at a specific string, hover the dot just below
+  the split point and press:
+  ↑ (Arrow Up)   -> split above the hovered dot
+  ↓ (Arrow Down) -> split below the hovered dot
+  Press the same key again to merge the split.
+• To disable barres entirely for a fretboard, check the
+  "Disable barres" box in the sidebar settings.
+
+--- SELECTING & DELETING ---
+• Click a barre to select it (highlighted red). Click again to remove
+  one note from the barre.
+• Click a standalone dot to remove it.
+• Press Delete or Backspace -> removes the currently hovered dot.
+• Use the fretboard settings in the sidebar to adjust string count,
+  fret count, tuning, and delete the entire fretboard.
+
+--- FRETBOARD SETTINGS (SIDEBAR) ---
+• Dot color: default colour for new dots.
+• Disable barres checkbox.
+• Strings: number of strings (2-12).
+• Frets: number of frets (1-24).
+• Delete Fretboard button.
+
+--- UNDO / REDO ---
+• ↶ and ↷ buttons in the editor toolbar undo/redo changes.
+• The editor automatically saves to disk after every change.
+
+--- EXPORTING ---
+• Click the "PDF" button in the toolbar -> exports the current
+  fretboard as a high-quality PDF.
+• Ctrl+P also triggers PDF export.
+
+--- PROJECT MANAGEMENT ---
+• The dashboard lists all saved projects. Click to open.
+• Rename and delete projects from the dashboard cards.
+• Projects are saved automatically to your data directory.
+
+--- CUSTOMIZATION (SETTINGS) ---
+• Open "Settings" from the dashboard to configure:
+  Dark/Light mode, default fret/string count, barre behaviour,
+  visual dimensions (spacing, margins, dot sizes), and the list
+  of preset colours used for mouse wheel colour cycling.
+"""
+
+
+def show_help(parent):
+    import customtkinter as ctk
+    import tkinter.font as tkfont
+
+    win = ctk.CTkToplevel(parent)
+    win.title(f"Help — FretTool v{VERSION}")
+    win.resizable(True, True)
+    win.transient(parent)
+    win.minsize(600, 400)
+
+    try:
+        fixed_font = tkfont.nametofont("TkFixedFont").actual()["family"]
+    except:
+        fixed_font = "Courier"
+
+    scroll = ctk.CTkScrollableFrame(win, corner_radius=16)
+    scroll.pack(fill="both", expand=True, padx=18, pady=18)
+
+    label = ctk.CTkLabel(
+        scroll,
+        text=HELP_TEXT,
+        font=(fixed_font, 12),
+        justify="left",
+        anchor="w",
+    )
+    label.pack(fill="both", expand=True)
+
+    btn_close = ctk.CTkButton(scroll, text="Close", command=win.destroy, width=100)
+    btn_close.pack(pady=(15, 5))
+
+    win.update_idletasks()
+    win.focus_set()
+    win.grab_set()
+
+    x = parent.winfo_rootx() + (parent.winfo_width() // 2) - (win.winfo_width() // 2)
+    y = parent.winfo_rooty() + (parent.winfo_height() // 2) - (win.winfo_height() // 2)
+    win.geometry(f"+{x}+{y}")
+
+    parent.wait_window(win)
+
+
 def get_colors():
     """Return colors based on system appearance mode"""
     try:
@@ -50,6 +181,8 @@ CONFIG = {
     "app_name": "FretTool",
     "default_frets": 12,
     "string_count": 6,
+    "barres_enabled_default": True,
+    "barre_min_strings": 2,
     "colors": get_colors(),
     "dimensions": {
         "string_spacing": 55,
@@ -60,7 +193,10 @@ CONFIG = {
         "nut_width": 12,
         "dot_radius": 14,
         "dot_small_radius": 8,
-        "marker_radius": 8
+        "marker_radius": 8,
+        "barre_half_width": 18,
+        "barre_outline_width": 2,
+        "barre_marker_radius": 3
     }
 }
 
@@ -128,7 +264,6 @@ def ask_text(parent, title: str, prompt: str, initial: str = "") -> Optional[str
     win.title(title)
     win.resizable(False, False)
     win.transient(parent)
-    win.grab_set()
 
     result: dict = {"value": None}
     entry_var = tk.StringVar(value=initial or "")
@@ -170,12 +305,14 @@ def ask_text(parent, title: str, prompt: str, initial: str = "") -> Optional[str
     win.bind("<Escape>", lambda e: on_cancel())
 
     win.update_idletasks()
+    win.grab_set()
     x = parent.winfo_rootx() + (parent.winfo_width() // 2) - (win.winfo_width() // 2)
     y = parent.winfo_rooty() + (parent.winfo_height() // 2) - (win.winfo_height() // 2)
     win.geometry(f"+{x}+{y}")
 
     parent.wait_window(win)
     return result["value"]
+
 
 def ask_dot_properties(parent, default_color: str, initial_label: str = "", initial_color: str = "") -> Optional[Tuple[str, str]]:
     import customtkinter as ctk
@@ -184,7 +321,6 @@ def ask_dot_properties(parent, default_color: str, initial_label: str = "", init
     win.title("Dot properties")
     win.resizable(False, False)
     win.transient(parent)
-    win.grab_set()
 
     result: dict = {"value": None}
     label_var = tk.StringVar(value=(initial_label or "")[:2])  # Allow up to 2 chars
@@ -254,6 +390,7 @@ def ask_dot_properties(parent, default_color: str, initial_label: str = "", init
     win.bind("<Escape>", lambda e: on_cancel())
 
     win.update_idletasks()
+    win.grab_set()
     x = parent.winfo_rootx() + (parent.winfo_width() // 2) - (win.winfo_width() // 2)
     y = parent.winfo_rooty() + (parent.winfo_height() // 2) - (win.winfo_height() // 2)
     win.geometry(f"+{x}+{y}")

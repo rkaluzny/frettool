@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Sequence, Tuple
+from constants import CONFIG
 
 
 @dataclass(frozen=True)
@@ -68,13 +69,14 @@ def _contiguous_runs(strings: Sequence[int]) -> List[Tuple[int, ...]]:
     if not strings:
         return []
 
+    min_strings = CONFIG.get("barre_min_strings", 2)
     runs: List[List[int]] = [[strings[0]]]
     for string_idx in strings[1:]:
         if string_idx == runs[-1][-1] + 1:
             runs[-1].append(string_idx)
         else:
             runs.append([string_idx])
-    return [tuple(run) for run in runs if len(run) >= 2]
+    return [tuple(run) for run in runs if len(run) >= min_strings]
 
 
 def _make_group(fb, fret_idx, string_run):
@@ -105,6 +107,7 @@ def build_barre_groups_for_fret(fb, fret_idx: int, extra_standard_string: Option
         return []
 
     positions = getattr(fb, "positions", set()) or set()
+    min_strings = CONFIG.get("barre_min_strings", 2)
 
     all_strings = sorted(
         string_idx
@@ -115,7 +118,7 @@ def build_barre_groups_for_fret(fb, fret_idx: int, extra_standard_string: Option
     if extra_standard_string is not None and extra_standard_string not in all_strings:
         all_strings = sorted(all_strings + [extra_standard_string])
 
-    if len(all_strings) < 2:
+    if len(all_strings) < min_strings:
         return []
 
     breaks = getattr(fb, "barre_excluded", set()) or set()
@@ -140,7 +143,7 @@ def build_barre_groups_for_fret(fb, fret_idx: int, extra_standard_string: Option
                 if _is_visually_standard(fb, s, fret_idx)
                    or (extra_standard_string is not None and s == extra_standard_string)
             ]
-            if len(eligible) >= 2:
+            if len(eligible) >= min_strings:
                 groups.append(_make_group(fb, fret_idx, tuple(eligible)))
 
     return groups
