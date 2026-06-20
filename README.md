@@ -51,11 +51,12 @@ Run FretTool directly from source without a pre-built binary.
 ### Prerequisites
 - Python 3.7+
 - pip
+- git
 
 ### Windows
 ```powershell
-git clone https://github.com/yourusername/FretTool.git
-cd FretTool
+git clone https://github.com/rkaluzny/frettool.git
+cd frettool
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
@@ -64,8 +65,8 @@ python main.py
 
 ### macOS / Linux
 ```bash
-git clone https://github.com/yourusername/FretTool.git
-cd FretTool
+git clone https://github.com/rkaluzny/frettool.git
+cd frettool
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
