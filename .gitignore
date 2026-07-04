@@ -8,3 +8,4 @@ www/
 *.iss
 Output/
 docs/
+venv/

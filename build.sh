@@ -27,7 +27,7 @@ case "$(uname -s)" in
         ;;
 esac
 
-pyinstaller --onefile --windowed --name=FretTool $ICON_FLAG --add-data "icon.ico${SEP}." main.py
+pyinstaller --onefile --windowed --name=FretTool $ICON_FLAG --add-data "icon.ico${SEP}." --add-data "locales${SEP}locales" main.py
 
 echo ""
 if [ -f "dist/FretTool" ]; then

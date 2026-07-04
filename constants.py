@@ -3,8 +3,9 @@ from typing import Tuple, Optional
 
 import customtkinter as ctk
 from typing import Tuple, Optional
+import i18n
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 HELP_TEXT = """\
 FretTool — Fretboard Diagram Editor
@@ -100,7 +101,7 @@ def show_help(parent):
     import tkinter.font as tkfont
 
     win = ctk.CTkToplevel(parent)
-    win.title(f"Help — FretTool v{VERSION}")
+    win.title(i18n.tr("help.title", version=VERSION))
     win.resizable(True, True)
     win.transient(parent)
     win.minsize(600, 400)
@@ -115,14 +116,14 @@ def show_help(parent):
 
     label = ctk.CTkLabel(
         scroll,
-        text=HELP_TEXT,
+        text=i18n.tr("help.content"),
         font=(fixed_font, 12),
         justify="left",
         anchor="w",
     )
     label.pack(fill="both", expand=True)
 
-    btn_close = ctk.CTkButton(scroll, text="Close", command=win.destroy, width=100)
+    btn_close = ctk.CTkButton(scroll, text=i18n.tr("help.close"), command=win.destroy, width=100)
     btn_close.pack(pady=(15, 5))
 
     win.update_idletasks()
@@ -296,9 +297,9 @@ def ask_text(parent, title: str, prompt: str, initial: str = "") -> Optional[str
 
     win.protocol("WM_DELETE_WINDOW", on_closing)
 
-    btn_cancel = ctk.CTkButton(btns, text="Cancel", fg_color="transparent", border_width=1, text_color=("white", "black"), command=on_cancel, width=90)
+    btn_cancel = ctk.CTkButton(btns, text=i18n.tr("dialogs.cancel"), fg_color="transparent", border_width=1, text_color=("white", "black"), command=on_cancel, width=90)
     btn_cancel.pack(side="right")
-    btn_ok = ctk.CTkButton(btns, text="OK", command=on_ok, width=90)
+    btn_ok = ctk.CTkButton(btns, text=i18n.tr("dialogs.ok"), command=on_ok, width=90)
     btn_ok.pack(side="right", padx=(0, 10))
 
     win.bind("<Return>", lambda e: on_ok())
@@ -318,7 +319,7 @@ def ask_dot_properties(parent, default_color: str, initial_label: str = "", init
     import customtkinter as ctk
     from tkinter import colorchooser
     win = ctk.CTkToplevel(parent)
-    win.title("Dot properties")
+    win.title(i18n.tr("editor.dot_properties.title"))
     win.resizable(False, False)
     win.transient(parent)
 
@@ -329,7 +330,7 @@ def ask_dot_properties(parent, default_color: str, initial_label: str = "", init
     frame = ctk.CTkFrame(win, corner_radius=16)
     frame.pack(padx=18, pady=18, fill="both", expand=True)
 
-    lbl = ctk.CTkLabel(frame, text="Label (max 2 chars) and optional per-dot color:", font=("Arial", 13))
+    lbl = ctk.CTkLabel(frame, text=i18n.tr("editor.dot_properties.label"), font=("Arial", 13))
     lbl.pack(anchor="w", pady=(8, 10), padx=12)
 
     entry = ctk.CTkEntry(frame, textvariable=label_var, width=200)
@@ -343,14 +344,14 @@ def ask_dot_properties(parent, default_color: str, initial_label: str = "", init
     def preview_color() -> str:
         return color_var.get() or default_color
 
-    btn_pick = ctk.CTkButton(row, text="Pick color", width=110, command=lambda: _pick_color())
+    btn_pick = ctk.CTkButton(row, text=i18n.tr("editor.dot_properties.pick_color"), width=110, command=lambda: _pick_color())
     btn_pick.pack(side="left")
 
     btn_preview = ctk.CTkButton(row, text=" ", width=40, fg_color=preview_color(), hover_color=preview_color(), command=lambda: _pick_color())
     btn_preview.pack(side="left", padx=10)
 
     def _pick_color():
-        chosen = colorchooser.askcolor(color=preview_color(), title="Choose dot color")
+        chosen = colorchooser.askcolor(color=preview_color(), title=i18n.tr("editor.dot_color_dialog.title"))
         if chosen and chosen[1]:
             color_var.set(chosen[1])
             c = preview_color()
@@ -361,7 +362,7 @@ def ask_dot_properties(parent, default_color: str, initial_label: str = "", init
         c = preview_color()
         btn_preview.configure(fg_color=c, hover_color=c)
 
-    btn_reset = ctk.CTkButton(row, text="Use default", width=110, fg_color="transparent", border_width=1, text_color=("white", "black"), command=on_reset)
+    btn_reset = ctk.CTkButton(row, text=i18n.tr("editor.dot_properties.use_default"), width=110, fg_color="transparent", border_width=1, text_color=("white", "black"), command=on_reset)
     btn_reset.pack(side="left")
 
     btns = ctk.CTkFrame(frame, fg_color="transparent")
@@ -381,9 +382,9 @@ def ask_dot_properties(parent, default_color: str, initial_label: str = "", init
 
     win.protocol("WM_DELETE_WINDOW", on_closing)
 
-    btn_cancel = ctk.CTkButton(btns, text="Cancel", fg_color="transparent", border_width=1, text_color=("white", "black"), command=on_cancel, width=90)
+    btn_cancel = ctk.CTkButton(btns, text=i18n.tr("dialogs.cancel"), fg_color="transparent", border_width=1, text_color=("white", "black"), command=on_cancel, width=90)
     btn_cancel.pack(side="right")
-    btn_ok = ctk.CTkButton(btns, text="OK", command=on_ok, width=90)
+    btn_ok = ctk.CTkButton(btns, text=i18n.tr("dialogs.ok"), command=on_ok, width=90)
     btn_ok.pack(side="right", padx=(0, 10))
 
     win.bind("<Return>", lambda e: on_ok())

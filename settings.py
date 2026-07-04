@@ -4,6 +4,7 @@ import sys
 from persistence import get_data_dir
 
 DEFAULT_SETTINGS = {
+    "language": None,
     "dark_mode": True,
     "default_frets": 12,
     "default_string_count": 6,
@@ -73,8 +74,10 @@ class SettingsManager:
     @staticmethod
     def apply_to_config():
         """Apply settings to the CONFIG in constants.py"""
+        import i18n
         from constants import CONFIG, get_colors
         settings = SettingsManager.load_settings()
+        i18n.set_language(settings.get("language"))
 
         CONFIG["default_frets"] = settings["default_frets"]
         CONFIG["string_count"] = settings["default_string_count"]

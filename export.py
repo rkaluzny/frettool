@@ -1,3 +1,4 @@
+import i18n
 from constants import CONFIG, FRET_MARKERS, hex_to_rgb01
 from models import FretboardData, ProjectData
 from tkinter import messagebox
@@ -114,7 +115,7 @@ class ExportManager:
 
         with open(filename, "w", encoding="utf-8") as f:
             f.write(svg_content)
-        messagebox.showinfo("Success", "SVG exported successfully!")
+        messagebox.showinfo(i18n.tr("dialogs.success"), i18n.tr("export.success_svg"))
 
     @staticmethod
     def _draw_fretboard_on_pdf(c, fb: FretboardData, x_offset, y_offset, fretboard_width, fretboard_height):
@@ -312,12 +313,12 @@ class ExportManager:
                 c.setFont("Helvetica", 8.5)
                 c.setFillColor(colors.HexColor(text_muted))
                 exported_at = __import__('datetime').datetime.now().strftime("%Y-%m-%d %H:%M")
-                c.drawRightString(width - margin, height - 0.95 * cm, f"Export: {exported_at}  •  Seite {page_num}")
+                c.drawRightString(width - margin, height - 0.95 * cm, i18n.tr("export.pdf_header", datetime=exported_at, page=page_num))
 
             def draw_page_footer():
                 c.setFillColor(colors.HexColor("#94a3b8"))
                 c.setFont("Helvetica", 7.5)
-                c.drawString(margin, 0.45 * cm, f"{CONFIG['app_name']} • Fretboard PDF")
+                c.drawString(margin, 0.45 * cm, i18n.tr("export.pdf_footer", app_name=CONFIG["app_name"]))
 
             def paint_page_background():
                 bg = "#ffffff" if CONFIG["colors"]["bg"] == "#f8fafc" else "#ffffff"
@@ -350,7 +351,7 @@ class ExportManager:
 
                 c.setFillColor(colors.HexColor("#0f172a"))
                 c.setFont("Helvetica-Bold", 12.5)
-                c.drawString(x0 + 0.55 * cm, y0 + card_h - 0.70 * cm, fb.title or "Fretboard")
+                c.drawString(x0 + 0.55 * cm, y0 + card_h - 0.70 * cm, fb.title or i18n.tr("export.pdf_default_title"))
 
                 c.setFillColor(colors.HexColor("#475569"))
                 c.setFont("Helvetica", 8.5)
@@ -366,8 +367,8 @@ class ExportManager:
                 y_top = y0 - card_gap
 
             c.save()
-            messagebox.showinfo("Success", "PDF saved!")
+            messagebox.showinfo(i18n.tr("dialogs.success"), i18n.tr("export.success_pdf"))
         except ImportError:
-            messagebox.showwarning("Library missing", "Please install reportlab: pip install reportlab")
+            messagebox.showwarning(i18n.tr("export.library_missing_title"), i18n.tr("export.library_missing_message"))
         except Exception as e:
-            messagebox.showerror("Error", str(e))
+            messagebox.showerror(i18n.tr("export.error"), str(e))

@@ -1,6 +1,7 @@
 import os
 import sys
 import customtkinter as ctk
+import i18n
 from views import DashboardView, EditorView
 from models import ProjectData
 
@@ -28,7 +29,7 @@ class App(ctk.CTk):
         except:
             pass
         from constants import CONFIG, VERSION
-        self.title(f"{CONFIG['app_name']} v{VERSION}")
+        self.title(i18n.tr("app.title", version=VERSION))
         self.geometry("1400x900")
         self.minsize(1200, 700)
         self.current_project: ProjectData = None

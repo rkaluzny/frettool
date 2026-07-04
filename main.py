@@ -1,3 +1,4 @@
+import i18n
 from app import App
 from settings import SettingsManager
 

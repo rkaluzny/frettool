@@ -1,5 +1,6 @@
 import customtkinter as ctk
 import tkinter as tk
+import i18n
 from constants import CONFIG, FRET_MARKERS, hex_to_rgb01, apply_symbol_map, PRESET_COLORS
 from models import FretboardData
 from barre_utils import get_barre_groups, get_preview_barre_groups, BarreGroup
@@ -624,7 +625,7 @@ class FretboardCanvas(ctk.CTkCanvas):
             if 0 < fret_idx <= self.data.num_frets:
                 from constants import ask_text
                 current_label = self.data.labels.get(str(fret_idx), "")
-                new_label = ask_text(self.winfo_toplevel(), "Label Fret", f"Label for fret {fret_idx}:", current_label)
+                new_label = ask_text(self.winfo_toplevel(), i18n.tr("editor.label_fret_dialog.title"), i18n.tr("editor.label_fret_dialog.prompt", number=fret_idx), current_label)
 
                 if new_label is not None:
                     if new_label.strip():
