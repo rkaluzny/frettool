@@ -9,6 +9,65 @@ from persistence import ProjectStore
 from export import ExportManager
 from canvas import FretboardCanvas
 
+def _input_dialog(parent, title, prompt, initial_value=""):
+    dialog = ctk.CTkToplevel(parent)
+    dialog.title(title)
+    dialog.resizable(False, False)
+    dialog.transient(parent)
+    if sys.platform == "darwin":
+        try:
+            dialog.attributes('-type', 'dialog')
+        except:
+            pass
+
+    frame = ctk.CTkFrame(dialog)
+    frame.pack(fill="both", expand=True, padx=25, pady=25)
+
+    ctk.CTkLabel(frame, text=prompt, font=("Arial", 14),
+                 text_color=CONFIG["colors"]["text"]).pack(anchor="w", pady=(0, 12))
+
+    entry = ctk.CTkEntry(frame, width=320, font=("Arial", 14),
+                         text_color=CONFIG["colors"]["text"])
+    entry.pack(fill="x", pady=(0, 18))
+    if initial_value:
+        entry.insert(0, initial_value)
+        entry.select_range(0, 'end')
+        entry.icursor('end')
+    entry.focus_set()
+
+    result = {"value": None}
+
+    btn_frame = ctk.CTkFrame(frame, fg_color="transparent")
+    btn_frame.pack(fill="x")
+
+    def on_ok():
+        result["value"] = entry.get()
+        dialog.destroy()
+
+    def on_cancel():
+        dialog.destroy()
+
+    ctk.CTkButton(btn_frame, text=i18n.tr("dialogs.ok"), width=80,
+                  command=on_ok).pack(side="right", padx=(6, 0))
+    ctk.CTkButton(btn_frame, text=i18n.tr("dialogs.cancel"), width=80,
+                  fg_color="transparent", border_width=1,
+                  text_color=CONFIG["colors"]["text"],
+                  command=on_cancel).pack(side="right")
+
+    entry.bind("<Return>", lambda e: on_ok())
+    entry.bind("<Escape>", lambda e: on_cancel())
+
+    dialog.update_idletasks()
+    dialog.grab_set()
+
+    x = parent.winfo_rootx() + (parent.winfo_width() // 2) - (dialog.winfo_width() // 2)
+    y = parent.winfo_rooty() + (parent.winfo_height() // 2) - (dialog.winfo_height() // 2)
+    dialog.geometry(f"+{x}+{y}")
+
+    parent.wait_window(dialog)
+    return result["value"]
+
+
 class EditorView(ctk.CTkFrame):
     def __init__(self, parent, project: ProjectData, on_back_callback):
         super().__init__(parent)
@@ -354,12 +413,9 @@ class EditorView(ctk.CTkFrame):
             self.push_history()
 
     def rename_project(self):
-        dialog = ctk.CTkInputDialog(text=i18n.tr("editor.rename_project_dialog.prompt"), title=i18n.tr("editor.rename_project_dialog.title"))
-        if sys.platform == "darwin":
-            dialog.withdraw()
-            dialog.attributes('-type', 'dialog')
-            dialog.deiconify()
-        new_name = dialog.get_input()
+        new_name = _input_dialog(self, i18n.tr("editor.rename_project_dialog.title"),
+                                 i18n.tr("editor.rename_project_dialog.prompt"),
+                                 initial_value=self.project.name)
         if new_name and new_name.strip():
             self.project.name = new_name.strip()
             self.lbl_project_title.configure(text=self.project.name)
@@ -460,12 +516,8 @@ class DashboardView(ctk.CTkFrame):
             lbl_date.bind("<Button-1>", lambda e, p=proj: self.on_open(p))
 
     def create_new_project(self):
-        dialog = ctk.CTkInputDialog(text=i18n.tr("dashboard.new_project_dialog.prompt"), title=i18n.tr("dashboard.new_project_dialog.title"))
-        if sys.platform == "darwin":
-            dialog.withdraw()
-            dialog.attributes('-type', 'dialog')
-            dialog.deiconify()
-        name = dialog.get_input()
+        name = _input_dialog(self, i18n.tr("dashboard.new_project_dialog.title"),
+                             i18n.tr("dashboard.new_project_dialog.prompt"))
         if name:
             new_proj = ProjectData(name)
             ProjectStore.upsert_project(new_proj)
@@ -478,12 +530,9 @@ class DashboardView(ctk.CTkFrame):
             self.load_projects()
 
     def rename_project(self, project: ProjectData):
-        dialog = ctk.CTkInputDialog(text=i18n.tr("dashboard.rename_project_dialog.prompt"), title=i18n.tr("dashboard.rename_project_dialog.title"))
-        if sys.platform == "darwin":
-            dialog.withdraw()
-            dialog.attributes('-type', 'dialog')
-            dialog.deiconify()
-        new_name = dialog.get_input()
+        new_name = _input_dialog(self, i18n.tr("dashboard.rename_project_dialog.title"),
+                                 i18n.tr("dashboard.rename_project_dialog.prompt"),
+                                 initial_value=project.name)
         if new_name and new_name.strip():
             ProjectStore.rename_project(project.id, new_name.strip())
             self.load_projects()
