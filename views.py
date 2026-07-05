@@ -84,7 +84,8 @@ class EditorView(ctk.CTkFrame):
         lbl_title_hint.pack(anchor="w")
 
         self.entry_title = ctk.CTkEntry(self.title_frame, placeholder_text=i18n.tr("editor.chord_scale_name_placeholder"),
-                                       font=("Arial", 20, "bold"), height=45)
+                                       font=("Arial", 20, "bold"), height=45,
+                                       text_color=CONFIG["colors"]["text"])
         self.entry_title.pack(fill="x", pady=(5, 0))
         self.entry_title.bind("<KeyRelease>", lambda e: self.save_state())
 
@@ -97,7 +98,8 @@ class EditorView(ctk.CTkFrame):
                                     font=("Arial", 13), text_color=CONFIG["colors"]["text_muted"])
         lbl_desc_hint.pack(anchor="w")
 
-        self.entry_desc = ctk.CTkTextbox(self.desc_frame, height=80, font=("Arial", 13))
+        self.entry_desc = ctk.CTkTextbox(self.desc_frame, height=80, font=("Arial", 13),
+                                          text_color=CONFIG["colors"]["text"])
         self.entry_desc.pack(fill="x", pady=(5, 0))
         self.entry_desc.bind("<KeyRelease>", lambda e: self.save_state())
 
@@ -105,10 +107,12 @@ class EditorView(ctk.CTkFrame):
         sidebar = ctk.CTkScrollableFrame(self, width=280, corner_radius=0, fg_color=CONFIG["colors"]["surface"])
         sidebar.grid(row=1, column=1, sticky="ns")
 
-        lbl = ctk.CTkLabel(sidebar, text=i18n.tr("editor.fretboards"), font=("Arial", 16, "bold"))
+        lbl = ctk.CTkLabel(sidebar, text=i18n.tr("editor.fretboards"), font=("Arial", 16, "bold"),
+                           text_color=CONFIG["colors"]["text"])
         lbl.pack(pady=20, padx=20, anchor="w")
 
-        btn_add = ctk.CTkButton(sidebar, text=i18n.tr("editor.new_fretboard"), height=40, command=self.add_new_fretboard)
+        btn_add = ctk.CTkButton(sidebar, text=i18n.tr("editor.new_fretboard"), height=40, text_color=CONFIG["colors"]["text"],
+                                command=self.add_new_fretboard)
         btn_add.pack(pady=10, padx=20, fill="x")
 
         self.list_frame = ctk.CTkFrame(sidebar, fg_color="transparent")
@@ -118,10 +122,12 @@ class EditorView(ctk.CTkFrame):
         settings_frame = ctk.CTkFrame(sidebar, fg_color="transparent")
         settings_frame.pack(fill="x", padx=20, pady=20)
 
-        lbl_settings = ctk.CTkLabel(settings_frame, text=i18n.tr("editor.sidebar_settings"), font=("Arial", 14, "bold"))
+        lbl_settings = ctk.CTkLabel(settings_frame, text=i18n.tr("editor.sidebar_settings"), font=("Arial", 14, "bold"),
+                                    text_color=CONFIG["colors"]["text"])
         lbl_settings.pack(anchor="w", pady=(0, 10))
 
-        self.btn_dot_color = ctk.CTkButton(settings_frame, text=i18n.tr("editor.dot_color"), height=34, command=self.pick_dot_color)
+        self.btn_dot_color = ctk.CTkButton(settings_frame, text=i18n.tr("editor.dot_color"), height=34, text_color=CONFIG["colors"]["text"],
+                                            command=self.pick_dot_color)
         self.btn_dot_color.pack(fill="x", pady=(0, 8))
 
         lbl_hint = ctk.CTkLabel(settings_frame, text=i18n.tr("editor.dot_color_hint"),
@@ -133,20 +139,23 @@ class EditorView(ctk.CTkFrame):
             settings_frame,
             text=i18n.tr("editor.disable_barres"),
             variable=self.barres_disabled_var,
+            text_color=CONFIG["colors"]["text"],
             command=self.on_barres_toggle,
         )
         self.chk_disable_barres.pack(anchor="w", pady=(0, 8))
 
-        self.entry_strings = ctk.CTkEntry(settings_frame, placeholder_text=i18n.tr("editor.strings_placeholder"))
+        self.entry_strings = ctk.CTkEntry(settings_frame, placeholder_text=i18n.tr("editor.strings_placeholder"),
+                                           text_color=CONFIG["colors"]["text"])
         self.entry_strings.pack(fill="x", pady=5)
         self.entry_strings.bind("<KeyRelease>", lambda e: self.save_state())
 
-        self.entry_frets = ctk.CTkEntry(settings_frame, placeholder_text=i18n.tr("editor.frets_placeholder"))
+        self.entry_frets = ctk.CTkEntry(settings_frame, placeholder_text=i18n.tr("editor.frets_placeholder"),
+                                         text_color=CONFIG["colors"]["text"])
         self.entry_frets.pack(fill="x", pady=5)
         self.entry_frets.bind("<KeyRelease>", lambda e: self.save_state())
 
         btn_del = ctk.CTkButton(sidebar, text=i18n.tr("editor.delete_fretboard"), height=40, fg_color="#e74c3c",
-                               hover_color="#c0392b", command=self.delete_current_fretboard)
+                               hover_color="#c0392b", text_color="#ffffff", command=self.delete_current_fretboard)
         btn_del.pack(pady=20, padx=20, fill="x")
 
     def refresh_list(self):
@@ -156,7 +165,7 @@ class EditorView(ctk.CTkFrame):
         for i, fb in enumerate(self.project.fretboards):
             btn = ctk.CTkButton(self.list_frame, text=fb.title or i18n.tr("editor.fretboard_name", number=i+1),
                                 fg_color="transparent", border_width=1, height=50,
-                                anchor="w",
+                                anchor="w", text_color=CONFIG["colors"]["text"],
                                 command=lambda f=fb: self.select_fretboard(f))
             btn.pack(fill="x", pady=3)
 
@@ -411,7 +420,7 @@ class DashboardView(ctk.CTkFrame):
         projects = ProjectStore.load_projects()
         if not projects:
             lbl = ctk.CTkLabel(self.project_grid, text=i18n.tr("dashboard.no_projects"),
-                              text_color="gray", font=("Arial", 16))
+                              text_color=CONFIG["colors"]["text_muted"], font=("Arial", 16))
             lbl.pack(pady=100)
             return
 
@@ -424,7 +433,8 @@ class DashboardView(ctk.CTkFrame):
             top = ctk.CTkFrame(card, fg_color="transparent")
             top.pack(fill="x", padx=30, pady=(18, 0))
 
-            lbl_name = ctk.CTkLabel(top, text=proj.name, font=("Arial", 20, "bold"))
+            lbl_name = ctk.CTkLabel(top, text=proj.name, font=("Arial", 20, "bold"),
+                                    text_color=CONFIG["colors"]["text"])
             lbl_name.pack(side="left")
             lbl_name.bind("<Button-1>", lambda e, p=proj: self.on_open(p))
 
@@ -473,7 +483,7 @@ class DashboardView(ctk.CTkFrame):
     def open_settings(self):
         from settings import SettingsManager, DEFAULT_SETTINGS
         import customtkinter as ctk
-        from constants import CONFIG, PRESET_COLORS
+        from constants import CONFIG
 
         settings = SettingsManager.load_settings()
         dialog = ctk.CTkToplevel(self)

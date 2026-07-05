@@ -25,16 +25,10 @@ DEFAULT_SETTINGS = {
         "barre_marker_radius": 3
     },
     "preset_colors": [
-        "#4cc9f0",
         "#ff6b6b",
-        "#51cf66",
         "#ffd43b",
         "#cc5de8",
-        "#ff922b",
         "#20c997",
-        "#f06595",
-        "#5c7cfa",
-        "#e599f7",
     ]
 }
 
@@ -90,7 +84,7 @@ class SettingsManager:
                     CONFIG["dimensions"][key] = value
 
         import constants
-        constants.PRESET_COLORS = settings["preset_colors"]
+        constants.PRESET_COLORS = settings["preset_colors"][:4]
 
         if settings.get("dark_mode", True):
             from customtkinter import set_appearance_mode

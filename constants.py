@@ -2,11 +2,11 @@ import tkinter as tk
 from typing import Tuple, Optional
 
 import customtkinter as ctk
-from typing import Tuple, Optional
+
 import i18n
 import sys
 
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 
 HELP_TEXT = """\
 FretTool — Fretboard Diagram Editor
@@ -277,7 +277,7 @@ def ask_text(parent, title: str, prompt: str, initial: str = "") -> Optional[str
     frame = ctk.CTkFrame(win, corner_radius=16)
     frame.pack(padx=18, pady=18, fill="both", expand=True)
 
-    lbl = ctk.CTkLabel(frame, text=prompt, font=("Arial", 13))
+    lbl = ctk.CTkLabel(frame, text=prompt, font=("Arial", 13), text_color=CONFIG["colors"]["text"])
     lbl.pack(anchor="w", pady=(8, 10), padx=12)
 
     entry = ctk.CTkEntry(frame, textvariable=entry_var, width=240)
@@ -304,34 +304,6 @@ def ask_text(parent, title: str, prompt: str, initial: str = "") -> Optional[str
 
     btn_cancel = ctk.CTkButton(btns, text=i18n.tr("dialogs.cancel"), fg_color="transparent", border_width=1, text_color=CONFIG["colors"]["text"], command=on_cancel, width=90)
     btn_cancel.pack(side="right")
-    btn_ok = ctk.CTkButton(btns, text=i18n.tr("dialogs.ok"), command=on_ok, width=90)
-    btn_ok.pack(side="right", padx=(0, 10))
-
-    win.bind("<Return>", lambda e: on_ok())
-    win.bind("<Escape>", lambda e: on_cancel())
-
-    win.update_idletasks()
-    win.grab_set()
-    x = parent.winfo_rootx() + (parent.winfo_width() // 2) - (win.winfo_width() // 2)
-    y = parent.winfo_rooty() + (parent.winfo_height() // 2) - (win.winfo_height() // 2)
-    win.geometry(f"+{x}+{y}")
-
-    parent.wait_window(win)
-    return result["value"]
-    btn_ok = ctk.CTkButton(btns, text=i18n.tr("dialogs.ok"), command=on_ok, width=90)
-    btn_ok.pack(side="right", padx=(0, 10))
-
-    win.bind("<Return>", lambda e: on_ok())
-    win.bind("<Escape>", lambda e: on_cancel())
-
-    win.update_idletasks()
-    win.grab_set()
-    x = parent.winfo_rootx() + (parent.winfo_width() // 2) - (win.winfo_width() // 2)
-    y = parent.winfo_rooty() + (parent.winfo_height() // 2) - (win.winfo_height() // 2)
-    win.geometry(f"+{x}+{y}")
-
-    parent.wait_window(win)
-    return result["value"]
     btn_ok = ctk.CTkButton(btns, text=i18n.tr("dialogs.ok"), command=on_ok, width=90)
     btn_ok.pack(side="right", padx=(0, 10))
 
