@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox, filedialog
 import copy
+import sys
 import i18n
 from constants import CONFIG, VERSION
 from models import FretboardData, ProjectData
@@ -480,6 +481,11 @@ class DashboardView(ctk.CTkFrame):
         dialog.geometry("650x800")
         dialog.resizable(False, False)
         dialog.transient(self)
+        if sys.platform == "darwin":
+            try:
+                dialog.attributes('-type', 'dialog')
+            except:
+                pass
 
         scroll = ctk.CTkScrollableFrame(dialog)
         scroll.pack(fill="both", expand=True, padx=20, pady=20)

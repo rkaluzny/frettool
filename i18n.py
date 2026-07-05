@@ -25,9 +25,16 @@ _fallback = {}
 
 
 def _locales_dir():
+    candidates = []
     if getattr(sys, "frozen", False):
-        return os.path.join(sys._MEIPASS, "locales")
-    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "locales")
+        candidates.append(os.path.join(sys._MEIPASS, "locales"))
+    candidates.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "locales"))
+    if getattr(sys, "frozen", False):
+        candidates.append(os.path.join(os.path.dirname(sys.executable), "locales"))
+    for path in candidates:
+        if os.path.isdir(path):
+            return path
+    return candidates[0]
 
 
 def _load_translations(lang):

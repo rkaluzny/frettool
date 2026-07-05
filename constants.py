@@ -4,6 +4,7 @@ from typing import Tuple, Optional
 import customtkinter as ctk
 from typing import Tuple, Optional
 import i18n
+import sys
 
 VERSION = "1.0.1"
 
@@ -104,6 +105,11 @@ def show_help(parent):
     win.title(i18n.tr("help.title", version=VERSION))
     win.resizable(True, True)
     win.transient(parent)
+    if sys.platform == "darwin":
+        try:
+            win.attributes('-type', 'dialog')
+        except:
+            pass
     win.minsize(600, 400)
 
     try:
@@ -259,6 +265,11 @@ def ask_text(parent, title: str, prompt: str, initial: str = "") -> Optional[str
     win.title(title)
     win.resizable(False, False)
     win.transient(parent)
+    if sys.platform == "darwin":
+        try:
+            win.attributes('-type', 'dialog')
+        except:
+            pass
 
     result: dict = {"value": None}
     entry_var = tk.StringVar(value=initial or "")
@@ -344,6 +355,11 @@ def ask_dot_properties(parent, default_color: str, initial_label: str = "", init
     win.title(i18n.tr("editor.dot_properties.title"))
     win.resizable(False, False)
     win.transient(parent)
+    if sys.platform == "darwin":
+        try:
+            win.attributes('-type', 'dialog')
+        except:
+            pass
 
     result: dict = {"value": None}
     label_var = tk.StringVar(value=(initial_label or "")[:2])

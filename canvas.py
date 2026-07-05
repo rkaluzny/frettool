@@ -1,5 +1,6 @@
 import customtkinter as ctk
 import tkinter as tk
+import sys
 import i18n
 from constants import CONFIG, FRET_MARKERS, hex_to_rgb01, apply_symbol_map, PRESET_COLORS
 from models import FretboardData
@@ -37,6 +38,10 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.bind("<Button-5>", self.on_mousewheel)
         self.bind("<Up>", self.on_barre_edge_key)
         self.bind("<Down>", self.on_barre_edge_key)
+        if sys.platform == "darwin":
+            self.bind_all("<MouseWheel>", self.on_mousewheel)
+            self.bind("<Control-Button-1>", self.on_right_click)
+        self.focus_set()
         self.draw()
 
     def on_resize(self, event):
@@ -299,11 +304,14 @@ class FretboardCanvas(ctk.CTkCanvas):
             direction = 1
         elif event.num == 5:
             direction = -1
-        elif event.delta > 0:
-            direction = 1
-        elif event.delta < 0:
-            direction = -1
         else:
+            try:
+                d = float(event.delta)
+                direction = 1 if d > 0 else -1 if d < 0 else 0
+            except:
+                direction = 0
+
+        if direction == 0:
             return
 
         if not hasattr(self.data, "dot_colors") or self.data.dot_colors is None:
@@ -773,13 +781,26 @@ class FretboardCanvas(ctk.CTkCanvas):
         dot_type = "circle"
         is_small = False
 
-        if event.state & 0x0004:
+        if sys.platform == "darwin":
+            ctrl_mask = 0x0010
+            shift_mask = 0x0001
+            alt_mask = 0x0008
+        elif sys.platform == "win32":
+            ctrl_mask = 0x0004
+            shift_mask = 0x0001
+            alt_mask = 0x20000
+        else:
+            ctrl_mask = 0x0004
+            shift_mask = 0x0001
+            alt_mask = 0x0008
+
+        if event.state & ctrl_mask:
             dot_type = "square"
-        if event.state & 0x0001:
+        if event.state & shift_mask:
             dot_type = "triangle"
-        if event.state & 0x0004 and event.state & 0x0001:
+        if event.state & ctrl_mask and event.state & shift_mask:
             dot_type = "square"
-        if event.state & 0x20000:
+        if event.state & alt_mask:
             is_small = True
 
         self.data.dot_types[key] = dot_type
