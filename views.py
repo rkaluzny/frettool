@@ -356,7 +356,9 @@ class EditorView(ctk.CTkFrame):
     def rename_project(self):
         dialog = ctk.CTkInputDialog(text=i18n.tr("editor.rename_project_dialog.prompt"), title=i18n.tr("editor.rename_project_dialog.title"))
         if sys.platform == "darwin":
+            dialog.withdraw()
             dialog.attributes('-type', 'dialog')
+            dialog.deiconify()
         new_name = dialog.get_input()
         if new_name and new_name.strip():
             self.project.name = new_name.strip()
@@ -460,7 +462,9 @@ class DashboardView(ctk.CTkFrame):
     def create_new_project(self):
         dialog = ctk.CTkInputDialog(text=i18n.tr("dashboard.new_project_dialog.prompt"), title=i18n.tr("dashboard.new_project_dialog.title"))
         if sys.platform == "darwin":
+            dialog.withdraw()
             dialog.attributes('-type', 'dialog')
+            dialog.deiconify()
         name = dialog.get_input()
         if name:
             new_proj = ProjectData(name)
@@ -476,7 +480,9 @@ class DashboardView(ctk.CTkFrame):
     def rename_project(self, project: ProjectData):
         dialog = ctk.CTkInputDialog(text=i18n.tr("dashboard.rename_project_dialog.prompt"), title=i18n.tr("dashboard.rename_project_dialog.title"))
         if sys.platform == "darwin":
+            dialog.withdraw()
             dialog.attributes('-type', 'dialog')
+            dialog.deiconify()
         new_name = dialog.get_input()
         if new_name and new_name.strip():
             ProjectStore.rename_project(project.id, new_name.strip())
