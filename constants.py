@@ -195,7 +195,7 @@ CONFIG = {
         "dot_radius": 14,
         "dot_small_radius": 8,
         "marker_radius": 8,
-        "barre_half_width": 18,
+        "barre_half_width": 14,
         "barre_outline_width": 2,
         "barre_marker_radius": 3
     }
@@ -203,16 +203,10 @@ CONFIG = {
 
 # Preset colors for scrolling - will be updated by settings
 PRESET_COLORS = [
-    "#4cc9f0",  # default blue
     "#ff6b6b",  # red
-    "#51cf66",  # green
     "#ffd43b",  # yellow
     "#cc5de8",  # purple
-    "#ff922b",  # orange
     "#20c997",  # teal
-    "#f06595",  # pink
-    "#5c7cfa",  # indigo
-    "#e599f7",  # light purple
 ]
 
 # Apply settings on import
@@ -297,8 +291,36 @@ def ask_text(parent, title: str, prompt: str, initial: str = "") -> Optional[str
 
     win.protocol("WM_DELETE_WINDOW", on_closing)
 
-    btn_cancel = ctk.CTkButton(btns, text=i18n.tr("dialogs.cancel"), fg_color="transparent", border_width=1, text_color=("white", "black"), command=on_cancel, width=90)
+    btn_cancel = ctk.CTkButton(btns, text=i18n.tr("dialogs.cancel"), fg_color="transparent", border_width=1, text_color=CONFIG["colors"]["text"], command=on_cancel, width=90)
     btn_cancel.pack(side="right")
+    btn_ok = ctk.CTkButton(btns, text=i18n.tr("dialogs.ok"), command=on_ok, width=90)
+    btn_ok.pack(side="right", padx=(0, 10))
+
+    win.bind("<Return>", lambda e: on_ok())
+    win.bind("<Escape>", lambda e: on_cancel())
+
+    win.update_idletasks()
+    win.grab_set()
+    x = parent.winfo_rootx() + (parent.winfo_width() // 2) - (win.winfo_width() // 2)
+    y = parent.winfo_rooty() + (parent.winfo_height() // 2) - (win.winfo_height() // 2)
+    win.geometry(f"+{x}+{y}")
+
+    parent.wait_window(win)
+    return result["value"]
+    btn_ok = ctk.CTkButton(btns, text=i18n.tr("dialogs.ok"), command=on_ok, width=90)
+    btn_ok.pack(side="right", padx=(0, 10))
+
+    win.bind("<Return>", lambda e: on_ok())
+    win.bind("<Escape>", lambda e: on_cancel())
+
+    win.update_idletasks()
+    win.grab_set()
+    x = parent.winfo_rootx() + (parent.winfo_width() // 2) - (win.winfo_width() // 2)
+    y = parent.winfo_rooty() + (parent.winfo_height() // 2) - (win.winfo_height() // 2)
+    win.geometry(f"+{x}+{y}")
+
+    parent.wait_window(win)
+    return result["value"]
     btn_ok = ctk.CTkButton(btns, text=i18n.tr("dialogs.ok"), command=on_ok, width=90)
     btn_ok.pack(side="right", padx=(0, 10))
 
@@ -324,7 +346,7 @@ def ask_dot_properties(parent, default_color: str, initial_label: str = "", init
     win.transient(parent)
 
     result: dict = {"value": None}
-    label_var = tk.StringVar(value=(initial_label or "")[:2])  # Allow up to 2 chars
+    label_var = tk.StringVar(value=(initial_label or "")[:2])
     color_var = tk.StringVar(value=initial_color or "")
 
     frame = ctk.CTkFrame(win, corner_radius=16)
@@ -362,7 +384,7 @@ def ask_dot_properties(parent, default_color: str, initial_label: str = "", init
         c = preview_color()
         btn_preview.configure(fg_color=c, hover_color=c)
 
-    btn_reset = ctk.CTkButton(row, text=i18n.tr("editor.dot_properties.use_default"), width=110, fg_color="transparent", border_width=1, text_color=("white", "black"), command=on_reset)
+    btn_reset = ctk.CTkButton(row, text=i18n.tr("editor.dot_properties.use_default"), width=110, fg_color="transparent", border_width=1, text_color=CONFIG["colors"]["text"], command=on_reset)
     btn_reset.pack(side="left")
 
     btns = ctk.CTkFrame(frame, fg_color="transparent")
@@ -382,7 +404,7 @@ def ask_dot_properties(parent, default_color: str, initial_label: str = "", init
 
     win.protocol("WM_DELETE_WINDOW", on_closing)
 
-    btn_cancel = ctk.CTkButton(btns, text=i18n.tr("dialogs.cancel"), fg_color="transparent", border_width=1, text_color=("white", "black"), command=on_cancel, width=90)
+    btn_cancel = ctk.CTkButton(btns, text=i18n.tr("dialogs.cancel"), fg_color="transparent", border_width=1, text_color=CONFIG["colors"]["text"], command=on_cancel, width=90)
     btn_cancel.pack(side="right")
     btn_ok = ctk.CTkButton(btns, text=i18n.tr("dialogs.ok"), command=on_ok, width=90)
     btn_ok.pack(side="right", padx=(0, 10))

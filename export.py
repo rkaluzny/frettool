@@ -43,7 +43,7 @@ class ExportManager:
 
         def barre_geometry(group):
             cx = margin + (group.fret - 0.5) * f_space
-            half_width = max(12, CONFIG["dimensions"]["dot_radius"] + 4)
+            half_width = max(12, CONFIG["dimensions"]["barre_half_width"] + 4)
             top_string_y = CONFIG["dimensions"]["margin_top"] + group.start_string * s_space
             bottom_string_y = CONFIG["dimensions"]["margin_top"] + group.end_string * s_space
             top = top_string_y - half_width
@@ -65,7 +65,7 @@ class ExportManager:
             body_height = max(half_width * 2, bottom - top)
             svg_content += f'<rect x="{cx - half_width}" y="{top}" width="{half_width * 2}" height="{body_height}" rx="{half_width}" ry="{half_width}" fill="{fill}" stroke="{outline}" stroke-width="2" />'
 
-            marker_radius = max(3, CONFIG["dimensions"]["dot_radius"] // 5)
+            marker_radius = max(3, CONFIG["dimensions"]["barre_marker_radius"])
             for string_idx in group.strings:
                 cy = CONFIG["dimensions"]["margin_top"] + string_idx * s_space
                 svg_content += f'<circle cx="{cx}" cy="{cy}" r="{marker_radius}" fill="{fill}" stroke="#ffffff" stroke-width="1" />'
@@ -84,10 +84,10 @@ class ExportManager:
                 continue
             if f == 0:
                 cx = margin - 25
-                r_circle = 10
+                r_circle = CONFIG["dimensions"]["dot_radius"]
             else:
                 cx = margin + (f - 0.5) * f_space
-                r_circle = 14
+                r_circle = CONFIG["dimensions"]["dot_radius"]
             cy = CONFIG["dimensions"]["margin_top"] + s * s_space
             key = f"{s},{f}"
             dot_color = dot_colors.get(key, default_dot_color) or default_dot_color
@@ -146,7 +146,7 @@ class ExportManager:
         for fret_num, dot_count in FRET_MARKERS.items():
             if fret_num <= fb.num_frets:
                 marker_x = x_offset + (fret_num - 0.5) * pdf_fret_spacing
-                marker_radius = 0.15 * cm
+                marker_radius = CONFIG["dimensions"]["marker_radius"] / 100 * cm
                 c.setFillColorRGB(0.6, 0.6, 0.6)
                 if dot_count == 1:
                     marker_y = y_offset - fretboard_height / 2
@@ -183,7 +183,7 @@ class ExportManager:
 
         for group in barre_groups:
             pos_x = x_offset + (group.fret - 0.5) * pdf_fret_spacing
-            half_width = max(10, CONFIG["dimensions"]["dot_radius"] / 1.1)
+            half_width = CONFIG["dimensions"]["barre_half_width"] * 1.5 / 100 * cm
             top_y = y_offset - group.start_string * pdf_string_spacing
             bottom_y = y_offset - group.end_string * pdf_string_spacing
             rect_bottom = bottom_y - half_width
@@ -194,7 +194,7 @@ class ExportManager:
             c.setLineWidth(0.7)
             c.roundRect(pos_x - half_width, rect_bottom, half_width * 2, rect_height, half_width, fill=1, stroke=1)
 
-            marker_radius = max(2.2, CONFIG["dimensions"]["dot_radius"] / 6)
+            marker_radius = CONFIG["dimensions"]["barre_marker_radius"] * 1.5 / 100 * cm
             for string_idx in group.strings:
                 pos_y = y_offset - string_idx * pdf_string_spacing
                 c.setFillColorRGB(*hex_to_rgb01(group.color))
@@ -212,7 +212,7 @@ class ExportManager:
                     c.setFont("Helvetica-Bold", font_size)
                     c.drawCentredString(pos_x, pos_y - 2.5, label)
 
-        dot_radius = 0.25 * cm
+        dot_radius = CONFIG["dimensions"]["dot_radius"] * 1.5 / 100 * cm
         default_dot_color = getattr(fb, "dot_color", CONFIG["colors"]["dot"]) or CONFIG["colors"]["dot"]
         dot_colors = getattr(fb, "dot_colors", {}) or {}
         dot_texts = getattr(fb, "dot_texts", {}) or {}
@@ -233,7 +233,7 @@ class ExportManager:
             dot_color = dot_colors.get(key, default_dot_color) or default_dot_color
             is_small = dot_small.get(key, False)
             if is_small:
-                r_circle = CONFIG["dimensions"]["dot_small_radius"] / 100 * cm
+                r_circle = CONFIG["dimensions"]["dot_small_radius"] * 1.5 / 100 * cm
             dot_type = dot_types.get(key, "circle")
 
             dot_rgb = hex_to_rgb01(dot_color)
@@ -248,9 +248,9 @@ class ExportManager:
                 c.rect(pos_x - r_circle, pos_y - r_circle, r_circle*2, r_circle*2, fill=1, stroke=1)
             elif dot_type == "triangle":
                 path = c.beginPath()
-                path.moveTo(pos_x, pos_y - r_circle)
-                path.lineTo(pos_x - r_circle, pos_y + r_circle)
-                path.lineTo(pos_x + r_circle, pos_y + r_circle)
+                path.moveTo(pos_x, pos_y + r_circle)
+                path.lineTo(pos_x - r_circle, pos_y - r_circle)
+                path.lineTo(pos_x + r_circle, pos_y - r_circle)
                 path.close()
                 c.drawPath(path, fill=1, stroke=1)
             else:

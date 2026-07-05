@@ -20,7 +20,7 @@ DEFAULT_SETTINGS = {
         "dot_radius": 14,
         "dot_small_radius": 8,
         "marker_radius": 8,
-        "barre_half_width": 18,
+        "barre_half_width": 14,
         "barre_outline_width": 2,
         "barre_marker_radius": 3
     },

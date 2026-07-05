@@ -309,7 +309,8 @@ class FretboardCanvas(ctk.CTkCanvas):
         if not hasattr(self.data, "dot_colors") or self.data.dot_colors is None:
             self.data.dot_colors = {}
 
-        presets = PRESET_COLORS
+        theme_dot = CONFIG["colors"]["dot"]
+        presets = [c for c in PRESET_COLORS if c != theme_dot] + [theme_dot]
 
         if self.hovered_barre_key is not None:
             groups = get_barre_groups(self.data)
@@ -526,14 +527,23 @@ class FretboardCanvas(ctk.CTkCanvas):
                 key = f"{s},{f}"
                 default_dot_color = getattr(self.data, "dot_color", CONFIG["colors"]["dot"]) or CONFIG["colors"]["dot"]
                 dot_color = (getattr(self.data, "dot_colors", {}) or {}).get(key, default_dot_color) or default_dot_color
+                dot_type = getattr(self.data, "dot_types", {}).get(key, "circle")
                 is_small = getattr(self.data, "dot_small", {}).get(key, False)
-                radius = CONFIG["dimensions"]["dot_small_radius"] if is_small else 11
+                radius = CONFIG["dimensions"]["dot_small_radius"] if is_small else CONFIG["dimensions"]["dot_radius"]
 
                 if self.hovered_pos == (s, f):
                     self.create_rectangle(cx-radius-4, cy-radius-4, cx+radius+4, cy+radius+4,
                                            fill="", outline=CONFIG["colors"]["dot_hover"], width=2)
 
-                self.create_oval(cx - radius, cy - radius, cx + radius, cy + radius, fill=dot_color, outline="#ffffff", width=2)
+                if dot_type == "square":
+                    self.create_rectangle(cx - radius, cy - radius, cx + radius, cy + radius, fill=dot_color, outline="")
+                    self.create_rectangle(cx - radius, cy - radius, cx + radius, cy + radius, outline="#ffffff", width=2)
+                elif dot_type == "triangle":
+                    points = [cx, cy - radius, cx - radius, cy + radius, cx + radius, cy + radius]
+                    self.create_polygon(points, fill=dot_color, outline="#ffffff", width=2)
+                else:
+                    self.create_oval(cx - radius, cy - radius, cx + radius, cy + radius, fill=dot_color, outline="")
+                    self.create_oval(cx - radius, cy - radius, cx + radius, cy + radius, outline="#ffffff", width=2)
 
                 label = (getattr(self.data, "dot_texts", {}) or {}).get(key, "")
                 label = apply_symbol_map((label or "").strip()[:2])
