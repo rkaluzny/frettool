@@ -36,6 +36,8 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.bind("<MouseWheel>", self.on_mousewheel)
         self.bind("<Button-4>", self.on_mousewheel)
         self.bind("<Button-5>", self.on_mousewheel)
+        self.bind("<KeyPress-w>", self.on_mousewheel)
+        self.bind("<KeyPress-s>", self.on_mousewheel)
         self.bind("<Up>", self.on_barre_edge_key)
         self.bind("<Down>", self.on_barre_edge_key)
         if sys.platform == "darwin":
@@ -296,11 +298,18 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.configure(cursor="arrow")
 
     def on_mousewheel(self, event):
-        """Cycle through preset colors on hovered dot / barre (mouse wheel / touchpad)."""
+        """Cycle through preset colors on hovered dot / barre (mouse wheel / touchpad / w/s keys)."""
         if self.hovered_pos is None and self.hovered_barre_key is None:
             return
 
-        if event.num == 4:
+        if hasattr(event, 'keysym'):
+            if event.keysym == 'w':
+                direction = 1
+            elif event.keysym == 's':
+                direction = -1
+            else:
+                return
+        elif event.num == 4:
             direction = 1
         elif event.num == 5:
             direction = -1
