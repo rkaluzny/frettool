@@ -4,7 +4,8 @@ __pycache__/
 backup/
 www/
 *.spec
-*.json
+projects.json
+settings.json
 *.iss
 Output/
 docs/
