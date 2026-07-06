@@ -541,6 +541,44 @@ class DashboardView(ctk.CTkFrame):
         from constants import show_help
         show_help(self)
 
+    def _show_privacy_from_settings(self):
+        from privacy import show_privacy_dialog
+        show_privacy_dialog(self)
+
+    def _check_updates_from_settings(self):
+        import threading
+        import customtkinter as ctk
+        from updater import check_for_updates, show_up_to_date_dialog, show_update_error_dialog
+        dialog = ctk.CTkToplevel(self)
+        dialog.title(i18n.tr("updates.checking"))
+        dialog.resizable(False, False)
+        dialog.transient(self)
+        if sys.platform == "darwin":
+            try:
+                dialog.attributes('-type', 'dialog')
+            except:
+                pass
+        frame = ctk.CTkFrame(dialog, corner_radius=16)
+        frame.pack(fill="both", expand=True, padx=20, pady=20)
+        ctk.CTkLabel(frame, text=i18n.tr("updates.checking"), font=("Arial", 14)).pack(pady=20)
+        dialog.update_idletasks()
+        dialog.grab_set()
+        x = self.winfo_rootx() + (self.winfo_width() // 2) - (dialog.winfo_width() // 2)
+        y = self.winfo_rooty() + (self.winfo_height() // 2) - (dialog.winfo_height() // 2)
+        dialog.geometry(f"+{x}+{y}")
+        def check():
+            info, error = check_for_updates()
+            self.after(0, dialog.destroy)
+            if error:
+                self.after(0, lambda: show_update_error_dialog(self, error))
+            elif info:
+                self.after(0, lambda: self.master._handle_update_found(info))
+            else:
+                self.after(0, lambda: show_up_to_date_dialog(self))
+        t = threading.Thread(target=check, daemon=True)
+        t.start()
+        self.wait_window(dialog)
+
     def open_settings(self):
         from settings import SettingsManager, DEFAULT_SETTINGS
         import customtkinter as ctk
@@ -667,6 +705,24 @@ class DashboardView(ctk.CTkFrame):
 
         btn_add_color = ctk.CTkButton(scroll, text=i18n.tr("settings.add_color"), height=32, command=add_color)
         btn_add_color.pack(anchor="w", pady=(5, 15))
+
+        # Privacy & Updates
+        ctk.CTkLabel(scroll, text=i18n.tr("settings.about_heading"), font=("Arial", 16, "bold")).pack(anchor="w", pady=(10, 10))
+
+        about_frame = ctk.CTkFrame(scroll, fg_color="transparent")
+        about_frame.pack(fill="x", pady=(0, 15))
+
+        privacy_btn = ctk.CTkButton(about_frame, text=i18n.tr("settings.show_privacy"), height=38,
+                                    fg_color="transparent", border_width=1,
+                                    text_color=CONFIG["colors"]["text"],
+                                    command=lambda: self._show_privacy_from_settings())
+        privacy_btn.pack(side="left", padx=(0, 10))
+
+        update_btn = ctk.CTkButton(about_frame, text=i18n.tr("settings.check_updates"), height=38,
+                                   fg_color="transparent", border_width=1,
+                                   text_color=CONFIG["colors"]["text"],
+                                   command=lambda: self._check_updates_from_settings())
+        update_btn.pack(side="left")
 
         # Language setting
         lang_frame = ctk.CTkFrame(scroll, fg_color="transparent")

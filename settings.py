@@ -29,7 +29,9 @@ DEFAULT_SETTINGS = {
         "#ffd43b",
         "#cc5de8",
         "#20c997",
-    ]
+    ],
+    "privacy_accepted": False,
+    "skip_update_check": False,
 }
 
 class SettingsManager:
