@@ -17,7 +17,11 @@ GITHUB_URL = f"https://github.com/{GITHUB_REPO}"
 
 def _parse_version(version_str):
     v = version_str.lstrip("v")
-    parts = v.split(".")
+    import re
+    match = re.match(r"(\d+\.\d+(?:\.\d+)?)", v)
+    if not match:
+        return (0, 0, 0)
+    parts = match.group(1).split(".")
     return tuple(int(p) for p in parts)
 
 
@@ -54,8 +58,12 @@ def check_for_updates():
         tag = data.get("tag_name", "")
         if not tag:
             return (None, "No release tag found")
-        latest = tag.lstrip("v")
-        if not _is_newer_version(latest):
+        raw = tag.lstrip("v")
+        numeric = _parse_version(raw)
+        if numeric == (0, 0, 0):
+            return (None, "Could not parse version from tag: " + tag)
+        numeric_str = ".".join(str(p) for p in numeric)
+        if not _is_newer_version(numeric_str):
             return (None, None)
 
         download_url = None
@@ -67,7 +75,7 @@ def check_for_updates():
                     break
 
         info = {
-            "latest_version": latest,
+            "latest_version": numeric_str,
             "current_version": VERSION,
             "download_url": download_url,
             "release_url": data.get("html_url", GITHUB_URL + "/releases/latest"),
@@ -99,14 +107,63 @@ def download_update(url, destination, progress_callback=None):
                     progress_callback(downloaded / total)
 
 
-def install_update(filepath):
+def install_update(filepath, quit_callback=None):
+    import subprocess as sp
+    script_path = filepath + "_launcher.bat" if sys.platform == "win32" else filepath + ".sh"
+
     if sys.platform == "win32":
-        os.startfile(filepath)
+        script = f"""@echo off
+ping 127.0.0.1 -n 3 -w 1000 >nul
+start "" "{filepath}"
+del "%~f0"
+"""
+        with open(script_path, "w") as f:
+            f.write(script)
+        sp.Popen(["cmd.exe", "/c", script_path],
+                 creationflags=sp.CREATE_NO_WINDOW | sp.DETACHED_PROCESS,
+                 close_fds=True)
+
     elif sys.platform == "darwin":
-        subprocess.Popen(["open", filepath])
+        script = f"""#!/bin/sh
+sleep 2
+open "{filepath}"
+rm -f "$0"
+"""
+        with open(script_path, "w") as f:
+            f.write(script)
+        os.chmod(script_path, 0o755)
+        sp.Popen(["/bin/sh", script_path], stdin=sp.DEVNULL,
+                 stdout=sp.DEVNULL, stderr=sp.DEVNULL,
+                 start_new_session=True)
+
     else:
-        os.chmod(filepath, 0o755)
-        subprocess.Popen([filepath])
+        appimage = os.environ.get("APPIMAGE", "")
+        exe = ""
+        if os.path.exists("/proc/self/exe"):
+            try:
+                exe = os.path.realpath("/proc/self/exe")
+            except:
+                exe = ""
+        target = appimage if (appimage and os.path.exists(appimage)) else exe
+
+        lines = ["#!/bin/sh", "sleep 2"]
+        lines.append(f'chmod +x "{filepath}"')
+        if target and target != filepath:
+            lines.append(f'mv -f "{filepath}" "{target}" 2>/dev/null')
+            lines.append(f'exec "{target}" "$@"')
+        else:
+            lines.append(f'exec "{filepath}" "$@"')
+        lines.append("")
+
+        with open(script_path, "w") as f:
+            f.write("\n".join(lines))
+        os.chmod(script_path, 0o755)
+        sp.Popen(["/bin/sh", script_path], stdin=sp.DEVNULL,
+                 stdout=sp.DEVNULL, stderr=sp.DEVNULL,
+                 start_new_session=True)
+
+    if quit_callback:
+        quit_callback()
 
 
 def show_update_dialog(parent, update_info):

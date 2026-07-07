@@ -90,7 +90,7 @@ class App(ctk.CTk):
                     self.after(0, lambda: set_progress(pct))
                 download_update(update_info["download_url"], path, progress_cb)
                 self.after(0, on_complete)
-                self.after(500, lambda: install_update(path))
+                self.after(500, lambda: install_update(path, quit_callback=self.destroy))
             except Exception as e:
                 self.after(0, lambda: show_update_error_dialog(self, str(e)))
         t = threading.Thread(target=download, daemon=True)
