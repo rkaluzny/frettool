@@ -68,6 +68,306 @@ def _input_dialog(parent, title, prompt, initial_value=""):
     return result["value"]
 
 
+def open_settings_dialog(parent, on_save_callback=None):
+    from settings import SettingsManager, DEFAULT_SETTINGS, DEFAULT_HOTKEYS, HOTKEY_GROUPS
+
+    settings = SettingsManager.load_settings()
+    dialog = ctk.CTkToplevel(parent)
+    dialog.title(i18n.tr("settings.dialog_title"))
+    dialog.geometry("700x750")
+    dialog.resizable(False, False)
+    dialog.transient(parent)
+    if sys.platform == "darwin":
+        try:
+            dialog.attributes('-type', 'dialog')
+        except:
+            pass
+
+    tabview = ctk.CTkTabview(dialog, corner_radius=12)
+    tabview.pack(fill="both", expand=True, padx=20, pady=20)
+
+    tab_general = tabview.add(i18n.tr("settings.tab_general"))
+    tab_dimensions = tabview.add(i18n.tr("settings.tab_dimensions"))
+    tab_colors = tabview.add(i18n.tr("settings.tab_colors"))
+    tab_hotkeys = tabview.add(i18n.tr("settings.tab_hotkeys"))
+    tab_about = tabview.add(i18n.tr("settings.tab_about"))
+
+    ctk.CTkLabel(tab_general, text=i18n.tr("settings.heading"), font=("Arial", 20, "bold")).pack(anchor="w", pady=(5, 15))
+
+    dark_var = ctk.BooleanVar(value=settings.get("dark_mode", True))
+    dark_frame = ctk.CTkFrame(tab_general, fg_color="transparent")
+    dark_frame.pack(fill="x", pady=(0, 12))
+    ctk.CTkLabel(dark_frame, text=i18n.tr("settings.dark_mode"), font=("Arial", 14, "bold")).pack(side="left")
+    ctk.CTkSwitch(dark_frame, text="", variable=dark_var).pack(side="right")
+
+    lang_frame = ctk.CTkFrame(tab_general, fg_color="transparent")
+    lang_frame.pack(fill="x", pady=(0, 12))
+    ctk.CTkLabel(lang_frame, text=i18n.tr("settings.language"), font=("Arial", 14, "bold")).pack(anchor="w")
+    lang_var = ctk.StringVar(value=i18n.LANGUAGE_NAMES.get(settings.get("language") or i18n.get_language(), "English"))
+    lang_menu = ctk.CTkOptionMenu(lang_frame, values=list(i18n.LANGUAGE_NAMES.values()), variable=lang_var)
+    lang_menu.pack(anchor="w")
+
+    def on_lang_change(choice):
+        for code, name in i18n.LANGUAGES:
+            if name == choice:
+                settings["language"] = code
+                i18n.set_language(code)
+                break
+    lang_menu.configure(command=on_lang_change)
+
+    ctk.CTkLabel(tab_general, text="", height=10).pack()
+
+    frets_var = ctk.StringVar(value=str(settings.get("default_frets", 12)))
+    frets_frame = ctk.CTkFrame(tab_general, fg_color="transparent")
+    frets_frame.pack(fill="x", pady=(0, 12))
+    ctk.CTkLabel(frets_frame, text=i18n.tr("settings.default_frets"), font=("Arial", 13, "bold")).pack(anchor="w")
+    ctk.CTkLabel(frets_frame, text=i18n.tr("settings.default_frets_desc"), font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"]).pack(anchor="w", pady=(0, 3))
+    ctk.CTkEntry(frets_frame, textvariable=frets_var, width=100).pack(anchor="w")
+
+    strings_var = ctk.StringVar(value=str(settings.get("default_string_count", 6)))
+    strings_frame = ctk.CTkFrame(tab_general, fg_color="transparent")
+    strings_frame.pack(fill="x", pady=(0, 12))
+    ctk.CTkLabel(strings_frame, text=i18n.tr("settings.default_string_count"), font=("Arial", 13, "bold")).pack(anchor="w")
+    ctk.CTkLabel(strings_frame, text=i18n.tr("settings.default_string_count_desc"), font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"]).pack(anchor="w", pady=(0, 3))
+    ctk.CTkEntry(strings_frame, textvariable=strings_var, width=100).pack(anchor="w")
+
+    ctk.CTkLabel(tab_general, text=i18n.tr("settings.barre_behaviour"), font=("Arial", 16, "bold")).pack(anchor="w", pady=(8, 8))
+
+    barres_def_var = ctk.BooleanVar(value=settings.get("barres_enabled_default", True))
+    barres_def_frame = ctk.CTkFrame(tab_general, fg_color="transparent")
+    barres_def_frame.pack(fill="x", pady=(0, 8))
+    ctk.CTkLabel(barres_def_frame, text=i18n.tr("settings.barres_enabled_default"), font=("Arial", 13, "bold")).pack(side="left")
+    ctk.CTkSwitch(barres_def_frame, text="", variable=barres_def_var).pack(side="right")
+
+    min_str_var = ctk.StringVar(value=str(settings.get("barre_min_strings", 2)))
+    min_str_frame = ctk.CTkFrame(tab_general, fg_color="transparent")
+    min_str_frame.pack(fill="x", pady=(0, 12))
+    ctk.CTkLabel(min_str_frame, text=i18n.tr("settings.barre_min_strings"), font=("Arial", 13, "bold")).pack(anchor="w")
+    ctk.CTkLabel(min_str_frame, text=i18n.tr("settings.barre_min_strings_desc"), font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"]).pack(anchor="w", pady=(0, 3))
+    ctk.CTkEntry(min_str_frame, textvariable=min_str_var, width=100).pack(anchor="w")
+
+    ctk.CTkLabel(tab_dimensions, text=i18n.tr("settings.dimensions_heading"), font=("Arial", 20, "bold")).pack(anchor="w", pady=(5, 15))
+
+    dim_scroll = ctk.CTkScrollableFrame(tab_dimensions, fg_color="transparent")
+    dim_scroll.pack(fill="both", expand=True)
+
+    dim_settings = settings.get("dimensions", DEFAULT_SETTINGS["dimensions"])
+    dim_entries = {}
+    dim_descriptions = [
+        "string_spacing", "fret_spacing", "margin_top", "margin_bottom",
+        "margin_side", "nut_width", "dot_radius", "dot_small_radius",
+        "marker_radius", "barre_half_width", "barre_outline_width",
+        "barre_marker_radius"
+    ]
+    for key in dim_descriptions:
+        frame = ctk.CTkFrame(dim_scroll, fg_color="transparent")
+        frame.pack(fill="x", pady=(0, 10))
+        ctk.CTkLabel(frame, text=i18n.tr(f"settings.dimensions.{key}"), font=("Arial", 13, "bold")).pack(anchor="w")
+        ctk.CTkLabel(frame, text=i18n.tr(f"settings.dimensions.{key}_desc"), font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"]).pack(anchor="w", pady=(0, 3))
+        var = ctk.StringVar(value=str(dim_settings.get(key, DEFAULT_SETTINGS["dimensions"][key])))
+        ctk.CTkEntry(frame, textvariable=var, width=120).pack(anchor="w")
+        dim_entries[key] = var
+
+    ctk.CTkLabel(tab_colors, text=i18n.tr("settings.preset_colors"), font=("Arial", 20, "bold")).pack(anchor="w", pady=(5, 15))
+
+    preset_colors = settings.get("preset_colors", DEFAULT_SETTINGS["preset_colors"])
+    color_frame = ctk.CTkScrollableFrame(tab_colors, fg_color="transparent")
+    color_frame.pack(fill="both", expand=True)
+    color_vars = []
+
+    def add_color():
+        settings["preset_colors"].append("#000000")
+        refresh_colors()
+
+    def remove_color(idx):
+        if len(settings["preset_colors"]) > 1:
+            settings["preset_colors"].pop(idx)
+            refresh_colors()
+
+    def refresh_colors():
+        for widget in color_frame.winfo_children():
+            widget.destroy()
+        color_vars.clear()
+        for i, color in enumerate(settings["preset_colors"]):
+            row = ctk.CTkFrame(color_frame, fg_color="transparent")
+            row.pack(fill="x", pady=2)
+            var = ctk.StringVar(value=color)
+            color_vars.append(var)
+            entry = ctk.CTkEntry(row, textvariable=var, width=120)
+            entry.pack(side="left", padx=(0, 10))
+
+            def update_preview(var=var, btn=None):
+                color_val = var.get()
+                try:
+                    btn.configure(fg_color=color_val, hover_color=color_val)
+                except:
+                    pass
+
+            btn = ctk.CTkButton(row, text=" ", width=30, fg_color=color, hover_color=color)
+            btn.pack(side="left", padx=(0, 10))
+            var.trace_add("write", lambda *args, btn=btn, var=var: update_preview(var, btn))
+            btn_rem = ctk.CTkButton(row, text="✕", width=30, fg_color="#e74c3c", hover_color="#c0392b",
+                                     command=lambda idx=i: remove_color(idx))
+            btn_rem.pack(side="left")
+
+    refresh_colors()
+
+    btn_add_color = ctk.CTkButton(tab_colors, text=i18n.tr("settings.add_color"), height=32, command=add_color)
+    btn_add_color.pack(anchor="w", pady=(8, 10))
+
+    ctk.CTkLabel(tab_hotkeys, text=i18n.tr("settings.hotkeys_heading"), font=("Arial", 20, "bold")).pack(anchor="w", pady=(5, 15))
+
+    hotkey_scroll = ctk.CTkScrollableFrame(tab_hotkeys, fg_color="transparent")
+    hotkey_scroll.pack(fill="both", expand=True)
+
+    current_hotkeys = {}
+    current_hotkeys.update(DEFAULT_HOTKEYS)
+    current_hotkeys.update(settings.get("hotkeys", {}))
+
+    group_headings = {
+        "global": i18n.tr("settings.hotkeys_global"),
+        "editor": i18n.tr("settings.hotkeys_editor"),
+        "fretboard": i18n.tr("settings.hotkeys_fretboard"),
+    }
+
+    for group_name, action_keys in HOTKEY_GROUPS.items():
+        heading = group_headings.get(group_name, group_name)
+
+        hdr_frame = ctk.CTkFrame(hotkey_scroll, fg_color=CONFIG["colors"]["surface"], corner_radius=8)
+        hdr_frame.pack(fill="x", pady=(10, 5), ipady=4)
+        ctk.CTkLabel(hdr_frame, text=heading, font=("Arial", 14, "bold"),
+                     text_color=CONFIG["colors"]["accent"]).pack(padx=12, pady=4, anchor="w")
+
+        for action in action_keys:
+            row = ctk.CTkFrame(hotkey_scroll, fg_color="transparent")
+            row.pack(fill="x", pady=3)
+
+            label_text = i18n.tr(f"settings.hotkey.{action}")
+            binding = current_hotkeys.get(action, "")
+
+            ctk.CTkLabel(row, text=label_text, font=("Arial", 13),
+                         text_color=CONFIG["colors"]["text"], width=180, anchor="w").pack(side="left", padx=(20, 10))
+
+            bind_display = ctk.CTkLabel(row, text=binding, font=("Arial", 12, "bold"),
+                                        text_color=CONFIG["colors"]["text_muted"], width=150, anchor="w")
+            bind_display.pack(side="left", padx=(0, 10))
+
+            def make_change_cb(action_key=action, display_label=bind_display):
+                def change():
+                    from hotkeys import record_hotkey_dialog
+                    new_seq = record_hotkey_dialog(dialog, current_hotkeys.get(action_key, ""))
+                    if new_seq:
+                        current_hotkeys[action_key] = new_seq
+                        display_label.configure(text=new_seq)
+                return change
+
+            ctk.CTkButton(row, text="...", width=32, height=28,
+                          fg_color="transparent", border_width=1,
+                          text_color=CONFIG["colors"]["text"],
+                          command=make_change_cb()).pack(side="left")
+
+    ctk.CTkLabel(tab_about, text=i18n.tr("settings.about_heading"), font=("Arial", 20, "bold")).pack(anchor="w", pady=(5, 15))
+
+    about_frame = ctk.CTkFrame(tab_about, fg_color="transparent")
+    about_frame.pack(fill="x", pady=(0, 15))
+
+    ver_label = ctk.CTkLabel(about_frame, text=i18n.tr("app.title", version=VERSION), font=("Arial", 16, "bold"),
+                              text_color=CONFIG["colors"]["text"])
+    ver_label.pack(anchor="w", pady=(0, 15))
+
+    privacy_btn = ctk.CTkButton(about_frame, text=i18n.tr("settings.show_privacy"), height=38,
+                                fg_color="transparent", border_width=1,
+                                text_color=CONFIG["colors"]["text"])
+    privacy_btn.pack(side="left", padx=(0, 10))
+
+    update_btn = ctk.CTkButton(about_frame, text=i18n.tr("settings.check_updates"), height=38,
+                               fg_color="transparent", border_width=1,
+                               text_color=CONFIG["colors"]["text"])
+    update_btn.pack(side="left")
+
+    if isinstance(parent, (DashboardView,)):
+        privacy_btn.configure(command=lambda: parent._show_privacy_from_settings())
+        update_btn.configure(command=lambda: parent._check_updates_from_settings())
+    else:
+        def show_privacy():
+            from privacy import show_privacy_dialog
+            show_privacy_dialog(dialog)
+        privacy_btn.configure(command=show_privacy)
+
+        def check_updates():
+            import threading
+            from updater import check_for_updates, show_up_to_date_dialog, show_update_error_dialog
+            chk_dialog = ctk.CTkToplevel(dialog)
+            chk_dialog.title(i18n.tr("updates.checking"))
+            chk_dialog.resizable(False, False)
+            chk_dialog.transient(dialog)
+            if sys.platform == "darwin":
+                try:
+                    chk_dialog.attributes('-type', 'dialog')
+                except:
+                    pass
+            frame = ctk.CTkFrame(chk_dialog, corner_radius=16)
+            frame.pack(fill="both", expand=True, padx=20, pady=20)
+            ctk.CTkLabel(frame, text=i18n.tr("updates.checking"), font=("Arial", 14)).pack(pady=20)
+            chk_dialog.update_idletasks()
+            chk_dialog.grab_set()
+            x = dialog.winfo_rootx() + (dialog.winfo_width() // 2) - (chk_dialog.winfo_width() // 2)
+            y = dialog.winfo_rooty() + (dialog.winfo_height() // 2) - (chk_dialog.winfo_height() // 2)
+            chk_dialog.geometry(f"+{x}+{y}")
+            def check():
+                info, error = check_for_updates()
+                parent.after(0, chk_dialog.destroy)
+                if error:
+                    parent.after(0, lambda: show_update_error_dialog(parent, error))
+                elif info:
+                    parent.after(0, lambda: parent.master._handle_update_found(info))
+                else:
+                    parent.after(0, lambda: show_up_to_date_dialog(parent))
+            t = threading.Thread(target=check, daemon=True)
+            t.start()
+            parent.wait_window(chk_dialog)
+        update_btn.configure(command=check_updates)
+
+    def save_settings():
+        try:
+            settings["dark_mode"] = dark_var.get()
+            settings["default_frets"] = int(frets_var.get())
+            settings["default_string_count"] = int(strings_var.get())
+            settings["barres_enabled_default"] = barres_def_var.get()
+            settings["barre_min_strings"] = max(2, int(min_str_var.get()))
+            dims = {}
+            for key, var in dim_entries.items():
+                dims[key] = int(var.get())
+            settings["dimensions"] = dims
+            new_colors = []
+            for var in color_vars:
+                val = var.get().strip()
+                if val and val.startswith("#") and len(val) == 7:
+                    new_colors.append(val)
+            if new_colors:
+                settings["preset_colors"] = new_colors
+            settings["hotkeys"] = dict(current_hotkeys)
+            SettingsManager.save_settings(settings)
+            SettingsManager.apply_to_config()
+            dialog.destroy()
+            if on_save_callback:
+                on_save_callback()
+            messagebox.showinfo(i18n.tr("settings.saved_title"), i18n.tr("settings.saved_message"))
+        except Exception as e:
+            messagebox.showerror(i18n.tr("dialogs.error"), str(e))
+
+    btn_save = ctk.CTkButton(dialog, text=i18n.tr("settings.save"), height=45, font=("Arial", 14),
+                             command=save_settings)
+    btn_save.pack(pady=(0, 20))
+
+    dialog.update_idletasks()
+    dialog.grab_set()
+    x = parent.winfo_rootx() + (parent.winfo_width() // 2) - (700 // 2)
+    y = parent.winfo_rooty() + (parent.winfo_height() // 2) - (750 // 2)
+    dialog.geometry(f"+{x}+{y}")
+    parent.wait_window(dialog)
+
+
 class EditorView(ctk.CTkFrame):
     def __init__(self, parent, project: ProjectData, on_back_callback):
         super().__init__(parent)
@@ -107,6 +407,10 @@ class EditorView(ctk.CTkFrame):
                                             command=self.rename_project)
         btn_rename_project.pack(side="left", padx=12)
 
+        self.lbl_save_feedback = ctk.CTkLabel(left, text="", font=("Arial", 12),
+                                              text_color=CONFIG["colors"]["accent"])
+        self.lbl_save_feedback.pack(side="left")
+
         toolbar = ctk.CTkFrame(header, fg_color="transparent")
         toolbar.pack(side="right")
 
@@ -126,6 +430,26 @@ class EditorView(ctk.CTkFrame):
         btn_back = ctk.CTkButton(toolbar, text=i18n.tr("editor.back_to_dashboard"), width=100, height=35,
                                  fg_color="transparent", border_width=1, text_color=CONFIG["colors"]["text"], command=self.back_to_dashboard)
         btn_back.pack(side="left", padx=15)
+
+    def show_save_feedback(self):
+        self.lbl_save_feedback.configure(text=i18n.tr("editor.saved"))
+        self.after(1500, lambda: self.lbl_save_feedback.configure(text=""))
+
+    def focus_chord_name(self):
+        self.entry_title.focus_set()
+        self.entry_title.select_range(0, 'end')
+
+    def focus_description(self):
+        self.entry_desc.focus_set()
+        self.entry_desc.tag_add("sel", "0.0", "end")
+
+    def toggle_barre(self):
+        if self.current_fretboard:
+            self.current_fretboard.barres_disabled = not self.current_fretboard.barres_disabled
+            self.barres_disabled_var.set(self.current_fretboard.barres_disabled)
+            if self.canvas_widget:
+                self.canvas_widget.draw()
+            self.push_history()
 
     def setup_main_area(self):
         main = ctk.CTkScrollableFrame(self, fg_color=CONFIG["colors"]["bg"])
@@ -580,202 +904,4 @@ class DashboardView(ctk.CTkFrame):
         self.wait_window(dialog)
 
     def open_settings(self):
-        from settings import SettingsManager, DEFAULT_SETTINGS
-        import customtkinter as ctk
-        from constants import CONFIG
-
-        settings = SettingsManager.load_settings()
-        dialog = ctk.CTkToplevel(self)
-        dialog.title(i18n.tr("settings.dialog_title"))
-        dialog.geometry("650x800")
-        dialog.resizable(False, False)
-        dialog.transient(self)
-        if sys.platform == "darwin":
-            try:
-                dialog.attributes('-type', 'dialog')
-            except:
-                pass
-
-        scroll = ctk.CTkScrollableFrame(dialog)
-        scroll.pack(fill="both", expand=True, padx=20, pady=20)
-
-        ctk.CTkLabel(scroll, text=i18n.tr("settings.heading"), font=("Arial", 24, "bold")).pack(anchor="w", pady=(0, 20))
-
-        # Dark mode
-        dark_var = ctk.BooleanVar(value=settings.get("dark_mode", True))
-        dark_frame = ctk.CTkFrame(scroll, fg_color="transparent")
-        dark_frame.pack(fill="x", pady=(0, 15))
-        ctk.CTkLabel(dark_frame, text=i18n.tr("settings.dark_mode"), font=("Arial", 14, "bold")).pack(side="left")
-        dark_switch = ctk.CTkSwitch(dark_frame, text="", variable=dark_var)
-        dark_switch.pack(side="right")
-
-        # Default frets
-        frets_var = ctk.StringVar(value=str(settings.get("default_frets", 12)))
-        frets_frame = ctk.CTkFrame(scroll, fg_color="transparent")
-        frets_frame.pack(fill="x", pady=(0, 15))
-        ctk.CTkLabel(frets_frame, text=i18n.tr("settings.default_frets"), font=("Arial", 14, "bold")).pack(anchor="w")
-        ctk.CTkLabel(frets_frame, text=i18n.tr("settings.default_frets_desc"), font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"]).pack(anchor="w", pady=(0, 5))
-        frets_entry = ctk.CTkEntry(frets_frame, textvariable=frets_var, width=100)
-        frets_entry.pack(anchor="w")
-
-        # Default string count
-        strings_var = ctk.StringVar(value=str(settings.get("default_string_count", 6)))
-        strings_frame = ctk.CTkFrame(scroll, fg_color="transparent")
-        strings_frame.pack(fill="x", pady=(0, 15))
-        ctk.CTkLabel(strings_frame, text=i18n.tr("settings.default_string_count"), font=("Arial", 14, "bold")).pack(anchor="w")
-        ctk.CTkLabel(strings_frame, text=i18n.tr("settings.default_string_count_desc"), font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"]).pack(anchor="w", pady=(0, 5))
-        strings_entry = ctk.CTkEntry(strings_frame, textvariable=strings_var, width=100)
-        strings_entry.pack(anchor="w")
-
-        # Barre settings
-        ctk.CTkLabel(scroll, text=i18n.tr("settings.barre_behaviour"), font=("Arial", 16, "bold")).pack(anchor="w", pady=(10, 10))
-
-        barres_def_var = ctk.BooleanVar(value=settings.get("barres_enabled_default", True))
-        barres_def_frame = ctk.CTkFrame(scroll, fg_color="transparent")
-        barres_def_frame.pack(fill="x", pady=(0, 10))
-        ctk.CTkLabel(barres_def_frame, text=i18n.tr("settings.barres_enabled_default"), font=("Arial", 14, "bold")).pack(side="left")
-        ctk.CTkSwitch(barres_def_frame, text="", variable=barres_def_var).pack(side="right")
-
-        min_str_var = ctk.StringVar(value=str(settings.get("barre_min_strings", 2)))
-        min_str_frame = ctk.CTkFrame(scroll, fg_color="transparent")
-        min_str_frame.pack(fill="x", pady=(0, 15))
-        ctk.CTkLabel(min_str_frame, text=i18n.tr("settings.barre_min_strings"), font=("Arial", 14, "bold")).pack(anchor="w")
-        ctk.CTkLabel(min_str_frame, text=i18n.tr("settings.barre_min_strings_desc"), font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"]).pack(anchor="w", pady=(0, 5))
-        ctk.CTkEntry(min_str_frame, textvariable=min_str_var, width=100).pack(anchor="w")
-
-        # Dimensions
-        ctk.CTkLabel(scroll, text=i18n.tr("settings.dimensions_heading"), font=("Arial", 16, "bold")).pack(anchor="w", pady=(10, 10))
-        dim_settings = settings.get("dimensions", DEFAULT_SETTINGS["dimensions"])
-        dim_entries = {}
-        dim_descriptions = [
-            "string_spacing", "fret_spacing", "margin_top", "margin_bottom",
-            "margin_side", "nut_width", "dot_radius", "dot_small_radius",
-            "marker_radius", "barre_half_width", "barre_outline_width",
-            "barre_marker_radius"
-        ]
-        for key in dim_descriptions:
-            frame = ctk.CTkFrame(scroll, fg_color="transparent")
-            frame.pack(fill="x", pady=(0, 10))
-            ctk.CTkLabel(frame, text=i18n.tr(f"settings.dimensions.{key}"), font=("Arial", 13, "bold")).pack(anchor="w")
-            ctk.CTkLabel(frame, text=i18n.tr(f"settings.dimensions.{key}_desc"), font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"]).pack(anchor="w", pady=(0, 5))
-            var = ctk.StringVar(value=str(dim_settings.get(key, DEFAULT_SETTINGS["dimensions"][key])))
-            entry = ctk.CTkEntry(frame, textvariable=var, width=120)
-            entry.pack(anchor="w")
-            dim_entries[key] = var
-
-        # Preset colors
-        ctk.CTkLabel(scroll, text=i18n.tr("settings.preset_colors"), font=("Arial", 16, "bold")).pack(anchor="w", pady=(10, 10))
-        preset_colors = settings.get("preset_colors", DEFAULT_SETTINGS["preset_colors"])
-        color_frame = ctk.CTkFrame(scroll, fg_color="transparent")
-        color_frame.pack(fill="x", pady=(0, 10))
-        color_vars = []
-        def add_color():
-            settings["preset_colors"].append("#000000")
-            refresh_colors()
-        def remove_color(idx):
-            if len(settings["preset_colors"]) > 1:
-                settings["preset_colors"].pop(idx)
-                refresh_colors()
-        def refresh_colors():
-            for widget in color_frame.winfo_children():
-                widget.destroy()
-            color_vars.clear()
-            for i, color in enumerate(settings["preset_colors"]):
-                row = ctk.CTkFrame(color_frame, fg_color="transparent")
-                row.pack(fill="x", pady=2)
-                var = ctk.StringVar(value=color)
-                color_vars.append(var)
-                entry = ctk.CTkEntry(row, textvariable=var, width=120)
-                entry.pack(side="left", padx=(0, 10))
-
-                def update_preview(var=var, btn=None):
-                    color_val = var.get()
-                    try:
-                        btn.configure(fg_color=color_val, hover_color=color_val)
-                    except:
-                        pass
-
-                btn = ctk.CTkButton(row, text=" ", width=30, fg_color=color, hover_color=color)
-                btn.pack(side="left", padx=(0, 10))
-                var.trace_add("write", lambda *args, btn=btn, var=var: update_preview(var, btn))
-                btn_rem = ctk.CTkButton(row, text="✕", width=30, fg_color="#e74c3c", hover_color="#c0392b",
-                                         command=lambda idx=i: remove_color(idx))
-                btn_rem.pack(side="left")
-        refresh_colors()
-
-        btn_add_color = ctk.CTkButton(scroll, text=i18n.tr("settings.add_color"), height=32, command=add_color)
-        btn_add_color.pack(anchor="w", pady=(5, 15))
-
-        # Privacy & Updates
-        ctk.CTkLabel(scroll, text=i18n.tr("settings.about_heading"), font=("Arial", 16, "bold")).pack(anchor="w", pady=(10, 10))
-
-        about_frame = ctk.CTkFrame(scroll, fg_color="transparent")
-        about_frame.pack(fill="x", pady=(0, 15))
-
-        privacy_btn = ctk.CTkButton(about_frame, text=i18n.tr("settings.show_privacy"), height=38,
-                                    fg_color="transparent", border_width=1,
-                                    text_color=CONFIG["colors"]["text"],
-                                    command=lambda: self._show_privacy_from_settings())
-        privacy_btn.pack(side="left", padx=(0, 10))
-
-        update_btn = ctk.CTkButton(about_frame, text=i18n.tr("settings.check_updates"), height=38,
-                                   fg_color="transparent", border_width=1,
-                                   text_color=CONFIG["colors"]["text"],
-                                   command=lambda: self._check_updates_from_settings())
-        update_btn.pack(side="left")
-
-        # Language setting
-        lang_frame = ctk.CTkFrame(scroll, fg_color="transparent")
-        lang_frame.pack(fill="x", pady=(0, 15))
-        ctk.CTkLabel(lang_frame, text=i18n.tr("settings.language"), font=("Arial", 14, "bold")).pack(anchor="w")
-        lang_var = ctk.StringVar(value=i18n.LANGUAGE_NAMES.get(settings.get("language") or i18n.get_language(), "English"))
-        lang_menu = ctk.CTkOptionMenu(lang_frame, values=list(i18n.LANGUAGE_NAMES.values()), variable=lang_var)
-        lang_menu.pack(anchor="w")
-
-        def on_lang_change(choice):
-            for code, name in i18n.LANGUAGES:
-                if name == choice:
-                    settings["language"] = code
-                    i18n.set_language(code)
-                    break
-
-        lang_menu.configure(command=on_lang_change)
-
-        # Save button
-        def save_settings():
-            try:
-                settings["dark_mode"] = dark_var.get()
-                settings["default_frets"] = int(frets_var.get())
-                settings["default_string_count"] = int(strings_var.get())
-                settings["barres_enabled_default"] = barres_def_var.get()
-                settings["barre_min_strings"] = max(2, int(min_str_var.get()))
-                dims = {}
-                for key, var in dim_entries.items():
-                    dims[key] = int(var.get())
-                settings["dimensions"] = dims
-                new_colors = []
-                for var in color_vars:
-                    val = var.get().strip()
-                    if val and val.startswith("#") and len(val) == 7:
-                        new_colors.append(val)
-                if new_colors:
-                    settings["preset_colors"] = new_colors
-                SettingsManager.save_settings(settings)
-                SettingsManager.apply_to_config()
-                dialog.destroy()
-                from tkinter import messagebox
-                messagebox.showinfo(i18n.tr("settings.saved_title"), i18n.tr("settings.saved_message"))
-            except Exception as e:
-                from tkinter import messagebox
-                messagebox.showerror(i18n.tr("dialogs.error"), str(e))
-
-        btn_save = ctk.CTkButton(scroll, text=i18n.tr("settings.save"), height=45, font=("Arial", 14),
-                                 command=save_settings)
-        btn_save.pack(pady=(10, 20))
-
-        dialog.update_idletasks()
-        dialog.grab_set()
-        x = self.winfo_rootx() + (self.winfo_width() // 2) - (650 // 2)
-        y = self.winfo_rooty() + (self.winfo_height() // 2) - (750 // 2)
-        dialog.geometry(f"+{x}+{y}")
-        self.wait_window(dialog)
+        open_settings_dialog(self, on_save_callback=lambda: self.master.rebind_hotkeys())

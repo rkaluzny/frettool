@@ -46,6 +46,38 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.focus_set()
         self.draw()
 
+    def on_dot_properties_hotkey(self):
+        if not self.hovered_pos:
+            return
+        s, f = self.hovered_pos
+        key = f"{s},{f}"
+        if (s, f) not in self.data.positions:
+            return
+        current_label = (getattr(self.data, "dot_texts", {}) or {}).get(key, "")[:2]
+        current_color = (getattr(self.data, "dot_colors", {}) or {}).get(key, "")
+        default_color = getattr(self.data, "dot_color", CONFIG["colors"]["dot"]) or CONFIG["colors"]["dot"]
+
+        from constants import ask_dot_properties
+        res = ask_dot_properties(self.winfo_toplevel(), default_color, current_label, current_color)
+        if res is not None:
+            new_label, new_color = res
+            if not hasattr(self.data, "dot_texts") or self.data.dot_texts is None:
+                self.data.dot_texts = {}
+            if not hasattr(self.data, "dot_colors") or self.data.dot_colors is None:
+                self.data.dot_colors = {}
+            new_label = (new_label or "").strip()[:2]
+            if new_label:
+                self.data.dot_texts[key] = new_label
+            else:
+                self.data.dot_texts.pop(key, None)
+            new_color = (new_color or "").strip()
+            if new_color:
+                self.data.dot_colors[key] = new_color
+            else:
+                self.data.dot_colors.pop(key, None)
+            self.draw()
+            self.on_change()
+
     def on_resize(self, event):
         self.draw()
 

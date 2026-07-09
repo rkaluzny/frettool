@@ -3,6 +3,49 @@ import os
 import sys
 from persistence import get_data_dir
 
+DEFAULT_HOTKEYS = {
+    "new_project": "<Control-n>",
+    "open_settings": "<Control-period>",
+    "show_help": "<Control-h>",
+    "rename_project": "<Control-w>",
+    "undo": "<Control-z>",
+    "redo": "<Control-y>",
+    "export_pdf": "<Control-p>",
+    "back_to_dashboard": "<Control-Shift-d>",
+    "new_fretboard": "<Control-Shift-n>",
+    "remove_fretboard": "<Control-Shift-r>",
+    "save": "<Control-s>",
+    "focus_chord_name": "<Control-q>",
+    "focus_description": "<Control-t>",
+    "dot_properties": "p",
+    "toggle_barre": "<Alt-b>",
+}
+
+HOTKEY_GROUPS = {
+    "global": ["new_project", "open_settings", "show_help"],
+    "editor": ["rename_project", "undo", "redo", "export_pdf", "back_to_dashboard",
+               "new_fretboard", "remove_fretboard", "save", "focus_chord_name", "focus_description"],
+    "fretboard": ["dot_properties", "toggle_barre"],
+}
+
+HOTKEY_LABELS = {
+    "new_project": "New Project",
+    "open_settings": "Open Settings",
+    "show_help": "Show Help",
+    "rename_project": "Rename Project",
+    "undo": "Undo",
+    "redo": "Redo",
+    "export_pdf": "Export PDF",
+    "back_to_dashboard": "Back to Dashboard",
+    "new_fretboard": "New Fretboard",
+    "remove_fretboard": "Remove Fretboard",
+    "save": "Save",
+    "focus_chord_name": "Focus Chord Name",
+    "focus_description": "Focus Description",
+    "dot_properties": "Dot Properties",
+    "toggle_barre": "Toggle Barre",
+}
+
 DEFAULT_SETTINGS = {
     "language": None,
     "dark_mode": True,
@@ -32,6 +75,7 @@ DEFAULT_SETTINGS = {
     ],
     "privacy_accepted": False,
     "skip_update_check": False,
+    "hotkeys": {},
 }
 
 class SettingsManager:
