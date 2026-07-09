@@ -334,23 +334,25 @@ class FretboardCanvas(ctk.CTkCanvas):
         if self.hovered_pos is None and self.hovered_barre_key is None:
             return
 
+        direction = 0
+
+        if hasattr(event, 'delta'):
+            try:
+                d = float(event.delta)
+                direction = 1 if d > 0 else -1 if d < 0 else 0
+            except:
+                pass
+
+        if event.num == 4:
+            direction = 1
+        elif event.num == 5:
+            direction = -1
+
         if hasattr(event, 'keysym'):
             if event.keysym == 'w':
                 direction = 1
             elif event.keysym == 's':
                 direction = -1
-            else:
-                return
-        elif event.num == 4:
-            direction = 1
-        elif event.num == 5:
-            direction = -1
-        else:
-            try:
-                d = float(event.delta)
-                direction = 1 if d > 0 else -1 if d < 0 else 0
-            except:
-                direction = 0
 
         if direction == 0:
             return
