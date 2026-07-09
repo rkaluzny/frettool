@@ -174,8 +174,8 @@ class App(ctk.CTk):
                 suffix = ".exe" if sys.platform == "win32" else (".dmg" if sys.platform == "darwin" else ".AppImage")
                 fd, path = tf.mkstemp(suffix=suffix, prefix="FretTool_")
                 os.close(fd)
-                def progress_cb(pct):
-                    self.after(0, lambda: set_progress(pct))
+                def progress_cb(downloaded, total):
+                    self.after(0, lambda: set_progress(downloaded, total))
                 download_update(update_info["download_url"], path, progress_cb)
                 self.after(0, on_complete)
                 self.after(500, lambda: install_update(path, quit_callback=self.destroy))

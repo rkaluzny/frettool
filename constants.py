@@ -6,7 +6,7 @@ import customtkinter as ctk
 import i18n
 import sys
 
-VERSION = "1.1.1"
+VERSION = "1.1.2"
 
 HELP_TEXT = """\
 FretTool — Fretboard Diagram Editor

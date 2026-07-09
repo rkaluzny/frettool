@@ -92,7 +92,7 @@ def check_for_updates():
 def download_update(url, destination, progress_callback=None):
     context = ssl._create_unverified_context()
     req = Request(url, headers={"User-Agent": "FretTool-Updater/1.0"})
-    with urlopen(req, context=context) as resp:
+    with urlopen(req, timeout=30, context=context) as resp:
         total = int(resp.headers.get("Content-Length", 0))
         downloaded = 0
         chunk_size = 8192
@@ -103,8 +103,8 @@ def download_update(url, destination, progress_callback=None):
                     break
                 f.write(chunk)
                 downloaded += len(chunk)
-                if progress_callback and total > 0:
-                    progress_callback(downloaded / total)
+                if progress_callback:
+                    progress_callback(downloaded, total)
 
 
 def install_update(filepath, quit_callback=None):
@@ -235,6 +235,7 @@ def show_update_progress(parent, update_info):
     dialog.title(i18n.tr("updates.downloading"))
     dialog.resizable(False, False)
     dialog.transient(parent)
+    dialog.grab_set()
     if sys.platform == "darwin":
         try:
             dialog.attributes('-type', 'dialog')
@@ -255,9 +256,14 @@ def show_update_progress(parent, update_info):
     status = ctk.CTkLabel(frame, text="0%", font=("Arial", 11))
     status.pack()
 
-    def set_progress(pct):
-        progress.set(pct)
-        status.configure(text=f"{int(pct * 100)}%")
+    def set_progress(downloaded, total):
+        if total > 0:
+            pct = downloaded / total
+            progress.set(pct)
+            status.configure(text=f"{int(pct * 100)}%  ({downloaded // 1024} KB / {total // 1024} KB)")
+        else:
+            progress.set(0)
+            status.configure(text=f"{downloaded // 1024} KB downloaded")
         dialog.update_idletasks()
 
     def on_complete():
