@@ -6,7 +6,7 @@ import customtkinter as ctk
 import i18n
 import sys
 
-VERSION = "1.1.2"
+VERSION = "1.1.6"
 
 HELP_TEXT = """\
 FretTool — Fretboard Diagram Editor
@@ -340,10 +340,11 @@ def ask_dot_properties(parent, default_color: str, initial_label: str = "", init
     frame = ctk.CTkFrame(win, corner_radius=16)
     frame.pack(padx=18, pady=18, fill="both", expand=True)
 
-    lbl = ctk.CTkLabel(frame, text=i18n.tr("editor.dot_properties.label"), font=("Arial", 13))
+    lbl = ctk.CTkLabel(frame, text=i18n.tr("editor.dot_properties.label"), font=("Arial", 13),
+                       wraplength=300, justify="left")
     lbl.pack(anchor="w", pady=(8, 10), padx=12)
 
-    entry = ctk.CTkEntry(frame, textvariable=label_var, width=200)
+    entry = ctk.CTkEntry(frame, textvariable=label_var, width=280)
     entry.pack(anchor="w", padx=12, pady=(0, 10))
     entry.focus_set()
     entry.select_range(0, "end")

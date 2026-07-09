@@ -351,12 +351,27 @@ class ExportManager:
 
                 c.setFillColor(colors.HexColor("#0f172a"))
                 c.setFont("Helvetica-Bold", 12.5)
-                c.drawString(x0 + 0.55 * cm, y0 + card_h - 0.70 * cm, fb.title or i18n.tr("export.pdf_default_title"))
+                title_text = fb.title or i18n.tr("export.pdf_default_title")
+                title_max_width = card_w - 1.10 * cm
+                title_available = title_text
+                while c.stringWidth(title_available, "Helvetica-Bold", 12.5) > title_max_width and len(title_available) > 3:
+                    title_available = title_available[:-1]
+                if title_available != title_text:
+                    title_available = title_available[:-3] + "..."
+                c.drawString(x0 + 0.55 * cm, y0 + card_h - 0.70 * cm, title_available)
 
                 c.setFillColor(colors.HexColor("#475569"))
                 c.setFont("Helvetica", 8.5)
                 if fb.description:
-                    c.drawString(x0 + 0.55 * cm, y0 + card_h - 1.15 * cm, fb.description[:95])
+                    from constants import reverse_symbol_map
+                    desc_text = reverse_symbol_map(fb.description)
+                    desc_max_width = card_w - 1.10 * cm
+                    desc_available = desc_text
+                    while c.stringWidth(desc_available, "Helvetica", 8.5) > desc_max_width and len(desc_available) > 3:
+                        desc_available = desc_available[:-1]
+                    if desc_available != desc_text:
+                        desc_available = desc_available[:-3] + "..."
+                    c.drawString(x0 + 0.55 * cm, y0 + card_h - 1.15 * cm, desc_available)
 
                 fret_x = x0 + 0.55 * cm
                 fret_y_top = y0 + card_h - 1.45 * cm

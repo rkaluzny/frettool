@@ -443,6 +443,68 @@ class EditorView(ctk.CTkFrame):
         self.entry_desc.focus_set()
         self.entry_desc.tag_add("sel", "0.0", "end")
 
+    def _validate_title(self, new_text):
+        if len(new_text) <= self.TITLE_MAX:
+            self.after(1, lambda: self.lbl_title_counter.configure(text=f"{len(new_text)} / {self.TITLE_MAX}"))
+            return True
+        truncated = new_text[:self.TITLE_MAX]
+        self.after(1, lambda: self._set_title_via_validate(truncated))
+        return False
+
+    def _set_title_via_validate(self, text):
+        self.entry_title.delete(0, "end")
+        self.entry_title.insert(0, text)
+        self.lbl_title_counter.configure(text=f"{len(text)} / {self.TITLE_MAX}")
+        self.save_state()
+
+    def _on_desc_keypress(self, event):
+        if event.keysym in ("BackSpace", "Delete", "Left", "Right", "Up", "Down", "Home", "End", "Tab", "Shift_L", "Shift_R", "Control_L", "Control_R", "Caps_Lock"):
+            return
+        current = self.entry_desc.get("0.0", "end").strip()
+        if len(current) >= self.DESC_MAX:
+            return "break"
+
+    def _on_desc_paste(self, event):
+        try:
+            clipped = self.clipboard_get()
+        except:
+            return
+        current = self.entry_desc.get("0.0", "end").strip()
+        remaining = self.DESC_MAX - len(current)
+        if remaining <= 0:
+            return "break"
+        if len(clipped) > remaining:
+            clipped = clipped[:remaining]
+        try:
+            sel_start = self.entry_desc.index("sel.first")
+            sel_end = self.entry_desc.index("sel.last")
+            self.entry_desc.delete(sel_start, sel_end)
+        except:
+            pass
+        try:
+            cursor = self.entry_desc.index("insert")
+        except:
+            cursor = "end"
+        self.entry_desc.insert(cursor, clipped)
+        self._on_desc_modified()
+        return "break"
+
+    def _on_desc_modified(self):
+        text = self.entry_desc.get("0.0", "end").strip()
+        count = len(text)
+        if count > self.DESC_MAX:
+            self.entry_desc.delete(f"{self.DESC_MAX}.0", "end")
+            text = text[:self.DESC_MAX]
+            count = self.DESC_MAX
+        self.lbl_desc_counter.configure(text=f"{count} / {self.DESC_MAX}")
+        self.save_state()
+
+    def _update_counters(self):
+        title_text = self.entry_title.get()
+        self.lbl_title_counter.configure(text=f"{len(title_text)} / {self.TITLE_MAX}")
+        desc_text = self.entry_desc.get("0.0", "end").strip()
+        self.lbl_desc_counter.configure(text=f"{len(desc_text)} / {self.DESC_MAX}")
+
     def toggle_barre(self):
         if self.current_fretboard:
             self.current_fretboard.barres_disabled = not self.current_fretboard.barres_disabled
@@ -470,6 +532,13 @@ class EditorView(ctk.CTkFrame):
                                        font=("Arial", 20, "bold"), height=45,
                                        text_color=CONFIG["colors"]["text"])
         self.entry_title.pack(fill="x", pady=(5, 0))
+
+        self.TITLE_MAX = 60
+        self.lbl_title_counter = ctk.CTkLabel(self.title_frame, text=f"0 / {self.TITLE_MAX}",
+                                              font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"])
+        self.lbl_title_counter.pack(anchor="e", pady=(2, 0))
+        self._title_validate_cmd = self.register(self._validate_title)
+        self.entry_title.configure(validate="key", validatecommand=(self._title_validate_cmd, "%P"))
         self.entry_title.bind("<KeyRelease>", lambda e: self.save_state())
 
         self.canvas_widget = None
@@ -481,13 +550,20 @@ class EditorView(ctk.CTkFrame):
                                     font=("Arial", 13), text_color=CONFIG["colors"]["text_muted"])
         lbl_desc_hint.pack(anchor="w")
 
+        self.DESC_MAX = 100
         self.entry_desc = ctk.CTkTextbox(self.desc_frame, height=80, font=("Arial", 13),
                                           text_color=CONFIG["colors"]["text"])
         self.entry_desc.pack(fill="x", pady=(5, 0))
-        self.entry_desc.bind("<KeyRelease>", lambda e: self.save_state())
+
+        self.lbl_desc_counter = ctk.CTkLabel(self.desc_frame, text=f"0 / {self.DESC_MAX}",
+                                             font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"])
+        self.lbl_desc_counter.pack(anchor="e", pady=(2, 0))
+        self.entry_desc.bind("<KeyPress>", self._on_desc_keypress)
+        self.entry_desc.bind("<KeyRelease>", lambda e: self._on_desc_modified())
+        self.entry_desc.bind("<<Paste>>", self._on_desc_paste)
 
     def setup_sidebar(self):
-        sidebar = ctk.CTkScrollableFrame(self, width=280, corner_radius=0, fg_color=CONFIG["colors"]["surface"])
+        sidebar = ctk.CTkScrollableFrame(self, width=300, corner_radius=0, fg_color=CONFIG["colors"]["surface"])
         sidebar.grid(row=1, column=1, sticky="ns")
 
         lbl = ctk.CTkLabel(sidebar, text=i18n.tr("editor.fretboards"), font=("Arial", 16, "bold"),
@@ -514,18 +590,24 @@ class EditorView(ctk.CTkFrame):
         self.btn_dot_color.pack(fill="x", pady=(0, 8))
 
         lbl_hint = ctk.CTkLabel(settings_frame, text=i18n.tr("editor.dot_color_hint"),
-                                text_color=CONFIG["colors"]["text_muted"], font=("Arial", 10))
+                                text_color=CONFIG["colors"]["text_muted"], font=("Arial", 10),
+                                wraplength=240, justify="left")
         lbl_hint.pack(anchor="w", pady=(0, 8))
 
         self.barres_disabled_var = ctk.BooleanVar(value=False)
+        barre_row = ctk.CTkFrame(settings_frame, fg_color="transparent")
+        barre_row.pack(fill="x", pady=(0, 8))
         self.chk_disable_barres = ctk.CTkCheckBox(
-            settings_frame,
-            text=i18n.tr("editor.disable_barres"),
+            barre_row,
+            text="",
             variable=self.barres_disabled_var,
-            text_color=CONFIG["colors"]["text"],
             command=self.on_barres_toggle,
+            width=20,
         )
-        self.chk_disable_barres.pack(anchor="w", pady=(0, 8))
+        self.chk_disable_barres.pack(side="left")
+        lbl_barre = ctk.CTkLabel(barre_row, text=i18n.tr("editor.disable_barres"),
+                                 text_color=CONFIG["colors"]["text"], wraplength=190, justify="left", anchor="w")
+        lbl_barre.pack(side="left", fill="x", expand=True)
 
         self.entry_strings = ctk.CTkEntry(settings_frame, placeholder_text=i18n.tr("editor.strings_placeholder"),
                                            text_color=CONFIG["colors"]["text"])
@@ -564,10 +646,10 @@ class EditorView(ctk.CTkFrame):
         self.current_fretboard = fb
 
         self.entry_title.delete(0, 'end')
-        self.entry_title.insert(0, fb.title)
+        self.entry_title.insert(0, fb.title[:self.TITLE_MAX])
 
         self.entry_desc.delete("0.0", "end")
-        self.entry_desc.insert("0.0", fb.description)
+        self.entry_desc.insert("0.0", fb.description[:self.DESC_MAX])
 
         self.entry_frets.delete(0, 'end')
         self.entry_frets.insert(0, str(fb.num_frets))
@@ -583,6 +665,7 @@ class EditorView(ctk.CTkFrame):
         self.canvas_widget = FretboardCanvas(self.canvas_container, fb, on_change_callback=lambda: self.push_history())
         self.canvas_widget.grid(row=1, column=0, pady=(5, 20))
         self.update_dot_color_button()
+        self._update_counters()
 
         self.refresh_list()
 
@@ -606,8 +689,8 @@ class EditorView(ctk.CTkFrame):
     def save_state(self):
         if not self.current_fretboard: return
 
-        self.current_fretboard.title = self.entry_title.get().strip()
-        self.current_fretboard.description = self.entry_desc.get("0.0", "end").strip()
+        self.current_fretboard.title = self.entry_title.get().strip()[:self.TITLE_MAX]
+        self.current_fretboard.description = self.entry_desc.get("0.0", "end").strip()[:self.DESC_MAX]
 
         try:
             sc = int(self.entry_strings.get())
@@ -688,10 +771,10 @@ class EditorView(ctk.CTkFrame):
         self.current_fretboard.dot_small = getattr(fb_data, "dot_small", {}) or {}
 
         self.entry_title.delete(0, 'end')
-        self.entry_title.insert(0, fb_data.title)
+        self.entry_title.insert(0, fb_data.title[:self.TITLE_MAX])
 
         self.entry_desc.delete("0.0", "end")
-        self.entry_desc.insert("0.0", fb_data.description)
+        self.entry_desc.insert("0.0", fb_data.description[:self.DESC_MAX])
 
         self.entry_frets.delete(0, 'end')
         self.entry_frets.insert(0, str(fb_data.num_frets))
@@ -705,6 +788,7 @@ class EditorView(ctk.CTkFrame):
         self.canvas_widget = FretboardCanvas(self.canvas_container, self.current_fretboard, on_change_callback=lambda: self.push_history())
         self.canvas_widget.grid(row=1, column=0, pady=(5, 20))
         self.update_dot_color_button()
+        self._update_counters()
         self.refresh_list()
 
     def update_dot_color_button(self):
@@ -813,9 +897,14 @@ class DashboardView(ctk.CTkFrame):
                                height=120)
             card.pack(fill="x", pady=15)
             card.bind("<Button-1>", lambda e, p=proj: self.on_open(p))
+            card.bind("<Enter>", lambda e: card.configure(cursor="hand2"))
+            card.bind("<Leave>", lambda e: card.configure(cursor=""))
 
             top = ctk.CTkFrame(card, fg_color="transparent")
             top.pack(fill="x", padx=30, pady=(18, 0))
+            top.bind("<Button-1>", lambda e, p=proj: self.on_open(p))
+            top.bind("<Enter>", lambda e: card.configure(cursor="hand2"))
+            top.bind("<Leave>", lambda e: card.configure(cursor=""))
 
             lbl_name = ctk.CTkLabel(top, text=proj.name, font=("Arial", 20, "bold"),
                                     text_color=CONFIG["colors"]["text"])
