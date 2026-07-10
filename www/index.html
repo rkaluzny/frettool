@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FretTool — Fretboard Diagram Editor & Chord Chart Maker</title>
+  <meta name="description" content="FretTool is a free fretboard diagram editor for guitar and other string instruments. Sketch chords, scales and fingerings, form barres automatically, add labels, and export print-ready PDFs.">
+  <meta name="keywords" content="fretboard diagram, chord chart maker, guitar tab, fretboard editor, scale diagram, barre chords, music notation, guitar tool, PDF chord chart">
+  <meta name="author" content="FretTool">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#141730">
+  <link rel="canonical" href="https://frettool.com/">
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="FretTool">
+  <meta property="og:title" content="FretTool — Fretboard Diagram Editor & Chord Chart Maker">
+  <meta property="og:description" content="Sketch guitar chords, scales and fingerings, form barres automatically, and export print-ready PDFs. Try the interactive demo in your browser.">
+  <meta property="og:url" content="https://frettool.com/">
+  <meta property="og:image" content="https://frettool.com/img/logo.png">
+  <meta property="og:image:alt" content="FretTool logo">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FretTool — Fretboard Diagram Editor & Chord Chart Maker">
+  <meta name="twitter:description" content="Sketch guitar chords, scales and fingerings, form barres automatically, and export print-ready PDFs.">
+  <meta name="twitter:image" content="https://frettool.com/img/logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Nunito:wght@400;600;700;800&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "FretTool",
+    "url": "https://frettool.com/",
+    "image": "https://frettool.com/img/logo.png",
+    "description": "A fretboard diagram editor for designing guitar and other string instrument chords, scales, and custom fingerings, with PDF export.",
+    "applicationCategory": "MusicApplication",
+    "operatingSystem": "Windows, macOS, Linux",
+    "softwareVersion": "1.1.7",
+    "license": "https://opensource.org/licenses/MIT",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "FretTool",
+      "url": "https://github.com/rkaluzny/frettool"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "FretTool",
+    "url": "https://frettool.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://frettool.com/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+</head>
+<body>
+  <a href="#demo" class="skip-link">Skip to demo</a>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="header">
+    <div class="container header-inner">
+      <span class="logo">
+        <img src="img/logo.png" alt="FretTool logo" class="logo-img">
+        Fret<span class="logo-accent">Tool</span>
+      </span>
+      <nav class="nav">
+        <a href="#features">Features</a>
+        <a href="#demo">Demo</a>
+        <a href="#download">Download</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+  <section class="hero">
+    <div class="hero-blob hero-blob-1" aria-hidden="true"></div>
+    <div class="hero-blob hero-blob-2" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <p class="hero-kicker">a little workshop for your fretboard ideas</p>
+      <h1>FretTool</h1>
+      <p class="hero-sub">Fretboard Diagram Editor</p>
+      <p class="hero-desc">Sketch chords, scales and fingerings the way you think about them — click to drop a note, let barres form by themselves, scribble a label, then send it off as a PDF.</p>
+      <div class="hero-icons">
+        <img src="img/music-solid-full.svg" alt="Note icon" class="hero-icon" loading="lazy" decoding="async">
+        <img src="img/file-pdf-solid-full.svg" alt="PDF icon" class="hero-icon" loading="lazy" decoding="async">
+        <img src="img/palette-solid-full.svg" alt="Palette icon" class="hero-icon" loading="lazy" decoding="async">
+        <img src="img/x-solid-full.svg" alt="X marker icon" class="hero-icon" loading="lazy" decoding="async">
+      </div>
+      <div class="hero-btns">
+        <a href="#demo" class="btn btn-primary">Try the online demo</a>
+        <a href="#download" class="btn btn-secondary">Get the app</a>
+      </div>
+    </div>
+    <svg class="wave-divider" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,64 C240,120 480,16 720,48 C960,80 1200,120 1440,72 L1440,120 L0,120 Z"></path>
+    </svg>
+  </section>
+
+  <section id="features" class="features">
+    <div class="container">
+      <p class="section-kicker">what it does</p>
+      <h2 class="section-title">A friendly box of fretboard tricks</h2>
+      <p class="section-desc">Everything you need to map out a song — without fighting your software.</p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <img src="img/music-solid-full.svg" alt="Note icon">
+          </div>
+          <h3>Place notes by feel</h3>
+          <p>Left-click to drop a dot. Hold a modifier and you get a square, a triangle, or a wee one for passing tones.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#9839;</div>
+          <h3>Barres that just happen</h3>
+          <p>Put dots on neighbouring strings at the same fret and a barre appears. Split, merge and recolour it however you like.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#9998;</div>
+          <h3>Labels for humans</h3>
+          <p>Tag any dot with a two-character note — finger numbers, intervals, anything that helps you remember.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <img src="img/x-solid-full.svg" alt="X marker icon">
+          </div>
+          <h3>X for the muted ones</h3>
+          <p>Right-click an empty spot to mark a string as muted or open. No more guessing which strings stay quiet.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <img src="img/file-pdf-solid-full.svg" alt="PDF export icon">
+          </div>
+          <h3>Print-ready PDFs</h3>
+          <p>Export crisp diagrams with Ctrl+P. Hand them to your band, pin them to the fridge, teach a lesson.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <img src="img/palette-solid-full.svg" alt="Customizable icon">
+          </div>
+          <h3>Made to fit you</h3>
+          <p>2–12 strings, 1–24 frets, dark or light, ten languages, and every hotkey rebindable. It bends to your habit.</p>
+        </div>
+      </div>
+    </div>
+    <svg class="wave-divider wave-divider-flip" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,64 C240,120 480,16 720,48 C960,80 1200,120 1440,72 L1440,120 L0,120 Z"></path>
+    </svg>
+  </section>
+
+  <section id="demo" class="demo">
+    <div class="container">
+      <p class="section-kicker">give it a go</p>
+      <h2 class="section-title">Live Demo</h2>
+      <p class="section-desc">A real, clickable fretboard — try a few of the things the desktop app does.</p>
+
+      <div class="demo-layout">
+        <div class="demo-main">
+          <div class="demo-header">
+            <input type="text" id="chordName" class="demo-title-input" placeholder="Chord or scale name — e.g. C major 7" maxlength="60">
+            <span class="char-counter" id="titleCounter">0 / 60</span>
+          </div>
+
+          <div class="demo-toolbar">
+            <div class="tool-group">
+              <label for="instrumentSel">Instrument</label>
+              <select id="instrumentSel">
+                <option value="6,12">Guitar (6)</option>
+                <option value="7,12">7-string guitar (7)</option>
+                <option value="4,12">Bass (4)</option>
+                <option value="4,12" data-name="Ukulele">Ukulele (4)</option>
+                <option value="12,12">12-string (12)</option>
+                <option value="5,12">Banjo-ish (5)</option>
+                <option value="3,12">3-string (3)</option>
+              </select>
+            </div>
+            <div class="tool-group">
+              <label for="fretRange">Frets <span id="fretVal" class="tool-val">12</span></label>
+              <input type="range" id="fretRange" min="1" max="24" value="12">
+            </div>
+            <div class="tool-group">
+              <label for="stringRange">Strings <span id="stringVal" class="tool-val">6</span></label>
+              <input type="range" id="stringRange" min="2" max="12" value="6">
+            </div>
+            <div class="tool-group tool-actions">
+              <button id="undoBtn" class="tool-btn" title="Undo (Ctrl+Z)">&#8630; Undo</button>
+              <button id="redoBtn" class="tool-btn" title="Redo (Ctrl+Y)">&#8631; Redo</button>
+              <button id="clearBtn" class="tool-btn tool-btn-warn" title="Clear the board">Clear</button>
+            </div>
+          </div>
+
+          <div class="fretboard-wrap">
+            <canvas id="fretboardCanvas" width="820" height="380"></canvas>
+          </div>
+          <div class="demo-desc">
+            <textarea id="chordDesc" class="demo-desc-input" placeholder="A note to your future self — max 250 characters" maxlength="250"></textarea>
+            <span class="char-counter" id="descCounter">0 / 250</span>
+          </div>
+        </div>
+        <div class="demo-sidebar">
+          <h3 class="sidebar-title">How to play</h3>
+          <div class="help-list">
+            <div class="help-item"><kbd>Left-click</kbd> <span>Place / remove a dot</span></div>
+            <div class="help-item"><kbd>Ctrl+Click</kbd> <span>Square note</span></div>
+            <div class="help-item"><kbd>Shift+Click</kbd> <span>Triangle note</span></div>
+            <div class="help-item"><kbd>Alt+Click</kbd> <span>Small note</span></div>
+            <div class="help-item"><kbd>Right-click</kbd> <span>X marker / add a label</span></div>
+            <div class="help-item"><kbd>Scroll</kbd> <span>Cycle a dot's colours</span></div>
+            <div class="help-item"><kbd>Click barre</kbd> <span>Select it, then &uarr;/&darr; to split</span></div>
+            <div class="help-item"><kbd>Del / Bksp</kbd> <span>Remove the hovered dot</span></div>
+            <div class="help-item"><kbd>Ctrl+Z / Y</kbd> <span>Undo / redo</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="download" class="download">
+    <div class="container">
+      <p class="section-kicker">take it home</p>
+      <h2 class="section-title">Download</h2>
+      <p class="section-desc">The full desktop app, for the platform you actually use.</p>
+      <div class="download-grid">
+        <a href="https://github.com/rkaluzny/frettool/releases/download/v1.1.7/FretTool-Setup-1.1.7-x86_64.exe" class="download-card" data-platform="windows">
+          <div class="dl-icon">
+            <img src="img/windows-brands-solid-full.svg" alt="Windows icon" loading="lazy" decoding="async">
+          </div>
+          <span class="dl-name">Windows</span>
+          <span class="dl-ext">.exe</span>
+        </a>
+        <a href="https://github.com/rkaluzny/frettool/releases/download/v1.1.7/FretTool-1.1.7-x86_64.AppImage" class="download-card" data-platform="linux">
+          <div class="dl-icon">
+            <img src="img/linux-brands-solid-full.svg" alt="Linux icon" loading="lazy" decoding="async">
+          </div>
+          <span class="dl-name">Linux</span>
+          <span class="dl-ext">.AppImage</span>
+        </a>
+        <a href="https://github.com/rkaluzny/frettool/releases/download/v1.1.7/FretTool-1.1.7.dmg" class="download-card" data-platform="macos">
+          <div class="dl-icon">
+            <img src="img/apple-brands-solid-full.svg" alt="macOS icon" loading="lazy" decoding="async">
+          </div>
+          <span class="dl-name">macOS</span>
+          <span class="dl-ext">.dmg</span>
+        </a>
+      </div>
+      <p class="dl-note">All releases live on <a href="https://github.com/rkaluzny/frettool/releases" target="_blank" rel="noopener">GitHub</a>. Source code is MIT licensed — poke at it all you like.</p>
+    </div>
+  </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>FretTool &mdash; built with care, MIT licensed</span>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="#features">Features</a>
+        <a href="#demo">Demo</a>
+        <a href="#download">Download</a>
+        <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="demo.js" defer></script>
+</body>
+</html>

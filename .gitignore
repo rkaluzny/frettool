@@ -2,7 +2,6 @@ dist/
 build/
 __pycache__/
 backup/
-www/
 *.spec
 projects.json
 settings.json

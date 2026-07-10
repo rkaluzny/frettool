@@ -2,7 +2,7 @@
   <img src="logo.png" alt="FretTool" width="200">
 </p>
 
-# FretTool — v1.1.1
+# FretTool — v1.1.7
 
 A Python application for designing guitar (and other string instrument) fretboard diagrams, chords, scales, and custom fingerings. Built with CustomTkinter.
 
