@@ -68,8 +68,9 @@ class ExportManager:
             marker_radius = max(3, CONFIG["dimensions"]["barre_marker_radius"])
             for string_idx in group.strings:
                 cy = CONFIG["dimensions"]["margin_top"] + string_idx * s_space
-                svg_content += f'<circle cx="{cx}" cy="{cy}" r="{marker_radius}" fill="{fill}" stroke="#ffffff" stroke-width="1" />'
                 label = group.labels.get(string_idx, "")
+                if not label:
+                    svg_content += f'<circle cx="{cx}" cy="{cy}" r="{marker_radius}" fill="{fill}" stroke="#ffffff" stroke-width="1" />'
                 if label:
                     from constants import apply_symbol_map
                     label = apply_symbol_map(label[:2])
@@ -197,10 +198,11 @@ class ExportManager:
             marker_radius = CONFIG["dimensions"]["barre_marker_radius"] * 1.5 / 100 * cm
             for string_idx in group.strings:
                 pos_y = y_offset - string_idx * pdf_string_spacing
-                c.setFillColorRGB(*hex_to_rgb01(group.color))
-                c.setStrokeColorRGB(1.0, 1.0, 1.0)
-                c.circle(pos_x, pos_y, marker_radius, fill=1, stroke=1)
                 label = group.labels.get(string_idx, "")
+                if not label:
+                    c.setFillColorRGB(*hex_to_rgb01(group.color))
+                    c.setStrokeColorRGB(1.0, 1.0, 1.0)
+                    c.circle(pos_x, pos_y, marker_radius, fill=1, stroke=1)
                 if label:
                     from constants import apply_symbol_map
                     label = apply_symbol_map(label[:2])

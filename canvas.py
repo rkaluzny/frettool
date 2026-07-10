@@ -181,21 +181,21 @@ class FretboardCanvas(ctk.CTkCanvas):
         marker_outline = "#ffffff"
         for string_idx in group.strings:
             cy = margin_y_top + string_idx * string_h
-            if preview:
-                marker_fill = fill_color
-                marker_outline = fill_color
-            else:
-                marker_fill = fill_color
-            self.create_oval(
-                geom["cx"] - marker_radius, cy - marker_radius,
-                geom["cx"] + marker_radius, cy + marker_radius,
-                fill=marker_fill,
-                stipple=fill_stipple,
-                outline=marker_outline,
-                width=1,
-            )
-
             label = (group.labels.get(string_idx, "") or "").strip()[:2]
+            if not label:
+                if preview:
+                    marker_fill = fill_color
+                    marker_outline = fill_color
+                else:
+                    marker_fill = fill_color
+                self.create_oval(
+                    geom["cx"] - marker_radius, cy - marker_radius,
+                    geom["cx"] + marker_radius, cy + marker_radius,
+                    fill=marker_fill,
+                    stipple=fill_stipple,
+                    outline=marker_outline,
+                    width=1,
+                )
             if label:
                 from constants import apply_symbol_map, hex_to_rgb01
                 label = apply_symbol_map(label)
@@ -622,11 +622,11 @@ class FretboardCanvas(ctk.CTkCanvas):
                         self.create_rectangle(cx-hit_radius-3, cy-hit_radius-3, cx+hit_radius+3, cy+hit_radius+3,
                                                fill="", outline=CONFIG["colors"]["dot_hover"], width=2)
 
-                    marker_radius = CONFIG["dimensions"]["barre_marker_radius"]
-                    self.create_oval(cx - marker_radius, cy - marker_radius, cx + marker_radius, cy + marker_radius,
-                                     fill=group.color, outline="#ffffff", width=1)
-
                     label = (group.labels.get(s, "") or "").strip()[:2]
+                    if not label:
+                        marker_radius = CONFIG["dimensions"]["barre_marker_radius"]
+                        self.create_oval(cx - marker_radius, cy - marker_radius, cx + marker_radius, cy + marker_radius,
+                                         fill=group.color, outline="#ffffff", width=1)
                     label = apply_symbol_map(label)
                     if label:
                         r, g, b = hex_to_rgb01(group.color)
