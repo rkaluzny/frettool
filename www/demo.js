@@ -936,6 +936,31 @@
   }
   document.querySelectorAll('.feature-card, .download-card').forEach(function (el) { attachTilt(el, 7); });
 
+  // --- Hamburger menu ---
+  const hamburger = document.querySelector('.hamburger');
+  const mainNav = document.getElementById('mainNav');
+  if (hamburger && mainNav) {
+    hamburger.addEventListener('click', function () {
+      var isOpen = mainNav.classList.toggle('open');
+      hamburger.classList.toggle('active');
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+    });
+    mainNav.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        mainNav.classList.remove('open');
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+      });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && mainNav.classList.contains('open')) {
+        mainNav.classList.remove('open');
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   // Initial draw
   updateCounters();
   updateHistoryButtons();
