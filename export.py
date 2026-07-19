@@ -6,7 +6,30 @@ from barre_utils import get_barre_groups
 
 class ExportManager:
     @staticmethod
-    def export_svg(fretboard: FretboardData, filename: str):
+    def export_png_from_canvas(canvas_widget, filename: str):
+        try:
+            from PIL import Image
+            import io
+            ps_data = canvas_widget.postscript(colormode="color")
+            img = Image.open(io.BytesIO(ps_data.encode("utf-8")))
+            img.save(filename, "PNG")
+            messagebox.showinfo(i18n.tr("dialogs.success"), i18n.tr("export.success_png"))
+            return True
+        except Exception as e:
+            messagebox.showerror(i18n.tr("export.error"), str(e))
+            return False
+
+    @staticmethod
+    def export_svg(project: ProjectData, filename: str):
+        """Export all fretboards as separate SVG pages (prefixed by the filename)."""
+        base = filename.rsplit(".", 1)[0]
+        for i, fb in enumerate(project.fretboards):
+            fb_filename = f"{base}_{i+1}.svg"
+            ExportManager._export_svg_single(fb, fb_filename)
+        messagebox.showinfo(i18n.tr("dialogs.success"), i18n.tr("export.success_svg_all"))
+
+    @staticmethod
+    def _export_svg_single(fretboard: FretboardData, filename: str):
         margin = CONFIG["dimensions"]["margin_side"]
         s_space = CONFIG["dimensions"]["string_spacing"]
         f_space = CONFIG["dimensions"]["fret_spacing"]
@@ -83,18 +106,18 @@ class ExportManager:
         for s, f in fretboard.positions:
             if (s, f) in barre_positions and f > 0:
                 continue
-            if f == 0:
-                cx = margin - 25
-                r_circle = CONFIG["dimensions"]["dot_radius"]
-            else:
-                cx = margin + (f - 0.5) * f_space
-                r_circle = CONFIG["dimensions"]["dot_radius"]
-            cy = CONFIG["dimensions"]["margin_top"] + s * s_space
             key = f"{s},{f}"
             dot_color = dot_colors.get(key, default_dot_color) or default_dot_color
             is_small = dot_small.get(key, False)
+            dot_type = dot_types.get(key, "circle")
+            r_circle = CONFIG["dimensions"]["dot_small_radius"] if is_small else CONFIG["dimensions"]["dot_radius"]
+            if f == 0:
+                cx = margin - 25
+            else:
+                cx = margin + (f - 0.5) * f_space
+            cy = CONFIG["dimensions"]["margin_top"] + s * s_space
             stroke_color = CONFIG["colors"]["text"] if CONFIG["colors"]["bg"] == "#1a1a2e" else "#0f172a"
-            if is_small:
+            if dot_type == "square":
                 svg_content += f'<rect x="{cx - r_circle}" y="{cy - r_circle}" width="{r_circle*2}" height="{r_circle*2}" fill="{dot_color}" stroke="{stroke_color}" stroke-width="2" />'
             elif dot_type == "triangle":
                 points = f"{cx},{cy - r_circle} {cx - r_circle},{cy + r_circle} {cx + r_circle},{cy + r_circle}"

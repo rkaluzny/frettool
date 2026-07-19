@@ -130,7 +130,7 @@ class SettingsManager:
                     CONFIG["dimensions"][key] = value
 
         import constants
-        constants.PRESET_COLORS = settings["preset_colors"][:4]
+        constants.PRESET_COLORS = list(settings["preset_colors"])
 
         if settings.get("dark_mode", True):
             from customtkinter import set_appearance_mode

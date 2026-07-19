@@ -2,7 +2,7 @@
   <img src="logo.png" alt="FretTool" width="200">
 </p>
 
-# FretTool — v1.1.7
+# FretTool — v1.2.0
 
 A Python application for designing guitar (and other string instrument) fretboard diagrams, chords, scales, and custom fingerings. Built with CustomTkinter.
 
@@ -17,29 +17,45 @@ A Python application for designing guitar (and other string instrument) fretboar
 ### Note Input & Editing
 - **Standard Dots**: Left-click to place circular dots
 - **Barres**: Form automatically when 2+ adjacent standard (circle) dots exist on the same fret
-- **Barre Color Cycling**: Hover anywhere on a barre and scroll the mouse wheel (or two-finger touchpad) to cycle all barre dots through preset colours
+- **Barre Color Cycling**: Hover anywhere on a barre and scroll the mouse wheel (or two-finger touchpad) to cycle all barre dots through preset colours — a popup shows the colour palette
 - **Barre Splitting**: Hover a dot within a barre and press ↑/↓ to split the barre at that string boundary
 - **Special Notation**:
   - Ctrl+Click: square note
   - Shift+Click: triangle note
   - Alt+Click: smaller dot
+  - Ctrl+Shift+Click: square (takes priority)
 - **Note Labels**: Right-click an existing dot to set a 2-character label and/or per-dot colour
 - **Fret Labels**: Double-click above the fret numbers to add text labels to frets
-- **Colour Cycling**: Hover any dot and scroll the mouse wheel to cycle through preset colours
-- **Delete Key**: Press Delete or Backspace to remove the currently hovered dot
+- **Colour Cycling**: Hover any dot and scroll the mouse wheel to cycle through preset colours with a live preview palette
+- **Multi-Select**: Ctrl+RightClick to select multiple dots; Delete/Backspace removes all selected dots; colour cycling applies to all selected dots at once
+- **Dot Properties Hotkey**: Press `P` while hovering a dot to open its properties dialog
+- **Delete Key**: Press Delete or Backspace to remove the hovered dot or all selected dots
 
 ### Export
 - **PDF Export**: High-quality multi-fretboard PDF via ReportLab
+- **SVG Export**: Vector export of all fretboards (individual files)
+- **PNG Export**: Raster image export of the current fretboard
 - **Keyboard Shortcut**: Ctrl+P for quick PDF export
 - **Symbol Mapping**: `b`/`#` converted to `♭`/`♯` in PDF output
 
 ### Undo / Redo
 - **Undo/Redo Buttons**: ↶ and ↷ in the editor toolbar
 - **Keyboard Shortcuts**: Ctrl+Z (undo), Ctrl+Y (redo)
+- **History Depth**: Up to 20 states per fretboard
+
+### Copy / Paste Fretboard
+- **Copy**: Ctrl+C or the "Copy" button in the sidebar duplicates the current fretboard
+- **Paste**: Ctrl+V or the "Paste" button creates a new fretboard from the clipboard
+- The copy is preserved across fretboard switches
+
+### Dashboard Search
+- **Search Bar**: Filter projects by name in real-time from the dashboard
+- **Project Preview**: Each card shows a mini fretboard preview of the first fretboard
 
 ### Configurable Hotkeys
 - **Custom Bindings**: Every action can be re-bound to any key combination
 - **Hotkey Recorder**: Press a key combination to record it in the settings dialog
+- **Conflict Detection**: Settings warn about duplicate key assignments before saving
 - **Persistent**: Hotkey overrides are saved to `settings.json`
 - **Categories**: Actions organized into Editor, Dashboard, and General groups
 
@@ -60,6 +76,7 @@ A Python application for designing guitar (and other string instrument) fretboar
 - **Multiple Fretboards**: Many fretboards per project with tab navigation
 - **Auto-Save**: Automatic saving on every change
 - **Rename/Delete**: Manage projects and fretboards from the dashboard
+- **JSON Backup**: Export all projects or a single project as JSON for backup or sharing; import projects from JSON files
 
 ### User Experience
 - **Dark/Light Mode**: Adaptive UI follows system preference
@@ -68,6 +85,7 @@ A Python application for designing guitar (and other string instrument) fretboar
 - **Built-in Help**: `?` button available from both dashboard and editor
 - **Update Checker**: Periodic check for new versions via GitHub API
 - **Privacy**: First-launch dialog explaining data handling (no telemetry)
+- **Multi-Language**: 10 languages with RTL support for Hebrew and Arabic
 
 ## Getting Started (from source)
 
@@ -116,9 +134,12 @@ sudo dnf install python3-tkinter
 3. **Barres form automatically** — place standard (circle) dots on adjacent strings at the same fret
 4. **Add labels** by right-clicking an existing dot
 5. **Remove notes** by left-clicking an existing dot (first click selects barres, second removes)
-6. **Export** with the `PDF` button or Ctrl+P
-7. **Open help** via the `?` button in the dashboard or editor toolbar
-8. **Customize hotkeys** in Settings → Hotkeys tab
+6. **Multi-Select**: Ctrl+RightClick on notes to select multiple; Delete removes all selected
+7. **Copy/Paste**: Ctrl+C copies the current fretboard, Ctrl+V pastes a duplicate
+8. **Export** with the PDF/SVG/PNG buttons or Ctrl+P for PDF
+9. **Open help** via the `?` button in the dashboard or editor toolbar
+10. **Customize hotkeys** in Settings → Hotkeys tab
+11. **Backup/Restore**: Use "Export All" / "Import" buttons on the dashboard for JSON backup
 
 ## Hotkeys
 
@@ -126,12 +147,24 @@ Default keyboard shortcuts — all re-bindable in Settings:
 
 | Action | Default |
 |--------|---------|
+| New Project | Ctrl+N |
+| Open Settings | Ctrl+, |
+| Show Help | Ctrl+H |
 | Undo | Ctrl+Z |
 | Redo | Ctrl+Y |
 | Export PDF | Ctrl+P |
-| Back to Dashboard | Ctrl+W |
-| New Project | Ctrl+N |
-| Settings | Ctrl+, |
+| Save | Ctrl+S |
+| Back to Dashboard | Ctrl+Shift+D |
+| New Fretboard | Ctrl+Shift+N |
+| Remove Fretboard | Ctrl+Shift+R |
+| Rename Project | Ctrl+W |
+| Focus Chord Name | Ctrl+Q |
+| Focus Description | Ctrl+T |
+| Dot Properties | P |
+| Toggle Barres | Alt+B |
+| Copy Fretboard | Ctrl+C |
+| Paste Fretboard | Ctrl+V |
+| Multi-select | Ctrl+RightClick |
 | Delete selected | Delete / Backspace |
 | Barre split up | ↑ |
 | Barre split down | ↓ |

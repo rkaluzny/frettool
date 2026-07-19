@@ -1,13 +1,18 @@
 import customtkinter as ctk
+import tkinter as tk
 from tkinter import messagebox, filedialog
 import copy
 import sys
+import os
+import json
 import i18n
 from constants import CONFIG, VERSION
 from models import FretboardData, ProjectData
 from persistence import ProjectStore
 from export import ExportManager
 from canvas import FretboardCanvas
+
+_fretboard_clipboard: FretboardData = None
 
 def _input_dialog(parent, title, prompt, initial_value=""):
     dialog = ctk.CTkToplevel(parent)
@@ -347,6 +352,18 @@ def open_settings_dialog(parent, on_save_callback=None):
             if new_colors:
                 settings["preset_colors"] = new_colors
             settings["hotkeys"] = dict(current_hotkeys)
+
+            seen = {}
+            conflicts = []
+            for action, seq in current_hotkeys.items():
+                if seq in seen:
+                    conflicts.append(f"{seen[seq]} <-> {action} ({seq})")
+                seen[seq] = action
+            if conflicts:
+                conflict_msg = i18n.tr("settings.hotkey_conflict_warning") + "\n" + "\n".join(conflicts)
+                if not messagebox.askyesno(i18n.tr("settings.hotkey_conflict_title"), conflict_msg):
+                    return
+
             SettingsManager.save_settings(settings)
             SettingsManager.apply_to_config()
             dialog.destroy()
@@ -389,8 +406,30 @@ class EditorView(ctk.CTkFrame):
         else:
             self.add_new_fretboard()
 
+        self.bind("<Control-c>", self._on_copy_shortcut)
+        self.bind("<Control-v>", self._on_paste_shortcut)
+
     def on_print_shortcut(self, event=None):
         self.export("pdf")
+
+    def _is_focus_on_text_widget(self):
+        w = self.focus_get()
+        if w is None:
+            return False
+        w_class = w.winfo_class() if hasattr(w, 'winfo_class') else ""
+        return w_class in ("Entry", "Text", "TEntry", "TText")
+
+    def _on_copy_shortcut(self, event=None):
+        if self._is_focus_on_text_widget():
+            return
+        self.copy_current_fretboard()
+        return "break"
+
+    def _on_paste_shortcut(self, event=None):
+        if self._is_focus_on_text_widget():
+            return
+        self.paste_fretboard()
+        return "break"
 
     def setup_header(self):
         header = ctk.CTkFrame(self, fg_color="transparent", height=60)
@@ -419,8 +458,14 @@ class EditorView(ctk.CTkFrame):
         btn_redo = ctk.CTkButton(toolbar, text=i18n.tr("editor.redo"), width=45, height=35, command=self.redo)
         btn_redo.pack(side="left", padx=5)
 
-        btn_pdf = ctk.CTkButton(toolbar, text=i18n.tr("editor.export_pdf"), width=70, height=35, fg_color="#e74c3c", command=lambda: self.export("pdf"))
-        btn_pdf.pack(side="left", padx=5)
+        btn_pdf = ctk.CTkButton(toolbar, text=i18n.tr("editor.export_pdf"), width=68, height=35, fg_color="#e74c3c", command=lambda: self.export("pdf"))
+        btn_pdf.pack(side="left", padx=2)
+        btn_svg = ctk.CTkButton(toolbar, text="SVG", width=50, height=35, fg_color="transparent", border_width=1,
+                                text_color=CONFIG["colors"]["text"], command=lambda: self.export("svg"))
+        btn_svg.pack(side="left", padx=2)
+        btn_png = ctk.CTkButton(toolbar, text="PNG", width=50, height=35, fg_color="transparent", border_width=1,
+                                text_color=CONFIG["colors"]["text"], command=lambda: self.export("png"))
+        btn_png.pack(side="left", padx=2)
 
         btn_help = ctk.CTkButton(toolbar, text=i18n.tr("editor.help"), width=35, height=35,
                                  fg_color="transparent", border_width=1, text_color=CONFIG["colors"]["text"],
@@ -508,7 +553,9 @@ class EditorView(ctk.CTkFrame):
     def toggle_barre(self):
         if self.current_fretboard:
             self.current_fretboard.barres_disabled = not self.current_fretboard.barres_disabled
+            self.chk_disable_barres.configure(command=None)
             self.barres_disabled_var.set(self.current_fretboard.barres_disabled)
+            self.chk_disable_barres.configure(command=self.on_barres_toggle)
             if self.canvas_widget:
                 self.canvas_widget.draw()
             self.push_history()
@@ -533,7 +580,7 @@ class EditorView(ctk.CTkFrame):
                                        text_color=CONFIG["colors"]["text"])
         self.entry_title.pack(fill="x", pady=(5, 0))
 
-        self.TITLE_MAX = 60
+        self.TITLE_MAX = 70
         self.lbl_title_counter = ctk.CTkLabel(self.title_frame, text=f"0 / {self.TITLE_MAX}",
                                               font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"])
         self.lbl_title_counter.pack(anchor="e", pady=(2, 0))
@@ -571,8 +618,21 @@ class EditorView(ctk.CTkFrame):
         lbl.pack(pady=20, padx=20, anchor="w")
 
         btn_add = ctk.CTkButton(sidebar, text=i18n.tr("editor.new_fretboard"), height=40, text_color=CONFIG["colors"]["text"],
-                                command=self.add_new_fretboard)
+                                 command=self.add_new_fretboard)
         btn_add.pack(pady=10, padx=20, fill="x")
+
+        copy_paste_frame = ctk.CTkFrame(sidebar, fg_color="transparent")
+        copy_paste_frame.pack(fill="x", padx=20, pady=(0, 10))
+        btn_copy = ctk.CTkButton(copy_paste_frame, text=i18n.tr("editor.copy_fretboard"), height=34,
+                                  fg_color="transparent", border_width=1,
+                                  text_color=CONFIG["colors"]["text"],
+                                  command=self.copy_current_fretboard)
+        btn_copy.pack(side="left", fill="x", expand=True, padx=(0, 4))
+        btn_paste = ctk.CTkButton(copy_paste_frame, text=i18n.tr("editor.paste_fretboard"), height=34,
+                                   fg_color="transparent", border_width=1,
+                                   text_color=CONFIG["colors"]["text"],
+                                   command=self.paste_fretboard)
+        btn_paste.pack(side="left", fill="x", expand=True, padx=(4, 0))
 
         self.list_frame = ctk.CTkFrame(sidebar, fg_color="transparent")
         self.list_frame.pack(fill="x", padx=15, pady=10)
@@ -609,14 +669,20 @@ class EditorView(ctk.CTkFrame):
                                  text_color=CONFIG["colors"]["text"], wraplength=190, justify="left", anchor="w")
         lbl_barre.pack(side="left", fill="x", expand=True)
 
+        lbl_strings = ctk.CTkLabel(settings_frame, text=i18n.tr("editor.strings_label"),
+                                    font=("Arial", 13, "bold"), text_color=CONFIG["colors"]["text"])
+        lbl_strings.pack(anchor="w", pady=(8, 2))
         self.entry_strings = ctk.CTkEntry(settings_frame, placeholder_text=i18n.tr("editor.strings_placeholder"),
                                            text_color=CONFIG["colors"]["text"])
-        self.entry_strings.pack(fill="x", pady=5)
+        self.entry_strings.pack(fill="x")
         self.entry_strings.bind("<KeyRelease>", lambda e: self.save_state())
 
+        lbl_frets = ctk.CTkLabel(settings_frame, text=i18n.tr("editor.frets_label"),
+                                  font=("Arial", 13, "bold"), text_color=CONFIG["colors"]["text"])
+        lbl_frets.pack(anchor="w", pady=(8, 2))
         self.entry_frets = ctk.CTkEntry(settings_frame, placeholder_text=i18n.tr("editor.frets_placeholder"),
                                          text_color=CONFIG["colors"]["text"])
-        self.entry_frets.pack(fill="x", pady=5)
+        self.entry_frets.pack(fill="x")
         self.entry_frets.bind("<KeyRelease>", lambda e: self.save_state())
 
         btn_del = ctk.CTkButton(sidebar, text=i18n.tr("editor.delete_fretboard"), height=40, fg_color="#e74c3c",
@@ -753,6 +819,26 @@ class EditorView(ctk.CTkFrame):
             next_state = self.redo_stack.pop()
             self.restore_fretboard(next_state)
 
+    def copy_current_fretboard(self):
+        global _fretboard_clipboard
+        if not self.current_fretboard:
+            return
+        _fretboard_clipboard = copy.deepcopy(self.current_fretboard)
+        self.lbl_save_feedback.configure(text=i18n.tr("editor.fretboard_copied"))
+        self.after(1500, lambda: self.lbl_save_feedback.configure(text=""))
+
+    def paste_fretboard(self):
+        global _fretboard_clipboard
+        if _fretboard_clipboard is None:
+            return
+        new_fb = copy.deepcopy(_fretboard_clipboard)
+        new_fb.id = __import__('time').time()
+        new_fb.title = (new_fb.title or "Copy")[:self.TITLE_MAX]
+        self.project.fretboards.append(new_fb)
+        self.select_fretboard(new_fb)
+        self.lbl_save_feedback.configure(text=i18n.tr("editor.fretboard_pasted"))
+        self.after(1500, lambda: self.lbl_save_feedback.configure(text=""))
+
     def show_help(self):
         from constants import show_help
         show_help(self)
@@ -769,6 +855,7 @@ class EditorView(ctk.CTkFrame):
         self.current_fretboard.dot_colors = getattr(fb_data, "dot_colors", {}) or {}
         self.current_fretboard.dot_types = getattr(fb_data, "dot_types", {}) or {}
         self.current_fretboard.dot_small = getattr(fb_data, "dot_small", {}) or {}
+        self.current_fretboard.barre_excluded = getattr(fb_data, "barre_excluded", set()) or set()
 
         self.entry_title.delete(0, 'end')
         self.entry_title.insert(0, fb_data.title[:self.TITLE_MAX])
@@ -836,29 +923,51 @@ class EditorView(ctk.CTkFrame):
 
     def export(self, format_type):
         if not self.current_fretboard: return
-        filename = filedialog.asksaveasfilename(defaultextension=f".{format_type}",
-                                               filetypes=[(i18n.tr(f"export.file_dialog_{format_type}"), f".{format_type}")])
+        if format_type == "svg":
+            ext = ".svg"
+        elif format_type == "png":
+            ext = ".png"
+        else:
+            ext = ".pdf"
+        filename = filedialog.asksaveasfilename(defaultextension=ext,
+                                               filetypes=[(i18n.tr(f"export.file_dialog_{format_type}"), ext)])
         if filename:
             if format_type == "svg":
-                ExportManager.export_svg(self.current_fretboard, filename)
+                ExportManager.export_svg(self.project, filename)
             elif format_type == "pdf":
                 ExportManager.export_pdf(self.project, filename)
+            elif format_type == "png":
+                ExportManager.export_png_from_canvas(self.canvas_widget, filename)
 
 
 class DashboardView(ctk.CTkFrame):
     def __init__(self, parent, on_open_project_callback):
         super().__init__(parent)
         self.on_open = on_open_project_callback
+        self._all_projects = []
+        self._search_var = ctk.StringVar()
 
         self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
 
         header = ctk.CTkFrame(self, fg_color="transparent")
-        header.grid(row=0, column=0, sticky="ew", padx=50, pady=30)
+        header.grid(row=0, column=0, sticky="ew", padx=50, pady=(30, 10))
 
         lbl_title = ctk.CTkLabel(header, text=CONFIG["app_name"],
                                  font=("Arial", 40, "bold"), text_color=CONFIG["colors"]["accent"])
         lbl_title.pack(side="left")
+
+        btn_export_all = ctk.CTkButton(header, text=i18n.tr("dashboard.export_all"), height=45, font=("Arial", 14),
+                                        fg_color="transparent", border_width=1,
+                                        text_color=CONFIG["colors"]["text"],
+                                        command=self._export_all_projects)
+        btn_export_all.pack(side="right", padx=(0, 10))
+
+        btn_import = ctk.CTkButton(header, text=i18n.tr("dashboard.import_projects"), height=45, font=("Arial", 14),
+                                    fg_color="transparent", border_width=1,
+                                    text_color=CONFIG["colors"]["text"],
+                                    command=self._import_projects)
+        btn_import.pack(side="right", padx=(0, 10))
 
         btn_settings = ctk.CTkButton(header, text=i18n.tr("dashboard.settings"), height=45, font=("Arial", 14),
                                      fg_color="transparent", border_width=1,
@@ -876,43 +985,72 @@ class DashboardView(ctk.CTkFrame):
                                 command=self.create_new_project)
         btn_new.pack(side="right")
 
+        search_frame = ctk.CTkFrame(self, fg_color="transparent")
+        search_frame.grid(row=1, column=0, sticky="ew", padx=50, pady=(0, 10))
+        self.search_entry = ctk.CTkEntry(search_frame, placeholder_text=i18n.tr("dashboard.search_hint"),
+                                          font=("Arial", 14), height=38)
+        self.search_entry.pack(fill="x")
+        self._search_var.trace_add("write", lambda *args: self._filter_projects())
+        self.search_entry.configure(textvariable=self._search_var)
+
         self.project_grid = ctk.CTkScrollableFrame(self, fg_color="transparent")
-        self.project_grid.grid(row=1, column=0, sticky="nsew", padx=50, pady=20)
+        self.project_grid.grid(row=2, column=0, sticky="nsew", padx=50, pady=20)
 
         self.load_projects()
 
     def load_projects(self):
+        self._all_projects = ProjectStore.load_projects()
+        self._filter_projects()
+
+    def _filter_projects(self):
         for widget in self.project_grid.winfo_children():
             widget.destroy()
 
-        projects = ProjectStore.load_projects()
-        if not projects:
+        query = self._search_var.get().strip().lower()
+        filtered = [p for p in self._all_projects if query in p.name.lower()] if query else self._all_projects
+
+        if not filtered:
             lbl = ctk.CTkLabel(self.project_grid, text=i18n.tr("dashboard.no_projects"),
                               text_color=CONFIG["colors"]["text_muted"], font=("Arial", 16))
             lbl.pack(pady=100)
             return
 
-        for proj in projects:
+        for proj in filtered:
             card = ctk.CTkFrame(self.project_grid, corner_radius=20, fg_color=CONFIG["colors"]["surface"],
                                height=120)
             card.pack(fill="x", pady=15)
             card.bind("<Button-1>", lambda e, p=proj: self.on_open(p))
-            card.bind("<Enter>", lambda e: card.configure(cursor="hand2"))
-            card.bind("<Leave>", lambda e: card.configure(cursor=""))
+            card.bind("<Enter>", lambda e: self._on_card_enter(card))
+            card.bind("<Leave>", lambda e: self._on_card_leave(card))
 
-            top = ctk.CTkFrame(card, fg_color="transparent")
-            top.pack(fill="x", padx=30, pady=(18, 0))
-            top.bind("<Button-1>", lambda e, p=proj: self.on_open(p))
-            top.bind("<Enter>", lambda e: card.configure(cursor="hand2"))
-            top.bind("<Leave>", lambda e: card.configure(cursor=""))
+            # Mini preview on the left
+            preview_canvas = tk.Canvas(card, width=80, height=80,
+                                        bg=CONFIG["colors"]["surface"],
+                                        highlightthickness=1,
+                                        highlightbackground=CONFIG["colors"]["text_muted"])
+            preview_canvas.place(x=18, rely=0.5, anchor="w")
+            self._draw_mini_preview(preview_canvas, proj)
+            preview_canvas.bind("<Button-1>", lambda e, p=proj: self.on_open(p))
 
-            lbl_name = ctk.CTkLabel(top, text=proj.name, font=("Arial", 20, "bold"),
+            content = ctk.CTkFrame(card, fg_color="transparent")
+            content.pack(fill="x", padx=(110, 30), pady=(14, 0))
+            content.bind("<Button-1>", lambda e, p=proj: self.on_open(p))
+            content.bind("<Enter>", lambda e: self._on_card_enter(card))
+            content.bind("<Leave>", lambda e: self._on_card_leave(card))
+
+            lbl_name = ctk.CTkLabel(content, text=proj.name, font=("Arial", 20, "bold"),
                                     text_color=CONFIG["colors"]["text"])
             lbl_name.pack(side="left")
             lbl_name.bind("<Button-1>", lambda e, p=proj: self.on_open(p))
 
-            btns = ctk.CTkFrame(top, fg_color="transparent")
+            btns = ctk.CTkFrame(content, fg_color="transparent")
             btns.pack(side="right")
+
+            btn_export = ctk.CTkButton(btns, text=i18n.tr("editor.export_project"), width=70, height=32,
+                                        fg_color="transparent", border_width=1,
+                                        text_color=CONFIG["colors"]["text"],
+                                        command=lambda p=proj: self._export_single_project(p))
+            btn_export.pack(side="left", padx=(0, 8))
 
             btn_rename = ctk.CTkButton(btns, text=i18n.tr("dashboard.project_card.rename"), width=80, height=32, fg_color="transparent", border_width=1,
                                        text_color=CONFIG["colors"]["text"],
@@ -925,8 +1063,49 @@ class DashboardView(ctk.CTkFrame):
 
             lbl_date = ctk.CTkLabel(card, text=i18n.tr("dashboard.project_card.info", date=proj.created_at, count=len(proj.fretboards)),
                                    text_color=CONFIG["colors"]["text_muted"], anchor="w")
-            lbl_date.pack(padx=30, pady=(0, 25), fill="x")
+            lbl_date.pack(padx=110, pady=(0, 22), fill="x")
             lbl_date.bind("<Button-1>", lambda e, p=proj: self.on_open(p))
+
+    def _on_card_enter(self, card):
+        card.configure(cursor="hand2")
+        card.configure(fg_color=CONFIG["colors"]["surface_hover"])
+
+    def _on_card_leave(self, card):
+        card.configure(cursor="")
+        card.configure(fg_color=CONFIG["colors"]["surface"])
+
+    def _draw_mini_preview(self, canvas, proj):
+        w, h = 80, 80
+        canvas.delete("all")
+        if not proj.fretboards:
+            canvas.create_text(w//2, h//2, text="~", fill=CONFIG["colors"]["text_muted"],
+                               font=("Arial", 20))
+            return
+        fb = proj.fretboards[0]
+        sc = max(2, getattr(fb, "string_count", 6))
+        nf = fb.num_frets or 12
+        margin_x, margin_y = 8, 10
+        fw = (w - 2 * margin_x) / max(nf, 1)
+        sh = (h - 2 * margin_y) / max(sc - 1, 1)
+        for i in range(sc):
+            y = margin_y + i * sh
+            canvas.create_line(margin_x, y, w - margin_x, y, fill=CONFIG["colors"]["string"], width=1)
+        for i in range(min(nf + 1, 13)):
+            x = margin_x + i * fw
+            width = 2 if i == 0 else 1
+            canvas.create_line(x, margin_y, x, h - margin_y, fill=CONFIG["colors"]["fret_line"], width=width)
+        positions = getattr(fb, "positions", set()) or set()
+        dot_colors = getattr(fb, "dot_colors", {}) or {}
+        default_color = getattr(fb, "dot_color", CONFIG["colors"]["dot"]) or CONFIG["colors"]["dot"]
+        for s, f in list(positions)[:20]:
+            if f == 0:
+                cx = margin_x - 4
+            else:
+                cx = margin_x + (f - 0.5) * fw
+            cy = margin_y + s * sh
+            color = dot_colors.get(f"{s},{f}", default_color) or default_color
+            r = 3
+            canvas.create_oval(cx - r, cy - r, cx + r, cy + r, fill=color, outline="")
 
     def create_new_project(self):
         name = _input_dialog(self, i18n.tr("dashboard.new_project_dialog.title"),
@@ -953,6 +1132,61 @@ class DashboardView(ctk.CTkFrame):
     def show_help(self):
         from constants import show_help
         show_help(self)
+
+    def _export_all_projects(self):
+        filename = filedialog.asksaveasfilename(defaultextension=".json",
+                                                filetypes=[(i18n.tr("export.file_dialog_json"), ".json")])
+        if not filename:
+            return
+        try:
+            data = [p.to_dict() for p in ProjectStore.load_projects()]
+            with open(filename, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4)
+            messagebox.showinfo(i18n.tr("dialogs.success"), i18n.tr("export.success_json_export"))
+        except Exception as e:
+            messagebox.showerror(i18n.tr("dialogs.error"), str(e))
+
+    def _export_single_project(self, project):
+        filename = filedialog.asksaveasfilename(defaultextension=".json",
+                                                filetypes=[(i18n.tr("export.file_dialog_json"), ".json")])
+        if not filename:
+            return
+        try:
+            with open(filename, "w", encoding="utf-8") as f:
+                json.dump(project.to_dict(), f, indent=4)
+            messagebox.showinfo(i18n.tr("dialogs.success"), i18n.tr("export.success_json_export"))
+        except Exception as e:
+            messagebox.showerror(i18n.tr("dialogs.error"), str(e))
+
+    def _import_projects(self):
+        filename = filedialog.askopenfilename(filetypes=[(i18n.tr("export.file_dialog_json"), ".json")])
+        if not filename:
+            return
+        try:
+            with open(filename, "r", encoding="utf-8") as f:
+                raw = json.load(f)
+            existing = ProjectStore.load_projects()
+            if isinstance(raw, dict):
+                raw = [raw]
+            imported_count = 0
+            for item in raw:
+                try:
+                    proj = ProjectData.from_dict(item)
+                    proj.id = str(__import__('uuid').uuid4())
+                    proj.name = proj.name + " (imported)"
+                    existing.append(proj)
+                    imported_count += 1
+                except Exception:
+                    pass
+            if imported_count > 0:
+                ProjectStore.save_all(existing)
+                messagebox.showinfo(i18n.tr("dialogs.success"),
+                                    i18n.tr("export.success_json_import"))
+                self.load_projects()
+            else:
+                messagebox.showwarning(i18n.tr("dialogs.error"), "No valid projects found in file.")
+        except Exception as e:
+            messagebox.showerror(i18n.tr("dialogs.error"), str(e))
 
     def _show_privacy_from_settings(self):
         from privacy import show_privacy_dialog

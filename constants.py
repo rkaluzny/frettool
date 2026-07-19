@@ -6,14 +6,14 @@ import customtkinter as ctk
 import i18n
 import sys
 
-VERSION = "1.1.7"
+VERSION = "1.2.0"
 
 HELP_TEXT = """\
 FretTool — Fretboard Diagram Editor
 ====================================
 
 Create and edit guitar (or other string instrument) fretboard diagrams.
-Place notes, form barres, add labels, and export to PDF.
+Place notes, form barres, add labels, and export to PDF/SVG/PNG.
 
 --- GETTING STARTED ---
 • Click "+ New Project" on the dashboard to start.
@@ -36,6 +36,8 @@ Place notes, form barres, add labels, and export to PDF.
   text label to a fret (e.g. "C", "Am").
 • Right-click on an existing note -> open the dot properties dialog
   to set a 2-character label and/or override the dot colour.
+• Ctrl+RightClick on a note -> toggles multi-selection.
+  Select multiple notes to delete them all or cycle their colour together.
 
 --- MUTED / X MARKERS ---
 • Right-click on any string/fret intersection -> adds an X marker
@@ -51,7 +53,7 @@ break the barre grouping on that fret.
 
 • Hover over any note in a barre and scroll the mouse wheel (or
   two-finger touchpad) to cycle all barre dots through the preset
-  colours at once.
+  colours at once. A popup palette shows the available colours.
 • To split a barre at a specific string, hover the dot just below
   the split point and press:
   ↑ (Arrow Up)   -> split above the hovered dot
@@ -64,13 +66,21 @@ break the barre grouping on that fret.
 • Click a barre to select it (highlighted red). Click again to remove
   one note from the barre.
 • Click a standalone dot to remove it.
-• Press Delete or Backspace -> removes the currently hovered dot.
+• Press Delete or Backspace -> removes the currently hovered dot
+  (or all selected dots if multi-selection is active).
 • Use the fretboard settings in the sidebar to adjust string count,
   fret count, tuning, and delete the entire fretboard.
+
+--- COPY / PASTE FRETBOARD ---
+• Click the "Copy" button in the sidebar (or press Ctrl+C) to copy
+  the current fretboard.
+• Click the "Paste" button (or press Ctrl+V) to create a duplicate
+  as a new fretboard in the same project.
 
 --- FRETBOARD SETTINGS (SIDEBAR) ---
 • Dot color: default colour for new dots.
 • Disable barres checkbox.
+• Copy / Paste buttons for duplicating fretboards.
 • Strings: number of strings (2-12).
 • Frets: number of frets (1-24).
 • Delete Fretboard button.
@@ -80,13 +90,17 @@ break the barre grouping on that fret.
 • The editor automatically saves to disk after every change.
 
 --- EXPORTING ---
-• Click the "PDF" button in the toolbar -> exports the current
-  fretboard as a high-quality PDF.
+• Click the "PDF" button in the toolbar -> exports all fretboards
+  as a high-quality PDF via ReportLab.
+• Click "SVG" -> exports all fretboards as individual SVG files.
+• Click "PNG" -> exports the current fretboard as a PNG image.
 • Ctrl+P also triggers PDF export.
 
 --- PROJECT MANAGEMENT ---
 • The dashboard lists all saved projects. Click to open.
 • Rename and delete projects from the dashboard cards.
+• Use the search bar to filter projects by name.
+• Export All / Import buttons on the dashboard for JSON backup.
 • Projects are saved automatically to your data directory.
 
 --- CUSTOMIZATION (SETTINGS) ---
@@ -94,6 +108,7 @@ break the barre grouping on that fret.
   Dark/Light mode, default fret/string count, barre behaviour,
   visual dimensions (spacing, margins, dot sizes), and the list
   of preset colours used for mouse wheel colour cycling.
+• The Hotkeys tab warns about conflicting key assignments.
 """
 
 

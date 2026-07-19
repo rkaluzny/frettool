@@ -19,6 +19,9 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.x_hitboxes = []
         self.barre_hitboxes = []
         self.grid_hover = None
+        self.selected_dots: set = set()
+        self._color_preview_window = None
+        self._color_preview_timer = None
 
         base_frets = max(CONFIG["default_frets"], self.data.num_frets)
         self.required_width = CONFIG["dimensions"]["margin_side"] * 2 + base_frets * CONFIG["dimensions"]["fret_spacing"]
@@ -40,11 +43,24 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.bind("<KeyPress-s>", self.on_mousewheel)
         self.bind("<Up>", self.on_barre_edge_key)
         self.bind("<Down>", self.on_barre_edge_key)
+        self.bind("<Delete>", self._on_delete_key)
+        self.bind("<BackSpace>", self._on_delete_key)
         if sys.platform == "darwin":
             self.bind_all("<MouseWheel>", self.on_mousewheel)
+            self.bind("<Button-2>", self.on_right_click)
             self.bind("<Control-Button-1>", self.on_right_click)
         self.focus_set()
+        self._color_preview_window = None
         self.draw()
+
+    def destroy(self):
+        if sys.platform == "darwin":
+            try:
+                self.unbind_all("<MouseWheel>")
+            except Exception:
+                pass
+        self._destroy_color_preview()
+        super().destroy()
 
     def on_dot_properties_hotkey(self):
         if not self.hovered_pos:
@@ -77,6 +93,65 @@ class FretboardCanvas(ctk.CTkCanvas):
                 self.data.dot_colors.pop(key, None)
             self.draw()
             self.on_change()
+
+    def _on_delete_key(self, event):
+        if self.selected_dots:
+            for pos in list(self.selected_dots):
+                s, f = pos
+                self._remove_dot(s, f)
+            self.selected_dots.clear()
+            self.draw()
+            self.on_change()
+            return
+        if self.hovered_pos:
+            s, f = self.hovered_pos
+            self._remove_dot(s, f)
+            self.draw()
+            self.on_change()
+
+    def _show_color_preview(self, event, current_color, presets):
+        self._destroy_color_preview()
+        if not hasattr(event, 'x_root') or not event.x_root:
+            return
+        win = ctk.CTkToplevel(self)
+        win.overrideredirect(True)
+        win.attributes('-topmost', True)
+        win.attributes('-alpha', 0.95)
+        frame = ctk.CTkFrame(win, fg_color=CONFIG["colors"]["surface"], corner_radius=8)
+        frame.pack(padx=6, pady=6)
+        for color in presets:
+            is_current = color.lower() == current_color.lower()
+            dot_size = 18 if is_current else 14
+            lbl = ctk.CTkLabel(frame, text="", width=dot_size, height=dot_size,
+                               corner_radius=dot_size // 2, fg_color=color)
+            lbl.pack(pady=2)
+            if is_current:
+                outer = ctk.CTkFrame(frame, fg_color=CONFIG["colors"]["accent"],
+                                     corner_radius=(dot_size // 2 + 2), width=dot_size + 4, height=dot_size + 4)
+                outer.pack(pady=0)
+                lbl.pack(in_=outer, pady=2)
+        win.update_idletasks()
+        cx = event.x_root + 20
+        cy = event.y_root - win.winfo_height() // 2
+        win.geometry(f"+{cx}+{cy}")
+        self._color_preview_window = win
+        self._schedule_preview_dismiss()
+
+    def _schedule_preview_dismiss(self):
+        if self._color_preview_timer:
+            self.after_cancel(self._color_preview_timer)
+        self._color_preview_timer = self.after(1500, self._destroy_color_preview)
+
+    def _destroy_color_preview(self):
+        if self._color_preview_timer:
+            self.after_cancel(self._color_preview_timer)
+            self._color_preview_timer = None
+        if self._color_preview_window:
+            try:
+                self._color_preview_window.destroy()
+            except Exception:
+                pass
+            self._color_preview_window = None
 
     def on_resize(self, event):
         self.draw()
@@ -211,6 +286,7 @@ class FretboardCanvas(ctk.CTkCanvas):
     def _remove_dot(self, s, f):
         key = f"{s},{f}"
         self.data.positions.discard((s, f))
+        self.selected_dots.discard((s, f))
         if hasattr(self.data, "dot_texts") and self.data.dot_texts:
             self.data.dot_texts.pop(key, None)
         if hasattr(self.data, "dot_colors") and self.data.dot_colors:
@@ -226,6 +302,7 @@ class FretboardCanvas(ctk.CTkCanvas):
     def _remove_note_and_recompute_barre(self, s, f):
         key = f"{s},{f}"
         self.data.positions.discard((s, f))
+        self.selected_dots.discard((s, f))
         if hasattr(self.data, "dot_texts") and self.data.dot_texts:
             self.data.dot_texts.pop(key, None)
         if hasattr(self.data, "dot_colors") and self.data.dot_colors:
@@ -326,12 +403,14 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.hovered_xpos = None
         self.hovered_barre_key = None
         self.grid_hover = None
+        self._destroy_color_preview()
         self.draw()
         self.configure(cursor="arrow")
 
     def on_mousewheel(self, event):
         """Cycle through preset colors on hovered dot / barre (mouse wheel / touchpad / w/s keys)."""
         if self.hovered_pos is None and self.hovered_barre_key is None:
+            self._destroy_color_preview()
             return
 
         direction = 0
@@ -363,6 +442,11 @@ class FretboardCanvas(ctk.CTkCanvas):
         theme_dot = CONFIG["colors"]["dot"]
         presets = [c for c in PRESET_COLORS if c != theme_dot] + [theme_dot]
 
+        def _cycle_color(current_color):
+            idx = presets.index(current_color) if current_color in presets else 0
+            new_idx = (idx + direction) % len(presets)
+            return presets[new_idx]
+
         if self.hovered_barre_key is not None:
             groups = get_barre_groups(self.data)
             group = next((g for g in groups if g.key == self.hovered_barre_key), None)
@@ -372,13 +456,12 @@ class FretboardCanvas(ctk.CTkCanvas):
             s0, f0 = group.notes[0]
             first_key = f"{s0},{f0}"
             current_color = self.data.dot_colors.get(first_key, self.data.dot_color)
-            idx = presets.index(current_color) if current_color in presets else 0
-            new_idx = (idx + direction) % len(presets)
-            new_color = presets[new_idx]
+            new_color = _cycle_color(current_color)
 
             for s, f in group.notes:
                 self.data.dot_colors[f"{s},{f}"] = new_color
 
+            self._show_color_preview(event, new_color, presets)
             self.draw()
             self.on_change()
             return
@@ -389,10 +472,18 @@ class FretboardCanvas(ctk.CTkCanvas):
         s, f = self.hovered_pos
         key = f"{s},{f}"
 
-        current_color = self.data.dot_colors.get(key, self.data.dot_color)
-        idx = presets.index(current_color) if current_color in presets else 0
-        new_idx = (idx + direction) % len(presets)
-        self.data.dot_colors[key] = presets[new_idx]
+        if self.selected_dots and self.hovered_pos in self.selected_dots:
+            current_color = self.data.dot_colors.get(key, self.data.dot_color)
+            new_color = _cycle_color(current_color)
+            for sel_pos in self.selected_dots:
+                sel_key = f"{sel_pos[0]},{sel_pos[1]}"
+                self.data.dot_colors[sel_key] = new_color
+            self._show_color_preview(event, new_color, presets)
+        else:
+            current_color = self.data.dot_colors.get(key, self.data.dot_color)
+            new_color = _cycle_color(current_color)
+            self.data.dot_colors[key] = new_color
+            self._show_color_preview(event, new_color, presets)
 
         self.draw()
         self.on_change()
@@ -676,6 +767,17 @@ class FretboardCanvas(ctk.CTkCanvas):
                 font_size = 10 if len(label) > 1 else 13
                 self.create_text(cx, cy, text=label, fill=text_color, font=("Arial", font_size, "bold"))
 
+        for s, f in self.selected_dots:
+            if f == 0:
+                cx = margin_x - 25
+            else:
+                cx = margin_x + (f - 0.5) * fret_w
+            cy = margin_y_top + s * string_h
+            r = max(CONFIG["dimensions"]["dot_radius"], CONFIG["dimensions"]["dot_small_radius"]) + 6
+            self.create_oval(cx - r, cy - r, cx + r, cy + r,
+                             fill="", outline=CONFIG["colors"]["accent"], width=3,
+                             dash=(6, 3))
+
     def on_double_click(self, event):
         margin_x = CONFIG["dimensions"]["margin_side"]
 
@@ -696,7 +798,36 @@ class FretboardCanvas(ctk.CTkCanvas):
                     self.draw()
                     self.on_change()
 
+    def _is_ctrl_event(self, event):
+        if sys.platform == "darwin":
+            return bool(event.state & 0x0010)
+        elif sys.platform == "win32":
+            return bool(event.state & 0x0004)
+        else:
+            return bool(event.state & 0x0004)
+
+    def _on_ctrl_right_click(self, event):
+        pos = self.get_grid_position(event.x, event.y)
+        if not pos:
+            return
+        s, f = pos
+        x_positions = getattr(self.data, "x_positions", set()) or set()
+        if pos in self.data.positions or pos in x_positions:
+            if pos in self.selected_dots:
+                self.selected_dots.discard(pos)
+            else:
+                self.selected_dots.add(pos)
+            self.draw()
+            self.on_change()
+        else:
+            self.selected_dots.clear()
+            self.draw()
+
     def on_right_click(self, event):
+        if self._is_ctrl_event(event):
+            self._on_ctrl_right_click(event)
+            return
+
         pos = self.get_grid_position(event.x, event.y)
         if not pos:
             return
@@ -774,16 +905,25 @@ class FretboardCanvas(ctk.CTkCanvas):
         key = f"{s},{f}"
         x_positions = getattr(self.data, "x_positions", set()) or set()
 
-        # 1. Click on X marker -> remove it
+        # 1. Click on selected dot -> deselect it
+        if pos in self.selected_dots:
+            self.selected_dots.discard(pos)
+            self.draw()
+            self.on_change()
+            return
+
+        # 2. Click on X marker -> remove it
         if pos in x_positions:
+            self.selected_dots.discard(pos)
             self.data.x_positions.discard(pos)
             self.selected_barre_key = None
             self.draw()
             self.on_change()
             return
 
-        # 2. Click on existing dot -> remove or barre interaction
+        # 3. Click on existing dot -> remove or barre interaction
         if pos in self.data.positions:
+            self.selected_dots.clear()
             barre_groups = get_barre_groups(self.data)
             group = self._is_note_part_of_barre(pos, barre_groups)
 
@@ -799,7 +939,8 @@ class FretboardCanvas(ctk.CTkCanvas):
             self.on_change()
             return
 
-        # 3. Click on empty position -> add a new dot (if valid)
+        # 4. Click on empty position -> add a new dot (if valid)
+        self.selected_dots.clear()
         string_count = max(2, int(getattr(self.data, "string_count", CONFIG["string_count"])))
         if not (0 <= s < string_count and 1 <= f <= self.data.num_frets):
             if f == 0 and 0 <= s < string_count:

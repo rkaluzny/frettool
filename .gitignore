@@ -9,3 +9,5 @@ settings.json
 Output/
 docs/
 venv/
+*.AppImage
+FretTool.AppDir/

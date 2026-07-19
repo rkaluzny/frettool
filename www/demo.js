@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const TITLE_MAX = 60;
+  const TITLE_MAX = 70;
   const DESC_MAX = 250;
 
   let STRING_COUNT = 6;
