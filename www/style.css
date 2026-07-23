@@ -734,6 +734,58 @@ a:hover {
   color: #2a100c;
 }
 
+.tool-shapes {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.tool-shapes label {
+  margin-right: 2px;
+}
+
+.shape-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.shape-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid rgba(255, 224, 188, 0.12);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.shape-btn:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  background: rgba(76, 110, 245, 0.15);
+}
+
+.shape-btn-active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(76, 110, 245, 0.2);
+  box-shadow: 0 0 0 2px rgba(76, 110, 245, 0.15);
+}
+
+.shape-btn-toggle {
+  border-style: dashed;
+}
+
+.shape-btn-toggle.shape-btn-active {
+  border-style: solid;
+  background: rgba(76, 110, 245, 0.3);
+}
+
 .fretboard-wrap {
   background: linear-gradient(160deg, #232a52, #1a2046);
   border-radius: var(--radius-sm);
@@ -1200,6 +1252,7 @@ a:hover {
   .tool-group input[type="range"] { width: 100%; }
   .tool-actions { justify-content: stretch; }
   .tool-actions .tool-btn { flex: 1; }
+  .tool-shapes { width: 100%; }
   .demo-header { flex-direction: column; align-items: stretch; gap: 6px; }
   .demo-title-input { min-width: 0; }
   .logo { font-size: 22px; }

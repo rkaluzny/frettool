@@ -103,9 +103,6 @@ def build_barre_groups_for_fret(fb, fret_idx: int, extra_standard_string: Option
     if getattr(fb, "barres_disabled", False):
         return []
 
-    if _fret_has_mixed_notes(fb, fret_idx):
-        return []
-
     positions = getattr(fb, "positions", set()) or set()
     min_strings = CONFIG.get("barre_min_strings", 2)
 
@@ -167,9 +164,6 @@ def get_preview_barre_groups(fb, hovered_pos: Optional[Tuple[int, int]]) -> List
 
     positions = getattr(fb, "positions", set()) or set()
     if (string_idx, fret_idx) in positions:
-        return []
-
-    if _fret_has_mixed_notes(fb, fret_idx):
         return []
 
     return build_barre_groups_for_fret(fb, fret_idx, extra_standard_string=string_idx)

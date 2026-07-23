@@ -46,6 +46,30 @@
   const redoBtn = document.getElementById('redoBtn');
   const clearBtn = document.getElementById('clearBtn');
 
+  const shapeCircleBtn = document.getElementById('shapeCircle');
+  const shapeTriangleBtn = document.getElementById('shapeTriangle');
+  const shapeSquareBtn = document.getElementById('shapeSquare');
+  const shapeSmallBtn = document.getElementById('shapeSmall');
+  let toolbarShape = 'circle';
+  let toolbarSmall = false;
+
+  function setToolbarShape(type) {
+    toolbarShape = type;
+    shapeCircleBtn.classList.toggle('shape-btn-active', type === 'circle');
+    shapeTriangleBtn.classList.toggle('shape-btn-active', type === 'triangle');
+    shapeSquareBtn.classList.toggle('shape-btn-active', type === 'square');
+  }
+
+  function setToolbarSmall(on) {
+    toolbarSmall = on;
+    shapeSmallBtn.classList.toggle('shape-btn-active', on);
+  }
+
+  shapeCircleBtn.addEventListener('click', function () { setToolbarShape('circle'); });
+  shapeTriangleBtn.addEventListener('click', function () { setToolbarShape('triangle'); });
+  shapeSquareBtn.addEventListener('click', function () { setToolbarShape('square'); });
+  shapeSmallBtn.addEventListener('click', function () { setToolbarSmall(!toolbarSmall); });
+
   let pos = new Set();
   let xPos = new Set();
   let dotTypes = {};
@@ -364,7 +388,7 @@
       ctx.strokeStyle = 'rgba(255,255,255,0.85)';
       ctx.lineWidth = 2;
 
-      if (type === 'square' || isSmall) {
+      if (type === 'square') {
         ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
         ctx.strokeRect(cx - r, cy - r, r * 2, r * 2);
       } else if (type === 'triangle') {
@@ -673,9 +697,9 @@
     if (ctrl && shift) dotTypes[pk] = 'square';
     else if (ctrl) dotTypes[pk] = 'square';
     else if (shift) dotTypes[pk] = 'triangle';
-    else dotTypes[pk] = 'circle';
+    else dotTypes[pk] = toolbarShape;
 
-    dotSmall[pk] = !!alt;
+    dotSmall[pk] = alt || toolbarSmall;
     selectedBarreKey = null;
     draw();
   });

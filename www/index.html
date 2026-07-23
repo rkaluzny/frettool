@@ -206,6 +206,23 @@
               <label for="stringRange">Strings <span id="stringVal" class="tool-val">6</span></label>
               <input type="range" id="stringRange" min="2" max="12" value="6">
             </div>
+            <div class="tool-group tool-shapes">
+              <label>Dot shape</label>
+              <div class="shape-btns">
+                <button id="shapeCircle" class="shape-btn shape-btn-active" title="Circle (default)">
+                  <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="currentColor"/></svg>
+                </button>
+                <button id="shapeTriangle" class="shape-btn" title="Triangle (Shift)">
+                  <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,2 14,14 2,14" fill="currentColor"/></svg>
+                </button>
+                <button id="shapeSquare" class="shape-btn" title="Square (Ctrl)">
+                  <svg width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" fill="currentColor"/></svg>
+                </button>
+                <button id="shapeSmall" class="shape-btn shape-btn-toggle" title="Small (Alt)">
+                  <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="3.5" fill="currentColor"/></svg>
+                </button>
+              </div>
+            </div>
             <div class="tool-group tool-actions">
               <button id="undoBtn" class="tool-btn" title="Undo (Ctrl+Z)">&#8630; Undo</button>
               <button id="redoBtn" class="tool-btn" title="Redo (Ctrl+Y)">&#8631; Redo</button>
@@ -225,9 +242,8 @@
           <h3 class="sidebar-title">How to play</h3>
           <div class="help-list">
             <div class="help-item"><kbd>Left-click</kbd> <span>Place / remove a dot</span></div>
-            <div class="help-item"><kbd>Ctrl+Click</kbd> <span>Square note</span></div>
-            <div class="help-item"><kbd>Shift+Click</kbd> <span>Triangle note</span></div>
-            <div class="help-item"><kbd>Alt+Click</kbd> <span>Small note</span></div>
+            <div class="help-item"><kbd>Shape buttons</kbd> <span>Pick circle, triangle, square, or small</span></div>
+            <div class="help-item"><kbd>Ctrl/Shift+Click</kbd> <span>Override to square / triangle</span></div>
             <div class="help-item"><kbd>Right-click</kbd> <span>X marker / add a label</span></div>
             <div class="help-item"><kbd>Scroll</kbd> <span>Cycle a dot's colours</span></div>
             <div class="help-item"><kbd>Click barre</kbd> <span>Select it, then &uarr;/&darr; to split</span></div>
