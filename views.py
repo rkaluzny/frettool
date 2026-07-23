@@ -987,6 +987,8 @@ class DashboardView(ctk.CTkFrame):
 
         search_frame = ctk.CTkFrame(self, fg_color="transparent")
         search_frame.grid(row=1, column=0, sticky="ew", padx=50, pady=(0, 10))
+        ctk.CTkLabel(search_frame, text=i18n.tr("dashboard.search_hint"),
+                     font=("Arial", 12), text_color=CONFIG["colors"]["text_muted"]).pack(anchor="w", pady=(0, 4))
         self.search_entry = ctk.CTkEntry(search_frame, placeholder_text=i18n.tr("dashboard.search_hint"),
                                           font=("Arial", 14), height=38)
         self.search_entry.pack(fill="x")

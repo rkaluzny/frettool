@@ -107,7 +107,7 @@ def download_update(url, destination, progress_callback=None):
                     progress_callback(downloaded, total)
 
 
-def install_update(filepath, quit_callback=None):
+def install_update(filepath, quit_callback=None, version=None):
     import subprocess as sp
     script_path = filepath + "_launcher.bat" if sys.platform == "win32" else filepath + ".sh"
 
@@ -145,12 +145,21 @@ rm -f "$0"
             except:
                 exe = ""
         target = appimage if (appimage and os.path.exists(appimage)) else exe
+        base_name = os.path.basename(target) if target else "FretTool.AppImage"
+        name_no_ext = os.path.splitext(base_name)[0]
 
         lines = ["#!/bin/sh", "sleep 2"]
         lines.append(f'chmod +x "{filepath}"')
         if target and target != filepath:
             lines.append(f'mv -f "{filepath}" "{target}" 2>/dev/null')
-            lines.append(f'exec "{target}" "$@"')
+            if version:
+                final_name = f"{name_no_ext}-{version}.AppImage"
+                final_dir = os.path.dirname(target)
+                final_path = os.path.join(final_dir, final_name)
+                lines.append(f'mv -f "{target}" "{final_path}" 2>/dev/null')
+                lines.append(f'exec "{final_path}" "$@"')
+            else:
+                lines.append(f'exec "{target}" "$@"')
         else:
             lines.append(f'exec "{filepath}" "$@"')
         lines.append("")

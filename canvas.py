@@ -121,15 +121,17 @@ class FretboardCanvas(ctk.CTkCanvas):
         frame.pack(padx=6, pady=6)
         for color in presets:
             is_current = color.lower() == current_color.lower()
-            dot_size = 18 if is_current else 14
-            lbl = ctk.CTkLabel(frame, text="", width=dot_size, height=dot_size,
-                               corner_radius=dot_size // 2, fg_color=color)
-            lbl.pack(pady=2)
             if is_current:
-                outer = ctk.CTkFrame(frame, fg_color=CONFIG["colors"]["accent"],
-                                     corner_radius=(dot_size // 2 + 2), width=dot_size + 4, height=dot_size + 4)
-                outer.pack(pady=0)
-                lbl.pack(in_=outer, pady=2)
+                wrapper = ctk.CTkFrame(frame, fg_color=CONFIG["colors"]["accent"],
+                                       corner_radius=12, width=22, height=22)
+                wrapper.pack(padx=3, pady=3)
+                lbl = ctk.CTkLabel(wrapper, text="", width=16, height=16,
+                                   corner_radius=8, fg_color=color)
+                lbl.pack(padx=1, pady=1)
+            else:
+                lbl = ctk.CTkLabel(frame, text="", width=14, height=14,
+                                   corner_radius=7, fg_color=color)
+                lbl.pack(padx=4, pady=2)
         win.update_idletasks()
         cx = event.x_root + 20
         cy = event.y_root - win.winfo_height() // 2
