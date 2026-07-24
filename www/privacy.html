@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — FretTool</title>
+  <meta name="description" content="Privacy policy for FretTool. Information about data collection, PayPal integration, and your rights.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#141730">
+<link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <img src="img/logo.png" alt="FretTool logo" class="logo-img">
+        Fret<span class="logo-accent">Tool</span>
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#demo">Demo</a>
+        <a href="index.html#download">Download</a>
+        <a href="donate.html">Support</a>
+      </nav>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="legal-hero">
+      <div class="container">
+        <p class="section-kicker">privacy</p>
+        <h1 class="legal-title">Privacy Policy</h1>
+        <p class="section-desc">Last updated: July 2026</p>
+      </div>
+    </section>
+
+    <section class="legal-content">
+      <div class="container legal-body">
+        <h2>Overview</h2>
+        <p>FretTool respects your privacy. The interactive fretboard demo on this website runs entirely in your browser (client-side). No personal data is collected, stored, or transmitted by FretTool itself when you use the demo.</p>
+
+        <h2>Data processed by third parties</h2>
+
+        <h3>PayPal</h3>
+        <p>The <a href="donate.html">Support</a> page includes a PayPal donation button. When you make a donation, PayPal (PayPal (Europe) S.&agrave;.r.l. &amp; Cie, S.C.A., 22-24 Boulevard Royal, L-2449 Luxembourg) processes your payment on its own infrastructure. PayPal may collect your name, email address, payment details, and IP address in accordance with its own <a href="https://www.paypal.com/privacy" target="_blank" rel="noopener">Privacy Policy</a>. FretTool does not receive, store, or process any payment information.</p>
+
+        <h3>Google Fonts</h3>
+        <p>This site loads web fonts from Google Fonts (Google LLC). When you visit the page, your browser may connect to Google's servers to download the font files. According to Google, no cookies are set by the fonts API. See <a href="https://developers.google.com/fonts/faq/privacy" target="_blank" rel="noopener">Google Fonts Privacy FAQ</a> for details.</p>
+
+        <h2>No cookies</h2>
+        <p>This website does not set any cookies or use any tracking, analytics, or advertising scripts. The demo stores no user data on any server.</p>
+
+        <h2>No data collection</h2>
+        <p>FretTool does not collect, store, or share any personal data. There is no registration, no login, and no server-side storage of fretboard diagrams.</p>
+
+        <h2>Your rights</h2>
+        <p>Since no personal data is collected by FretTool, there is nothing to access, rectify, or delete. If you have questions about this privacy policy, you can reach out via the contact details on the <a href="legal.html">Legal Notice</a> page.</p>
+
+        <h2>Changes</h2>
+        <p>This policy may be updated occasionally. The "Last updated" date at the top of this page reflects the latest revision.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>FretTool &mdash; built with care, MIT licensed</span>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#demo">Demo</a>
+        <a href="index.html#download">Download</a>
+        <a href="donate.html">Support</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="legal.html">Legal Notice</a>
+        <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelector('.hamburger').addEventListener('click', function () {
+      var nav = document.getElementById('mainNav');
+      var expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !expanded);
+      nav.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

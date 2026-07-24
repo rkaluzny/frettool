@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support FretTool</title>
+  <meta name="description" content="Support FretTool development. Every contribution helps keep the project free and open-source.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#141730">
+<link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
+
+  <link rel="stylesheet" href="style.css">
+
+  <script
+    src="https://www.paypal.com/sdk/js?client-id=BAAJNDyu-Ufq8ZgHFX-ujfct8SY7LyNJvooQCq1kl6grCUsY1iM0K1eGMkcLnfFTm4vXXoyz9W1XJ6OsiY&components=hosted-buttons&disable-funding=venmo&currency=EUR">
+  </script>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <img src="img/logo.png" alt="FretTool logo" class="logo-img">
+        Fret<span class="logo-accent">Tool</span>
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#demo">Demo</a>
+        <a href="index.html#download">Download</a>
+        <a href="donate.html">Support</a>
+      </nav>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero donate-hero">
+      <div class="hero-blob hero-blob-1" aria-hidden="true"></div>
+      <div class="hero-blob hero-blob-2" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <p class="hero-kicker">thanks for stopping by</p>
+        <h1>Support FretTool</h1>
+        <p class="hero-sub">Keep it free, keep it growing</p>
+        <p class="hero-desc">We're keeping FretTool free and open-source—no ads, ever. If you'd like to encourage us to add new features and patches, you're welcome to donate.</p>
+      </div>
+      <svg class="wave-divider" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0,64 C240,120 480,16 720,48 C960,80 1200,120 1440,72 L1440,120 L0,120 Z"></path>
+      </svg>
+    </section>
+
+    <section class="donate-section">
+      <div class="container">
+        <p class="section-kicker">how to help</p>
+        <h2 class="section-title">Donate</h2>
+        <p class="section-desc">Your support is greatly appreciated.</p>
+
+        <div class="donate-card">
+          <div class="donate-paypal-wrap" id="paypal-container-LSRBMQBH428VN"></div>
+          <p class="donate-note">Payments are processed by PayPal. You do not need a PayPal account to pay with a card.</p>
+        </div>
+
+        <div class="donate-features">
+          <div class="donate-feature">
+            <div class="feature-icon">&#9839;</div>
+            <h3>Free forever</h3>
+            <p>No paywalls, no locked features. Donations are entirely optional — FretTool will always be free to download and use.</p>
+          </div>
+          <div class="donate-feature">
+            <div class="feature-icon">&#9998;</div>
+            <h3>Open source</h3>
+            <p>The code lives on GitHub under the MIT license. Fork it, learn from it, remix it — contributions welcome.</p>
+          </div>
+          <div class="donate-feature">
+            <div class="feature-icon">&#9829;</div>
+            <h3>No ads</h3>
+            <p>FretTool is committed to providing a seamless experience without any intrusive advertisements.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>FretTool &mdash; built with care, MIT licensed</span>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#demo">Demo</a>
+        <a href="index.html#download">Download</a>
+        <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener">GitHub</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="legal.html">Legal Notice</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      paypal.HostedButtons({
+        hostedButtonId: "LSRBMQBH428VN",
+      }).render("#paypal-container-LSRBMQBH428VN");
+    });
+  </script>
+
+  <script>
+    document.querySelector('.hamburger').addEventListener('click', function () {
+      var nav = document.getElementById('mainNav');
+      var expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !expanded);
+      nav.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

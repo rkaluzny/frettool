@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legal Notice — FretTool</title>
+  <meta name="description" content="Legal notice for FretTool. Operator information, contact details, and liability disclaimer.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#141730">
+<link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <img src="img/logo.png" alt="FretTool logo" class="logo-img">
+        Fret<span class="logo-accent">Tool</span>
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#demo">Demo</a>
+        <a href="index.html#download">Download</a>
+        <a href="donate.html">Support</a>
+      </nav>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="legal-hero">
+      <div class="container">
+        <p class="section-kicker">legal</p>
+        <h1 class="legal-title">Legal Notice</h1>
+        <p class="section-desc">Impressum &mdash; information pursuant to &sect;5 TMG</p>
+      </div>
+    </section>
+
+    <section class="legal-content">
+      <div class="container legal-body">
+        <h2>Operator</h2>
+        <p>
+          Robin Kaluzny<br>
+          E-Mail: <a href="mailto:robin.jerome.kaluzny@gmail.com">robin.jerome.kaluzny@gmail.com</a>
+        </p>
+
+        <h2>Project</h2>
+        <p>
+          FretTool &mdash; Fretboard Diagram Editor<br>
+          Website: <a href="https://frettool.com">https://frettool.com</a><br>
+          Source code: <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener">github.com/rkaluzny/frettool</a>
+        </p>
+
+        <h2>License</h2>
+        <p>FretTool is released under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>. You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, subject to the conditions of the license. The software is provided "as is", without warranty of any kind.</p>
+
+        <h2>Disclaimer</h2>
+
+        <h3>Liability for content</h3>
+        <p>The contents of this website have been created with the utmost care. However, no guarantee can be given that the content is correct, complete, or up to date. As a service provider, I am responsible for my own content on these pages under general law. There is no obligation to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity.</p>
+
+        <h3>Liability for links</h3>
+        <p>This website contains links to external third-party websites. I have no influence over the content and design of those pages. Therefore, no liability is assumed for such external content. The respective provider or operator of the linked pages is always responsible for their content.</p>
+
+        <h3>Copyright</h3>
+        <p>The content and works created by the operator on this website are subject to copyright law (where applicable). Duplication, processing, distribution, or any form of commercialization of such material beyond the scope of the MIT license shall require the prior written consent of the respective author or creator.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>FretTool &mdash; built with care, MIT licensed</span>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#demo">Demo</a>
+        <a href="index.html#download">Download</a>
+        <a href="donate.html">Support</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="legal.html">Legal Notice</a>
+        <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelector('.hamburger').addEventListener('click', function () {
+      var nav = document.getElementById('mainNav');
+      var expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !expanded);
+      nav.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
