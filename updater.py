@@ -112,7 +112,25 @@ def install_update(filepath, quit_callback=None, version=None):
     script_path = filepath + "_launcher.bat" if sys.platform == "win32" else filepath + ".sh"
 
     if sys.platform == "win32":
-        script = f"""@echo off
+        current_exe = os.path.normpath(sys.executable)
+        is_python = os.path.basename(current_exe).lower().startswith("python")
+        if not is_python and os.path.isfile(current_exe):
+            target = current_exe
+            target_dir = os.path.dirname(target)
+            script = f"""@echo off
+ping 127.0.0.1 -n 4 -w 1000 >nul
+:retry
+copy /y "{filepath}" "{target}" >nul 2>&1
+if errorlevel 1 (
+  ping 127.0.0.1 -n 2 -w 1000 >nul
+  goto retry
+)
+del /f /q "{filepath}" >nul 2>&1
+start "" /d "{target_dir}" "{target}"
+del "%~f0"
+"""
+        else:
+            script = f"""@echo off
 ping 127.0.0.1 -n 3 -w 1000 >nul
 start "" "{filepath}"
 del "%~f0"

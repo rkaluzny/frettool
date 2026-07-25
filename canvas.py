@@ -20,7 +20,7 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.barre_hitboxes = []
         self.grid_hover = None
         self.selected_dots: set = set()
-        self._color_preview_window = None
+        self._color_preview_data = None
         self._color_preview_timer = None
 
         base_frets = max(CONFIG["default_frets"], self.data.num_frets)
@@ -113,31 +113,14 @@ class FretboardCanvas(ctk.CTkCanvas):
         self._destroy_color_preview()
         if not hasattr(event, 'x_root') or not event.x_root:
             return
-        win = ctk.CTkToplevel(self)
-        win.overrideredirect(True)
-        win.attributes('-topmost', True)
-        win.attributes('-alpha', 0.95)
-        frame = ctk.CTkFrame(win, fg_color=CONFIG["colors"]["surface"], corner_radius=8)
-        frame.pack(padx=6, pady=6)
-        for color in presets:
-            is_current = color.lower() == current_color.lower()
-            if is_current:
-                wrapper = ctk.CTkFrame(frame, fg_color=CONFIG["colors"]["accent"],
-                                       corner_radius=12, width=22, height=22)
-                wrapper.pack(padx=3, pady=3)
-                lbl = ctk.CTkLabel(wrapper, text="", width=16, height=16,
-                                   corner_radius=8, fg_color=color)
-                lbl.pack(padx=1, pady=1)
-            else:
-                lbl = ctk.CTkLabel(frame, text="", width=14, height=14,
-                                   corner_radius=7, fg_color=color)
-                lbl.pack(padx=4, pady=2)
-        win.update_idletasks()
-        cx = event.x_root + 20
-        cy = event.y_root - win.winfo_height() // 2
-        win.geometry(f"+{cx}+{cy}")
-        self._color_preview_window = win
+        self._color_preview_data = {
+            "colors": presets,
+            "current": current_color,
+            "x": event.x,
+            "y": event.y,
+        }
         self._schedule_preview_dismiss()
+        self.draw()
 
     def _schedule_preview_dismiss(self):
         if self._color_preview_timer:
@@ -148,12 +131,56 @@ class FretboardCanvas(ctk.CTkCanvas):
         if self._color_preview_timer:
             self.after_cancel(self._color_preview_timer)
             self._color_preview_timer = None
-        if self._color_preview_window:
-            try:
-                self._color_preview_window.destroy()
-            except Exception:
-                pass
-            self._color_preview_window = None
+        if self._color_preview_data:
+            self._color_preview_data = None
+            self.draw()
+
+    def _draw_color_preview(self):
+        data = self._color_preview_data
+        if not data:
+            return
+        presets = data["colors"]
+        if not presets:
+            return
+        current = data["current"]
+        cx = data["x"]
+        cy = data["y"]
+
+        swatch_size = 14
+        gap = 4
+        total_w = swatch_size + 16
+        total_h = len(presets) * (swatch_size + gap) - gap + 16
+
+        bx = cx + 14
+        by = cy - total_h // 2
+
+        margin = 8
+        bc = self.winfo_width()
+        rc = self.winfo_height()
+        if bx + total_w > bc - margin:
+            bx = cx - total_w - 14
+        if by + total_h > rc - margin:
+            by = rc - total_h - margin
+        if by < margin:
+            by = margin
+
+        bg_color = CONFIG["colors"]["surface"]
+        accent_color = CONFIG["colors"]["accent"]
+
+        self.create_rectangle(bx, by, bx + total_w, by + total_h, fill=bg_color,
+                               outline=accent_color, width=1)
+
+        x0 = bx + 8
+        y0 = by + 8
+        for i, color in enumerate(presets):
+            sx = x0
+            sy = y0 + i * (swatch_size + gap)
+            is_current = color.lower() == current.lower()
+            if is_current:
+                self.create_oval(sx - 2, sy - 2, sx + swatch_size + 2, sy + swatch_size + 2,
+                                 fill=accent_color, outline="")
+            self.create_oval(sx, sy, sx + swatch_size, sy + swatch_size,
+                             fill=color, outline="")
 
     def on_resize(self, event):
         self.draw()
@@ -780,6 +807,8 @@ class FretboardCanvas(ctk.CTkCanvas):
                              fill="", outline=CONFIG["colors"]["accent"], width=3,
                              dash=(6, 3))
 
+        self._draw_color_preview()
+
     def on_double_click(self, event):
         margin_x = CONFIG["dimensions"]["margin_side"]
 
@@ -971,13 +1000,16 @@ class FretboardCanvas(ctk.CTkCanvas):
             ctrl_mask = 0x0010
             shift_mask = 0x0001
             alt_mask = 0x0008
+            super_mask = 0
         elif sys.platform == "win32":
             ctrl_mask = 0x0004
             shift_mask = 0x0001
             alt_mask = 0x20000
+            super_mask = 0
         else:
             ctrl_mask = 0x0004
             shift_mask = 0x0001
+            super_mask = 0x0040
             alt_mask = 0x0008
 
         if event.state & ctrl_mask:
@@ -986,6 +1018,8 @@ class FretboardCanvas(ctk.CTkCanvas):
             dot_type = "triangle"
         if event.state & ctrl_mask and event.state & shift_mask:
             dot_type = "square"
+        if super_mask and event.state & super_mask:
+            is_small = True
         if event.state & alt_mask:
             is_small = True
 

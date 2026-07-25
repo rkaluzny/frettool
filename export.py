@@ -13,11 +13,28 @@ class ExportManager:
             ps_data = canvas_widget.postscript(colormode="color")
             img = Image.open(io.BytesIO(ps_data.encode("utf-8")))
             img.save(filename, "PNG")
-            messagebox.showinfo(i18n.tr("dialogs.success"), i18n.tr("export.success_png"))
-            return True
-        except Exception as e:
-            messagebox.showerror(i18n.tr("export.error"), str(e))
-            return False
+        except Exception:
+            try:
+                from PIL import ImageGrab
+                x = canvas_widget.winfo_rootx()
+                y = canvas_widget.winfo_rooty()
+                w = canvas_widget.winfo_width()
+                h = canvas_widget.winfo_height()
+                if w > 0 and h > 0:
+                    img = ImageGrab.grab(bbox=(x, y, x + w, y + h))
+                    img.save(filename, "PNG")
+                else:
+                    raise ValueError("Canvas dimensions are zero")
+            except Exception as e2:
+                import sys
+                if sys.platform == "linux":
+                    msg = str(e2)
+                else:
+                    msg = "Ghostscript not found. Install Ghostscript or use Linux."
+                messagebox.showerror(i18n.tr("export.error"), msg)
+                return False
+        messagebox.showinfo(i18n.tr("dialogs.success"), i18n.tr("export.success_png"))
+        return True
 
     @staticmethod
     def export_svg(project: ProjectData, filename: str):

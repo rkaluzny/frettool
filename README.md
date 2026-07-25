@@ -2,7 +2,7 @@
   <img src="logo.png" alt="FretTool" width="200">
 </p>
 
-# FretTool — v1.2.3
+# FretTool — v1.2.8
 
 A Python application for designing guitar (and other string instrument) fretboard diagrams, chords, scales, and custom fingerings. Built with CustomTkinter.
 
@@ -16,13 +16,13 @@ A Python application for designing guitar (and other string instrument) fretboar
 
 ### Note Input & Editing
 - **Standard Dots**: Left-click to place circular dots
-- **Barres**: Form automatically when 2+ adjacent standard (circle) dots exist on the same fret
+- **Barres**: Form automatically when 2+ adjacent standard (circle) dots exist on the same fret. Non-circle, small, or non-adjacent dots do not participate in barre groups.
 - **Barre Color Cycling**: Hover anywhere on a barre and scroll the mouse wheel (or two-finger touchpad) to cycle all barre dots through preset colours — a popup shows the colour palette
 - **Barre Splitting**: Hover a dot within a barre and press ↑/↓ to split the barre at that string boundary
 - **Special Notation**:
   - Ctrl+Click: square note
   - Shift+Click: triangle note
-  - Alt+Click: smaller dot
+  - Alt+Click (Win/Mac) or Super+Click (Linux): smaller dot
   - Ctrl+Shift+Click: square (takes priority)
 - **Note Labels**: Right-click an existing dot to set a 2-character label and/or per-dot colour
 - **Fret Labels**: Double-click above the fret numbers to add text labels to frets
@@ -69,7 +69,7 @@ A Python application for designing guitar (and other string instrument) fretboar
 - **Dimensions**: String spacing, fret spacing, margins, dot sizes
 - **Colors**: Preset colour palette, default dot colour, fret line colours
 - **Hotkeys**: Re-bind any action to a custom key combination
-- **About**: Version info, license, privacy policy
+- **About**: Version info, license, privacy policy, donate button
 
 ### Project Management
 - **Save/Load**: JSON-based project files stored in the platform data directory

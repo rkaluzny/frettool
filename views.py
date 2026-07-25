@@ -6,6 +6,7 @@ import sys
 import os
 import json
 import i18n
+import webbrowser
 from constants import CONFIG, VERSION
 from models import FretboardData, ProjectData
 from persistence import ProjectStore
@@ -289,6 +290,12 @@ def open_settings_dialog(parent, on_save_callback=None):
                                fg_color="transparent", border_width=1,
                                text_color=CONFIG["colors"]["text"])
     update_btn.pack(side="left")
+
+    donate_btn = ctk.CTkButton(about_frame, text=i18n.tr("settings.donate"), height=38,
+                               fg_color="transparent", border_width=1,
+                               text_color=CONFIG["colors"]["text"])
+    donate_btn.pack(side="left", padx=(10, 0))
+    donate_btn.configure(command=lambda: webbrowser.open("https://rkaluzny.github.io/frettool/donate.html"))
 
     if isinstance(parent, (DashboardView,)):
         privacy_btn.configure(command=lambda: parent._show_privacy_from_settings())
@@ -649,7 +656,15 @@ class EditorView(ctk.CTkFrame):
                                             command=self.pick_dot_color)
         self.btn_dot_color.pack(fill="x", pady=(0, 8))
 
-        lbl_hint = ctk.CTkLabel(settings_frame, text=i18n.tr("editor.dot_color_hint"),
+        import sys
+        if sys.platform == "darwin":
+            hint_text = i18n.tr("editor.dot_color_hint_macos")
+        elif sys.platform == "win32":
+            hint_text = i18n.tr("editor.dot_color_hint_windows")
+        else:
+            hint_text = i18n.tr("editor.dot_color_hint_linux")
+
+        lbl_hint = ctk.CTkLabel(settings_frame, text=hint_text,
                                 text_color=CONFIG["colors"]["text_muted"], font=("Arial", 10),
                                 wraplength=240, justify="left")
         lbl_hint.pack(anchor="w", pady=(0, 8))
