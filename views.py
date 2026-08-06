@@ -380,9 +380,28 @@ def open_settings_dialog(parent, on_save_callback=None):
         except Exception as e:
             messagebox.showerror(i18n.tr("dialogs.error"), str(e))
 
-    btn_save = ctk.CTkButton(dialog, text=i18n.tr("settings.save"), height=45, font=("Arial", 14),
+    def reset_defaults():
+        from settings import DEFAULT_SETTINGS
+        from tkinter import messagebox
+        if messagebox.askyesno(i18n.tr("settings.dialog_title"), i18n.tr("settings.reset_defaults_confirm")):
+            SettingsManager.save_settings(DEFAULT_SETTINGS.copy())
+            SettingsManager.apply_to_config()
+            dialog.destroy()
+            if on_save_callback:
+                on_save_callback()
+            messagebox.showinfo(i18n.tr("settings.dialog_title"), i18n.tr("settings.reset_defaults_done"))
+
+    btn_frame = ctk.CTkFrame(dialog, fg_color="transparent")
+    btn_frame.pack(fill="x", pady=(0, 20))
+
+    btn_reset = ctk.CTkButton(btn_frame, text=i18n.tr("settings.reset_defaults"), height=45,
+                               font=("Arial", 14), fg_color="#e74c3c", hover_color="#c0392b",
+                               command=reset_defaults)
+    btn_reset.pack(side="left")
+
+    btn_save = ctk.CTkButton(btn_frame, text=i18n.tr("settings.save"), height=45, font=("Arial", 14),
                              command=save_settings)
-    btn_save.pack(pady=(0, 20))
+    btn_save.pack(side="right")
 
     dialog.update_idletasks()
     dialog.grab_set()
@@ -643,6 +662,17 @@ class EditorView(ctk.CTkFrame):
 
         self.list_frame = ctk.CTkFrame(sidebar, fg_color="transparent")
         self.list_frame.pack(fill="x", padx=15, pady=10)
+
+        self._drag_indicator = ctk.CTkFrame(self.list_frame, height=3, fg_color=CONFIG["colors"]["accent"])
+        self._drag_indicator.place_forget()
+        self._sidebar_drag_index = None
+
+        self.winfo_toplevel().bind_all("<B3-Motion>", self._sidebar_drag_motion_global, add='+')
+        self.winfo_toplevel().bind_all("<ButtonRelease-3>", self._sidebar_drag_end_global, add='+')
+        if sys.platform == "darwin":
+            self.winfo_toplevel().bind_all("<B2-Motion>", self._sidebar_drag_motion_global, add='+')
+            self.winfo_toplevel().bind_all("<ButtonRelease-2>", self._sidebar_drag_end_global, add='+')
+
         self.refresh_list()
 
         settings_frame = ctk.CTkFrame(sidebar, fg_color="transparent")
@@ -656,7 +686,6 @@ class EditorView(ctk.CTkFrame):
                                             command=self.pick_dot_color)
         self.btn_dot_color.pack(fill="x", pady=(0, 8))
 
-        import sys
         if sys.platform == "darwin":
             hint_text = i18n.tr("editor.dot_color_hint_macos")
         elif sys.platform == "win32":
@@ -706,14 +735,28 @@ class EditorView(ctk.CTkFrame):
 
     def refresh_list(self):
         for widget in self.list_frame.winfo_children():
-            widget.destroy()
+            if widget != self._drag_indicator:
+                widget.destroy()
 
         for i, fb in enumerate(self.project.fretboards):
-            btn = ctk.CTkButton(self.list_frame, text=fb.title or i18n.tr("editor.fretboard_name", number=i+1),
-                                fg_color="transparent", border_width=1, height=50,
+            row_frame = ctk.CTkFrame(self.list_frame, fg_color="transparent")
+            row_frame.pack(fill="x", pady=3)
+
+            handle = tk.Label(row_frame, text="⠿", font=("Arial", 16, "bold"),
+                              bg=CONFIG["colors"]["surface"], fg=CONFIG["colors"]["text_muted"],
+                              cursor="hand2", padx=4)
+            handle.pack(side="left")
+            handle.bind("<ButtonPress-3>", lambda e, idx=i: self._sidebar_drag_start_handle(e, idx))
+            handle.bind("<ButtonPress-2>", lambda e, idx=i: self._sidebar_drag_start_handle(e, idx))
+
+            btn = ctk.CTkButton(row_frame, text=fb.title or i18n.tr("editor.fretboard_name", number=i+1),
+                                fg_color="transparent", border_width=1, height=44,
                                 anchor="w", text_color=CONFIG["colors"]["text"],
                                 command=lambda f=fb: self.select_fretboard(f))
-            btn.pack(fill="x", pady=3)
+            btn.pack(side="left", fill="x", expand=True)
+
+            if self._sidebar_drag_index == i:
+                btn.configure(border_color=CONFIG["colors"]["accent"], border_width=2)
 
             lbl_count = ctk.CTkLabel(btn, text=i18n.tr("editor.notes_count", count=len(fb.positions)),
                                     font=("Arial", 11), text_color=CONFIG["colors"]["text_muted"])
@@ -721,6 +764,34 @@ class EditorView(ctk.CTkFrame):
 
             if self.current_fretboard == fb:
                 btn.configure(fg_color=CONFIG["colors"]["accent"], text_color=CONFIG["colors"]["text"])
+
+    def _sidebar_drag_start_handle(self, event, index):
+        if len(self.project.fretboards) < 2:
+            return
+        self._sidebar_drag_index = index
+        self._drag_target_index = index
+
+    def _sidebar_drag_motion_global(self, event):
+        if self._sidebar_drag_index is None:
+            return
+        list_frame_y = event.y_root - self.list_frame.winfo_rooty()
+        button_height = 50
+        target = round((list_frame_y - 3) / button_height)
+        target = max(0, min(target, len(self.project.fretboards) - 1))
+        if target != self._drag_target_index:
+            self._drag_target_index = target
+            fb = self.project.fretboards.pop(self._sidebar_drag_index)
+            self.project.fretboards.insert(target, fb)
+            self._sidebar_drag_index = target
+            self.refresh_list()
+
+    def _sidebar_drag_end_global(self, event=None):
+        if self._sidebar_drag_index is None:
+            return
+        self.push_history()
+        self._sidebar_drag_index = None
+        self._drag_target_index = None
+        self.refresh_list()
 
     def select_fretboard(self, fb: FretboardData):
         self.save_state()

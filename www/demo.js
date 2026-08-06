@@ -37,7 +37,6 @@
   const titleCounter = document.getElementById('titleCounter');
   const chordDesc = document.getElementById('chordDesc');
   const descCounter = document.getElementById('descCounter');
-  const instrumentSel = document.getElementById('instrumentSel');
   const fretRange = document.getElementById('fretRange');
   const stringRange = document.getElementById('stringRange');
   const fretVal = document.getElementById('fretVal');
@@ -114,7 +113,6 @@
     stringRange.value = STRING_COUNT;
     fretVal.textContent = NUM_FRETS;
     stringVal.textContent = STRING_COUNT;
-    instrumentSel.value = STRING_COUNT + ',' + NUM_FRETS;
   }
 
   function pushHistory() {
@@ -522,20 +520,6 @@
   });
 
   // --- Controls ---
-  instrumentSel.addEventListener('change', function () {
-    let [sc, nf] = this.value.split(',').map(Number);
-    pushHistory();
-    STRING_COUNT = sc;
-    NUM_FRETS = nf;
-    fretRange.value = nf;
-    stringRange.value = sc;
-    fretVal.textContent = nf;
-    stringVal.textContent = sc;
-    selectedBarreKey = null;
-    pruneOutOfRange();
-    draw();
-  });
-
   fretRange.addEventListener('input', function () {
     NUM_FRETS = parseInt(this.value);
     fretVal.textContent = NUM_FRETS;

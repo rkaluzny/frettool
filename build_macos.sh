@@ -33,6 +33,10 @@ if [ -d "$APP_BUNDLE" ]; then
     # Remove quarantine attribute if present (downloaded files)
     xattr -dr com.apple.quarantine "$APP_BUNDLE" 2>/dev/null || true
 
+    # Ad-hoc code sign so Gatekeeper doesn't block execution
+    echo "Ad-hoc signing app bundle..."
+    codesign --force --deep --sign - "$APP_BUNDLE" 2>/dev/null || echo "Warning: codesign not available (install Xcode Command Line Tools)"
+
     echo ""
     echo "To create a DMG, install create-dmg and run:"
     echo "  create-dmg --volname \"$APP_NAME\" --window-pos 200 120 --window-size 800 400 --icon-size 100 --icon \"$APP_NAME.app\" 200 190 --hide-extension \"$APP_NAME.app\" --app-drop-link 600 185 \"dist/$APP_NAME.dmg\" \"$APP_BUNDLE\""
