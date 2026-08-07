@@ -118,11 +118,11 @@ def install_update(filepath, quit_callback=None, version=None):
             target = current_exe
             target_dir = os.path.dirname(target)
             script = f"""@echo off
-ping 127.0.0.1 -n 4 -w 1000 >nul
+timeout /t 4 /nobreak >nul 2>&1
 :retry
 copy /y "{filepath}" "{target}" >nul 2>&1
 if errorlevel 1 (
-  ping 127.0.0.1 -n 2 -w 1000 >nul
+  timeout /t 2 /nobreak >nul 2>&1
   goto retry
 )
 del /f /q "{filepath}" >nul 2>&1
@@ -131,18 +131,20 @@ del "%~f0"
 """
         else:
             script = f"""@echo off
-ping 127.0.0.1 -n 3 -w 1000 >nul
+timeout /t 3 /nobreak >nul 2>&1
 start "" "{filepath}"
 del "%~f0"
 """
         with open(script_path, "w") as f:
             f.write(script)
-        startupinfo = sp.STARTUPINFO()
-        startupinfo.dwFlags |= sp.STARTF_USESHOWWINDOW
-        startupinfo.wShowWindow = 0
-        sp.Popen(["cmd.exe", "/c", script_path],
+        vbs_path = filepath + "_launcher.vbs"
+        vbs_script = 'Set WshShell = CreateObject("WScript.Shell")\n'
+        vbs_script += 'WshShell.Run """' + script_path + '""", 0, True\n'
+        vbs_script += 'Set WshShell = Nothing\n'
+        with open(vbs_path, "w") as f:
+            f.write(vbs_script)
+        sp.Popen(["wscript.exe", vbs_path],
                  creationflags=sp.CREATE_NO_WINDOW | sp.DETACHED_PROCESS,
-                 startupinfo=startupinfo,
                  close_fds=True)
 
     elif sys.platform == "darwin":
