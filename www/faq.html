@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ — FretTool</title>
+  <meta name="description" content="Frequently asked questions about FretTool — installation, security warnings, and common gotchas on Windows, macOS, and Linux.">
+  <link rel="canonical" href="https://frettool.com/faq.html">
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="#faq" class="skip-link">Skip to content</a>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="header">
+    <div class="container header-inner">
+      <span class="logo">
+        <img src="img/logo.png" alt="FretTool logo" class="logo-img">
+        Fret<span class="logo-accent">Tool</span>
+      </span>
+      <nav class="nav" id="mainNav">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#demo">Demo</a>
+        <a href="index.html#download">Download</a>
+        <a href="faq.html">FAQ</a>
+        <a href="donate.html">Support Us</a>
+      </nav>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="faq-hero">
+      <div class="container">
+        <p class="section-kicker">stuff you might wonder</p>
+        <h1 class="section-title">Frequently Asked Questions</h1>
+        <p class="section-desc">Quick answers to the things people run into most. Can't find yours? Open an issue on <a href="https://github.com/rkaluzny/frettool/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+      </div>
+    </section>
+
+    <section id="faq" class="faq-section">
+      <div class="container">
+        <div class="faq-list">
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Windows says FretTool is a virus — what gives?</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p>It's not a virus — it's <strong>Windows SmartScreen</strong> being cautious. Because FretTool is a small, independently-built app without an expensive Extended Validation (EV) code-signing certificate, Microsoft flags it with a warning the first time you run it.</p>
+                <p>If you downloaded FretTool from the official GitHub releases page, it's safe. To get past SmartScreen:</p>
+                <ol>
+                  <li>When you see <em>"Windows protected your PC"</em>, click <strong>More info</strong>.</li>
+                  <li>Then click <strong>Run anyway</strong>.</li>
+                </ol>
+                <p>Windows will remember your choice and won't bother you again.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>macOS won't let me open the app — what should I do?</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p>That's <strong>Gatekeeper</strong> doing its job. Because FretTool isn't notarized by Apple (that costs $99/year), macOS blocks it on first launch. Here's how to open it:</p>
+                <ol>
+                  <li>Open the <code>.dmg</code> file and drag FretTool to your Applications folder.</li>
+                  <li>Find FretTool in <strong>Finder</strong> (don't double-click it yet).</li>
+                  <li><strong>Right-click</strong> (or Control+Click) the app and choose <strong>Open</strong>.</li>
+                  <li>A dialog will say it's from an unidentified developer — click <strong>Open</strong> anyway.</li>
+                </ol>
+                <p>You only need to do this once. After that, it'll launch normally.</p>
+                <p><strong>Tip:</strong> If dragging to Applications doesn't work, you can also run it from your Downloads folder — same right-click → Open trick applies.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Why does my Linux AppImage not do anything when I double-click it?</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p>The AppImage probably isn't marked as executable. Fix it in a terminal:</p>
+                <ol>
+                  <li>Navigate to where you downloaded the file.</li>
+                  <li>Run <code>chmod +x FretTool-*.AppImage</code></li>
+                  <li>Double-click it again — or just run <code>./FretTool-*.AppImage</code> from the terminal.</li>
+                </ol>
+                <p>Some file managers also let you right-click → Properties → Permissions → "Allow executing file as program".</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>How do I update to a newer version?</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p>FretTool has a built-in updater. Go to <strong>Dashboard → Settings → About</strong> and click <strong>Check for Updates</strong>. If a new version is available, you'll be prompted to download it.</p>
+                <p>You can always grab the latest release directly from <a href="https://github.com/rkaluzny/frettool/releases" target="_blank" rel="noopener">GitHub</a> too.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Where does FretTool store my projects?</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p>Your projects live in FretTool's app data folder:</p>
+                <ul>
+                  <li><strong>Windows:</strong> <code>%APPDATA%/FretTool/</code></li>
+                  <li><strong>macOS:</strong> <code>~/Library/Application Support/FretTool/</code></li>
+                  <li><strong>Linux:</strong> <code>~/.local/share/FretTool/</code></li>
+                </ul>
+                <p>You can export individual projects as JSON from the dashboard if you want to back them up or move them to another machine.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Why does my antivirus flag the Windows exe?</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p>PyInstaller (the tool that bundles Python apps into executables) has a bootloader that some antivirus programs heuristically flag as suspicious — even though it's harmless. It's a <a href="https://github.com/pyinstaller/pyinstaller/issues/4698" target="_blank" rel="noopener">well-known issue</a> affecting tons of open-source Python apps.</p>
+                <p>If your antivirus quarantines FretTool, you'll need to add an exception. The app is <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener">open source</a> — you can inspect every line of code yourself.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Does FretTool work on tablets or ARM Macs?</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p>The current builds are for <strong>x86_64</strong> processors. Apple Silicon (M1/M2/M3) Macs can run them through <strong>Rosetta 2</strong> — macOS will offer to install it automatically the first time you open the app.</p>
+                <p>Native ARM builds aren't available yet, but it's on the roadmap.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Is FretTool really free?</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p>Yep — 100% free and <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener">open source</a> (MIT licensed). No ads, no telemetry, no paywalls. If you'd like to support development, there's a <a href="donate.html">Support Us</a> page, but it's entirely optional.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>FretTool &mdash; built with care, MIT licensed</span>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#demo">Demo</a>
+        <a href="index.html#download">Download</a>
+        <a href="faq.html">FAQ</a>
+        <a href="donate.html">Support Us</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="legal.html">Legal Notice</a>
+        <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.faq-question').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var item = this.parentElement;
+        var isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(function(open) {
+          open.classList.remove('open');
+          open.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+        });
+        if (!isOpen) {
+          item.classList.add('open');
+          this.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
