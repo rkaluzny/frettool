@@ -137,8 +137,12 @@ del "%~f0"
 """
         with open(script_path, "w") as f:
             f.write(script)
+        startupinfo = sp.STARTUPINFO()
+        startupinfo.dwFlags |= sp.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = 0
         sp.Popen(["cmd.exe", "/c", script_path],
                  creationflags=sp.CREATE_NO_WINDOW | sp.DETACHED_PROCESS,
+                 startupinfo=startupinfo,
                  close_fds=True)
 
     elif sys.platform == "darwin":
