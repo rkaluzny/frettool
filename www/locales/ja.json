@@ -1,0 +1,202 @@
+{
+  "nav": {
+    "features": "機能",
+    "demo": "デモ",
+    "download": "ダウンロード",
+    "faq": "FAQ",
+    "support": "サポート",
+    "privacy": "プライバシー",
+    "legal": "法的情報",
+    "github": "GitHub"
+  },
+  "index": {
+    "hero": {
+      "kicker": "あなたのフレットボードアイデアの小さな工房",
+      "title": "FretTool",
+      "sub": "フレットボード図エディタ",
+      "desc": "コード、スケール、運指を考えるように描く——クリックで音符を置き、バーは自然に形成され、ラベルを書き、PDFとして送る。",
+      "try_demo": "オンラインデモを試す",
+      "get_app": "アプリを入手"
+    },
+    "features": {
+      "kicker": "できること",
+      "title": "フレットボードの技が詰まったフレンドリーな箱",
+      "desc": "曲をマッピングするために必要なすべて——ソフトウェアと戦うことなく。"
+    },
+    "feature1": {
+      "title": "感覚で音符を置く",
+      "desc": "左クリックでドットを置く。修飾キーを使えば、四角、三角、または通過音用の小さなドットが使える。"
+    },
+    "feature2": {
+      "title": "自然に現れるバー",
+      "desc": "隣り合う弦の同じフレットにドットを置くとバーが現れる。分割、結合、色の変更も自由自在。"
+    },
+    "feature3": {
+      "title": "人間のためのラベル",
+      "desc": "どのドットにも2文字のメモをタグ付け——指番号、音程、覚えるための何でも。"
+    },
+    "feature4": {
+      "title": "ミュートされた弦のためのX",
+      "desc": "空いている場所を右クリックして弦をミュートまたはオープンとマーク。どの弦が静かにするか推測する必要はもうない。"
+    },
+    "feature5": {
+      "title": "印刷可能なPDF",
+      "desc": "Ctrl+Pで鮮明な図をエクスポート。バンド仲間に渡したり、冷蔵庫に貼ったり、レッスンで使ったり。"
+    },
+    "feature6": {
+      "title": "あなたに合わせて作られた",
+      "desc": "2–12弦、1–24フレット、ダークまたはライト、10言語、すべてのホットキーがリバインド可能。あなたの習慣に合わせて曲がる。"
+    },
+    "demo": {
+      "kicker": "試してみよう",
+      "title": "ライブデモ",
+      "desc": "実際にクリックできるフレットボード——デスクトップアプリのいくつかの機能を試そう。",
+      "chord_name_placeholder": "コードまたはスケール名——例：Cメジャー7",
+      "title_counter": "0 / 60",
+      "frets": "フレット",
+      "strings": "弦",
+      "shape": "ドットの形状",
+      "undo": "↶ 元に戻す",
+      "redo": "↷ やり直し",
+      "clear": "クリア",
+      "desc_placeholder": "未来の自分へのメモ——最大250文字",
+      "desc_counter": "0 / 250"
+    },
+    "help": {
+      "title": "遊び方",
+      "left_click": "ドットを置く/削除する",
+      "shape_buttons": "円、三角、四角、小さいのを選択",
+      "modifier_click": "四角/三角に上書き",
+      "right_click": "Xマーカー/ラベルを追加",
+      "scroll": "ドットの色を切り替える",
+      "click_barre": "選択してから↑/↓で分割",
+      "delete": "ホバー中のドットを削除",
+      "undo_redo": "元に戻す/やり直し"
+    },
+    "download": {
+      "kicker": "家に持ち帰ろう",
+      "title": "ダウンロード",
+      "desc": "実際に使っているプラットフム用の完全なデスクトップアプリ。",
+      "windows": "Windows",
+      "linux": "Linux",
+      "macos": "macOS",
+      "note": "すべてのリリースはGitHubにあります。ソースコードはMITライセンス——好きなだけ触ってください。"
+    },
+    "footer": {
+      "tagline": "FretTool——丁寧に作られた、MITライセンス"
+    }
+  },
+  "faq": {
+    "hero": {
+      "kicker": "知りたいこと",
+      "title": "よくある質問",
+      "desc": "よくある問題への素早い回答。見つからない場合は、GitHubでissueを開いてください。"
+    },
+    "q1": {
+      "question": "WindowsがFretToolをウイルスだと言います——どういうことですか？",
+      "answer": "<p>ウイルスではありません——<strong>Windows SmartScreen</strong>が慎重にしているだけです。FretToolは小さな独立したアプリで、高価なEVコード署名証明書がないため、初めて実行するとMicrosoftが警告を表示します。</p><p>公式のGitHubリリースページからダウンロードした場合は安全です。SmartScreenを回避するには：</p><ol><li><em>「WindowsはPCを保護しました」</em>が表示されたら、<strong>詳細情報</strong>をクリックします。</li><li>次に<strong>実行</strong>をクリックします。</li></ol><p>Windowsはあなたの選択を記憶し、二度と表示されなくなります。</p>"
+    },
+    "q2": {
+      "question": "macOSでアプリが開けません——どうすればいいですか？",
+      "answer": "<p><strong>Gatekeeper</strong>が仕事をしているだけです。FretToolはApple公証されていないため（年間$99）、macOSが初回起動時にブロックします。開き方：</p><ol><li><code>.dmg</code>ファイルを開き、FretToolをアプリケーションフォルダにドラッグします。</li><li><strong>Finder</strong>でFretToolを探します（まだダブルクリックしないで）。</li><li><strong>右クリック</strong>（またはControl+クリック）して<strong>開く</strong>を選択します。</li><li>未確認の開発者からのというダイアログが表示されます——とにかく<strong>開く</strong>をクリックします。</li></ol><p>これは一度だけ必要です。その後は普通に起動します。</p><p><strong>ヒント：</strong>アプリケーションフォルダへのドラッグがうまくいかない場合は、ダウンロードフォルダから実行することもできます——同じ右クリック→開くの技が使えます。</p>"
+    },
+    "q3": {
+      "question": "LinuxのAppImageをダブルクリックしても何も起こりません——なぜですか？",
+      "answer": "<p>AppImageが実行可能としてマークされていない可能性があります。ターミナルで修正してください：</p><ol><li>ファイルをダウンロードした場所に移動します。</li><li><code>chmod +x FretTool-*.AppImage</code>を実行します。</li><li>もう一度ダブルクリックするか、ターミナルから<code>./FretTool-*.AppImage</code>を実行します。</li></ol><p>ファイルマネージャによっては、右クリック→プロパティ→権限→「プログラムとしてファイルの実行を許可」も使えます。</p>"
+    },
+    "q4": {
+      "question": "新しいバージョンに更新するには？",
+      "answer": "<p>FretToolには内蔵のアップデーターがあります。<strong>ダッシュボード→設定→情報</strong>で<strong>更新を確認</strong>をクリックします。新しいバージョンがあれば、ダウンロードを促されます。</p><p>いつでも<a href=\"https://github.com/rkaluzny/frettool/releases\" target=\"_blank\" rel=\"noopener\">GitHub</a>から最新リリースを直接ダウンロードできます。</p>"
+    },
+    "q5": {
+      "question": "FretToolはプロジェクトをどこに保存しますか？",
+      "answer": "<p>プロジェクトはFretToolのアプリケーションデータフォルダに保存されます：</p><ul><li><strong>Windows：</strong><code>%APPDATA%/FretTool/</code></li><li><strong>macOS：</strong><code>~/Library/Application Support/FretTool/</code></li><li><strong>Linux：</strong><code>~/.local/share/FretTool/</code></li></ul><p>バックアップや別のマシンへの移行のために、ダッシュボードから個々のプロジェクトをJSONとしてエクスポートできます。</p>"
+    },
+    "q6": {
+      "question": "なぜアンチウイルスがWindows exeを検知するのですか？",
+      "answer": "<p>PyInstaller（Pythonアプリを実行可能ファイルにバンドルするツール）には、一部のアンチウイルスがヒューリスティックに疑わしいとフラグを立てるブートローダーがあります——无害にもかかわらず。これは<a href=\"https://github.com/pyinstaller/pyinstaller/issues/4698\" target=\"_blank\" rel=\"noopener\">よく知られた問題</a>で、多くのオープンソースPythonアプリに影響しています。</p><p>アンチウイルスがFretToolを隔離した場合は、例外を追加する必要があります。アプリは<a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">オープンソース</a>——コードのすべてを自分で検査できます。</p>"
+    },
+    "q7": {
+      "question": "FretToolはタブレットやARM Macで動きますか？",
+      "answer": "<p>現在のビルドは<strong>x86_64</strong>プロセッサ用です。Apple Silicon（M1/M2/M3）Macは<strong>Rosetta 2</strong>経由で実行できます——macOSがアプリを開いた最初に自動的にインストールを提案します。</p><p>ネイティブARMビルドはまだありませんが、ロードマップに入っています。</p>"
+    },
+    "q8": {
+      "question": "FretToolは本当に無料ですか？",
+      "answer": "<p>はい——100%無料で<a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">オープンソース</a>（MITライセンス）。広告なし、テレメトリなし、ペイウォールなし。開発をサポートしたい場合は<a href=\"donate.html\">サポートページ</a>がありますが、完全に任意です。</p>"
+    }
+  },
+  "donate": {
+    "hero": {
+      "kicker": "お越しいただきありがとうございます",
+      "title": "FretToolをサポート",
+      "sub": "無料を保ち、成長を保つ",
+      "desc": "FretToolは無料かつオープンソースを維持しています——広告は絶対にありません。新機能やパッチを追加するのを応援したい場合は、寄付をお願いします。"
+    },
+    "section": {
+      "kicker": "サポート方法",
+      "title": "寄付",
+      "desc": "ご支援に深く感謝いたします。"
+    },
+    "note": "支払いはPayPalで処理されます。カード払いにPayPalアカウントは必要ありません。",
+    "support_btn": "サポート",
+    "feature1": {
+      "title": "永遠に無料",
+      "desc": "ペイウォールもロックされた機能もありません。寄付は完全に任意——FretToolは常に無料でダウンロード・利用できます。"
+    },
+    "feature2": {
+      "title": "オープンソース",
+      "desc": "コードはMITライセンスでGitHubに存在します。フォーク、学習、リミックス——貢献歓迎。"
+    },
+    "feature3": {
+      "title": "広告なし",
+      "desc": "FretToolは侵入的な広告なしでシームレスな体験を提供することを約束します。"
+    }
+  },
+  "privacy": {
+    "hero": {
+      "kicker": "プライバシー",
+      "title": "プライバシーポリシー",
+      "desc": "最終更新：2026年7月"
+    },
+    "h1": "概要",
+    "p1": "FretToolはあなたのプライバシーを尊重します。このウェブサイトのインタラクティブなフレットボードデモは、すべてブラウザ上で実行されます（クライアントサイド）。デモ使用時にFretTool自身が個人データを収集、保存、送信することはありません。",
+    "h2": "第三者によるデータ処理",
+    "h3_paypal": "PayPal",
+    "p_paypal": "サポートページにはPayPalの寄付ボタンがあります。寄付を行う際、PayPal（PayPal (Europe) S.à.r.l. & Cie, S.C.A., 22-24 Boulevard Royal, L-2449 ルクセンブルク）は独自のインフラで支払いを処理します。PayPalは自身のプライバシーポリシーに従って、あなたの名前、メールアドレス、支払い詳細、IPアドレスを収集することがあります。FretToolはいかなる支払い情報も受信、保存、処理しません。",
+    "h2_cookies": "Cookieなし",
+    "p_cookies": "このウェブサイトはCookieを一切使用せず、トラッキング、分析、広告スクリプトも使用しません。デモはいかなるサーバーにもユーザーデータを保存しません。",
+    "h2_nodata": "データ収集なし",
+    "p_nodata": "FretToolは個人データを収集、保存、共有しません。登録もログインもなく、フレットボード図のサーバー保存もありません。",
+    "h2_rights": "あなたの権利",
+    "p_rights": "FretToolは個人データを収集しないため、アクセス、訂正、削除するものはありません。このプライバシーポリシーについて質問がある場合は、法的情報ページの連絡先からお問い合わせください。",
+    "h2_changes": "変更",
+    "p_changes": "このポリシーは随時更新される場合があります。ページ上部の「最終更新」日付は最新の改訂を反映しています。"
+  },
+  "legal": {
+    "hero": {
+      "kicker": "法的情報",
+      "title": "法的情報",
+      "desc": "Impressum——§5 TMGに基づく情報"
+    },
+    "h_operator": "運営者",
+    "operator": "Robin Kaluzny<br>Eメール：<a href=\"mailto:robin.jerome.kaluzny@gmail.com\">robin.jerome.kaluzny@gmail.com</a>",
+    "h_supervision": "監督",
+    "supervision": "Mick Kaluzny<br>Eメール：<a href=\"mailto:mkaluzny.ch@gmail.com\">mkaluzny.ch@gmail.com</a>",
+    "h_project": "プロジェクト",
+    "project": "FretTool——フレットボード図エディタ<br>ウェブサイト：<a href=\"https://rkaluzny.github.io/frettool/\">https://rkaluzny.github.io/frettool/</a><br>ソースコード：<a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">github.com/rkaluzny/frettool</a>",
+    "h_license": "ライセンス",
+    "license": "FretToolはMITライセンスの下でリリースされています。ライセンスの条件に従い、ソフトウェアのコピーを使用、複製、変更、マージ、公開、頒布、サブライセンス、および/または販売する自由があります。ソフトウェアは「現状のまま」提供され、いかなる種類の保証もありません。",
+    "h_disclaimer": "免責事項",
+    "h_liability_content": "コンテンツに対する責任",
+    "liability_content": "このウェブサイトのコンテンツは細心の注意を払って作成されました。ただし、コンテンツが正確、完全、または最新である保証はできません。サービス提供者として、一般法に基づきページ上の自身のコンテンツについて責任を負います。送信または保存された第三者情報を監視する義務や、違法な活動を示す状況を調査する義務はありません。",
+    "h_liability_links": "リンクに対する責任",
+    "liability_links": "このウェブサイトには外部の第三者ウェブサイトへのリンクが含まれています。私はそれらのページの内容やデザインに影響を及ぼすことはできません。したがって、そのような外部のコンテンツについては責任を負いません。リンク先のページのそれぞれの提供者または運営者が常にそのコンテンツに責任を負います。",
+    "h_copyright": "著作権",
+    "copyright": "運営者がこのウェブサイトに作成したコンテンツおよび著作物は、著作権法（該する場合）の対象となります。複製、処理、頒布、またはMITライセンスの範囲を超えた商品化は、それぞれの作者または作成者の事前の書面による同意が必要です。"
+  },
+  "page.title_index": "FretTool — フレットボード図エディタ＆コードチャートメーカー",
+  "page.title_faq": "よくある質問 — FretTool",
+  "page.title_donate": "FretToolをサポート",
+  "page.title_privacy": "プライバシーポリシー — FretTool",
+  "page.title_legal": "法的情報 — FretTool"
+}

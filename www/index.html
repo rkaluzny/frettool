@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FretTool — Fretboard Diagram Editor & Chord Chart Maker</title>
+  <title data-i18n="page.title_index">FretTool — Fretboard Diagram Editor &amp; Chord Chart Maker</title>
   <meta name="description" content="FretTool is a free fretboard diagram editor for guitar and other string instruments. Sketch chords, scales and fingerings, form barres automatically, add labels, and export print-ready PDFs.">
   <meta name="keywords" content="fretboard diagram, chord chart maker, guitar tab, fretboard editor, scale diagram, barre chords, music notation, guitar tool, PDF chord chart">
   <meta name="author" content="FretTool">
@@ -30,6 +30,7 @@
   <meta name="twitter:image" content="https://frettool.com/img/logo.png">
 
   <link rel="stylesheet" href="style.css">
+  <script src="i18n.js" defer></script>
 
   <!-- Structured data -->
   <script type="application/ld+json">
@@ -81,11 +82,12 @@
         Fret<span class="logo-accent">Tool</span>
       </span>
         <nav class="nav" id="mainNav">
-          <a href="#features">Features</a>
-          <a href="#demo">Demo</a>
-          <a href="#download">Download</a>
-          <a href="faq.html">FAQ</a>
-          <a href="donate.html">Support Us</a>
+          <a href="#features" data-i18n="nav.features">Features</a>
+          <a href="#demo" data-i18n="nav.demo">Demo</a>
+          <a href="#download" data-i18n="nav.download">Download</a>
+          <a href="faq.html" data-i18n="nav.faq">FAQ</a>
+          <a href="donate.html" data-i18n="nav.support">Support Us</a>
+          <div id="langSelector" class="lang-selector"></div>
         </nav>
       <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -98,10 +100,10 @@
     <div class="hero-blob hero-blob-1" aria-hidden="true"></div>
     <div class="hero-blob hero-blob-2" aria-hidden="true"></div>
     <div class="container hero-inner">
-      <p class="hero-kicker">a little workshop for your fretboard ideas</p>
+      <p class="hero-kicker" data-i18n="index.hero.kicker">a little workshop for your fretboard ideas</p>
       <h1>FretTool</h1>
-      <p class="hero-sub">Fretboard Diagram Editor</p>
-      <p class="hero-desc">Sketch chords, scales and fingerings the way you think about them — click to drop a note, let barres form by themselves, scribble a label, then send it off as a PDF.</p>
+      <p class="hero-sub" data-i18n="index.hero.sub">Fretboard Diagram Editor</p>
+      <p class="hero-desc" data-i18n="index.hero.desc">Sketch chords, scales and fingerings the way you think about them — click to drop a note, let barres form by themselves, scribble a label, then send it off as a PDF.</p>
       <div class="hero-icons">
         <img src="img/music-solid-full.svg" alt="Note icon" class="hero-icon" loading="lazy" decoding="async">
         <img src="img/file-pdf-solid-full.svg" alt="PDF icon" class="hero-icon" loading="lazy" decoding="async">
@@ -109,8 +111,8 @@
         <img src="img/x-solid-full.svg" alt="X marker icon" class="hero-icon" loading="lazy" decoding="async">
       </div>
       <div class="hero-btns">
-        <a href="#demo" class="btn btn-primary">Try the online demo</a>
-        <a href="#download" class="btn btn-secondary">Get the app</a>
+        <a href="#demo" class="btn btn-primary" data-i18n="index.hero.try_demo">Try the online demo</a>
+        <a href="#download" class="btn btn-secondary" data-i18n="index.hero.get_app">Get the app</a>
       </div>
     </div>
     <svg class="wave-divider" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
@@ -120,48 +122,48 @@
 
   <section id="features" class="features">
     <div class="container">
-      <p class="section-kicker">what it does</p>
-      <h2 class="section-title">A friendly box of fretboard tricks</h2>
-      <p class="section-desc">Everything you need to map out a song — without fighting your software.</p>
+      <p class="section-kicker" data-i18n="index.features.kicker">what it does</p>
+      <h2 class="section-title" data-i18n="index.features.title">A friendly box of fretboard tricks</h2>
+      <p class="section-desc" data-i18n="index.features.desc">Everything you need to map out a song — without fighting your software.</p>
 
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon">
             <img src="img/music-solid-full.svg" alt="Note icon">
           </div>
-          <h3>Place notes by feel</h3>
-          <p>Left-click to drop a dot. Hold a modifier and you get a square, a triangle, or a wee one for passing tones.</p>
+          <h3 data-i18n="index.feature1.title">Place notes by feel</h3>
+          <p data-i18n="index.feature1.desc">Left-click to drop a dot. Hold a modifier and you get a square, a triangle, or a wee one for passing tones.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">&#9839;</div>
-          <h3>Barres that just happen</h3>
-          <p>Put dots on neighbouring strings at the same fret and a barre appears. Split, merge and recolour it however you like.</p>
+          <h3 data-i18n="index.feature2.title">Barres that just happen</h3>
+          <p data-i18n="index.feature2.desc">Put dots on neighbouring strings at the same fret and a barre appears. Split, merge and recolour it however you like.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">&#9998;</div>
-          <h3>Labels for humans</h3>
-          <p>Tag any dot with a two-character note — finger numbers, intervals, anything that helps you remember.</p>
+          <h3 data-i18n="index.feature3.title">Labels for humans</h3>
+          <p data-i18n="index.feature3.desc">Tag any dot with a two-character note — finger numbers, intervals, anything that helps you remember.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
             <img src="img/x-solid-full.svg" alt="X marker icon">
           </div>
-          <h3>X for the muted ones</h3>
-          <p>Right-click an empty spot to mark a string as muted or open. No more guessing which strings stay quiet.</p>
+          <h3 data-i18n="index.feature4.title">X for the muted ones</h3>
+          <p data-i18n="index.feature4.desc">Right-click an empty spot to mark a string as muted or open. No more guessing which strings stay quiet.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
             <img src="img/file-pdf-solid-full.svg" alt="PDF export icon">
           </div>
-          <h3>Print-ready PDFs</h3>
-          <p>Export crisp diagrams with Ctrl+P. Hand them to your band, pin them to the fridge, teach a lesson.</p>
+          <h3 data-i18n="index.feature5.title">Print-ready PDFs</h3>
+          <p data-i18n="index.feature5.desc">Export crisp diagrams with Ctrl+P. Hand them to your band, pin them to the fridge, teach a lesson.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
             <img src="img/palette-solid-full.svg" alt="Customizable icon">
           </div>
-          <h3>Made to fit you</h3>
-          <p>2–12 strings, 1–24 frets, dark or light, ten languages, and every hotkey rebindable. It bends to your habit.</p>
+          <h3 data-i18n="index.feature6.title">Made to fit you</h3>
+          <p data-i18n="index.feature6.desc">2–12 strings, 1–24 frets, dark or light, ten languages, and every hotkey rebindable. It bends to your habit.</p>
         </div>
       </div>
     </div>
@@ -172,28 +174,28 @@
 
   <section id="demo" class="demo">
     <div class="container">
-      <p class="section-kicker">give it a go</p>
-      <h2 class="section-title">Live Demo</h2>
-      <p class="section-desc">A real, clickable fretboard — try a few of the things the desktop app does.</p>
+      <p class="section-kicker" data-i18n="index.demo.kicker">give it a go</p>
+      <h2 class="section-title" data-i18n="index.demo.title">Live Demo</h2>
+      <p class="section-desc" data-i18n="index.demo.desc">A real, clickable fretboard — try a few of the things the desktop app does.</p>
 
       <div class="demo-layout">
         <div class="demo-main">
           <div class="demo-header">
-            <input type="text" id="chordName" class="demo-title-input" placeholder="Chord or scale name — e.g. C major 7" maxlength="60">
-            <span class="char-counter" id="titleCounter">0 / 60</span>
+            <input type="text" id="chordName" class="demo-title-input" data-i18n-placeholder="index.demo.chord_name_placeholder" placeholder="Chord or scale name — e.g. C major 7" maxlength="60">
+            <span class="char-counter" id="titleCounter" data-i18n="index.demo.title_counter">0 / 60</span>
           </div>
 
           <div class="demo-toolbar">
             <div class="tool-group">
-              <label for="fretRange">Frets <span id="fretVal" class="tool-val">12</span></label>
+              <label for="fretRange"><span data-i18n="index.demo.frets">Frets</span> <span id="fretVal" class="tool-val">12</span></label>
               <input type="range" id="fretRange" min="1" max="24" value="12">
             </div>
             <div class="tool-group">
-              <label for="stringRange">Strings <span id="stringVal" class="tool-val">6</span></label>
+              <label for="stringRange"><span data-i18n="index.demo.strings">Strings</span> <span id="stringVal" class="tool-val">6</span></label>
               <input type="range" id="stringRange" min="2" max="12" value="6">
             </div>
             <div class="tool-group tool-shapes">
-              <label>Dot shape</label>
+              <label data-i18n="index.demo.shape">Dot shape</label>
               <div class="shape-btns">
                 <button id="shapeCircle" class="shape-btn shape-btn-active" title="Circle (default)">
                   <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="currentColor"/></svg>
@@ -210,9 +212,9 @@
               </div>
             </div>
             <div class="tool-group tool-actions">
-              <button id="undoBtn" class="tool-btn" title="Undo (Ctrl+Z)">&#8630; Undo</button>
-              <button id="redoBtn" class="tool-btn" title="Redo (Ctrl+Y)">&#8631; Redo</button>
-              <button id="clearBtn" class="tool-btn tool-btn-warn" title="Clear the board">Clear</button>
+              <button id="undoBtn" class="tool-btn" title="Undo (Ctrl+Z)" data-i18n="index.demo.undo">&#8630; Undo</button>
+              <button id="redoBtn" class="tool-btn" title="Redo (Ctrl+Y)" data-i18n="index.demo.redo">&#8631; Redo</button>
+              <button id="clearBtn" class="tool-btn tool-btn-warn" title="Clear the board" data-i18n="index.demo.clear">Clear</button>
             </div>
           </div>
 
@@ -220,21 +222,21 @@
             <canvas id="fretboardCanvas" width="820" height="380"></canvas>
           </div>
           <div class="demo-desc">
-            <textarea id="chordDesc" class="demo-desc-input" placeholder="A note to your future self — max 250 characters" maxlength="250"></textarea>
-            <span class="char-counter" id="descCounter">0 / 250</span>
+            <textarea id="chordDesc" class="demo-desc-input" data-i18n-placeholder="index.demo.desc_placeholder" placeholder="A note to your future self — max 250 characters" maxlength="250"></textarea>
+            <span class="char-counter" id="descCounter" data-i18n="index.demo.desc_counter">0 / 250</span>
           </div>
         </div>
         <div class="demo-sidebar">
-          <h3 class="sidebar-title">How to play</h3>
+          <h3 class="sidebar-title" data-i18n="index.help.title">How to play</h3>
           <div class="help-list">
-            <div class="help-item"><kbd>Left-click</kbd> <span>Place / remove a dot</span></div>
-            <div class="help-item"><kbd>Shape buttons</kbd> <span>Pick circle, triangle, square, or small</span></div>
-            <div class="help-item"><kbd>Ctrl/Shift+Click</kbd> <span>Override to square / triangle</span></div>
-            <div class="help-item"><kbd>Right-click</kbd> <span>X marker / add a label</span></div>
-            <div class="help-item"><kbd>Scroll</kbd> <span>Cycle a dot's colours</span></div>
-            <div class="help-item"><kbd>Click barre</kbd> <span>Select it, then &uarr;/&darr; to split</span></div>
-            <div class="help-item"><kbd>Del / Bksp</kbd> <span>Remove the hovered dot</span></div>
-            <div class="help-item"><kbd>Ctrl+Z / Y</kbd> <span>Undo / redo</span></div>
+            <div class="help-item"><kbd>Left-click</kbd> <span data-i18n="index.help.left_click">Place / remove a dot</span></div>
+            <div class="help-item"><kbd>Shape buttons</kbd> <span data-i18n="index.help.shape_buttons">Pick circle, triangle, square, or small</span></div>
+            <div class="help-item"><kbd>Ctrl/Shift+Click</kbd> <span data-i18n="index.help.modifier_click">Override to square / triangle</span></div>
+            <div class="help-item"><kbd>Right-click</kbd> <span data-i18n="index.help.right_click">X marker / add a label</span></div>
+            <div class="help-item"><kbd>Scroll</kbd> <span data-i18n="index.help.scroll">Cycle a dot's colours</span></div>
+            <div class="help-item"><kbd>Click barre</kbd> <span data-i18n="index.help.click_barre">Select it, then &uarr;/&darr; to split</span></div>
+            <div class="help-item"><kbd>Del / Bksp</kbd> <span data-i18n="index.help.delete">Remove the hovered dot</span></div>
+            <div class="help-item"><kbd>Ctrl+Z / Y</kbd> <span data-i18n="index.help.undo_redo">Undo / redo</span></div>
           </div>
         </div>
       </div>
@@ -243,49 +245,49 @@
 
   <section id="download" class="download">
     <div class="container">
-      <p class="section-kicker">take it home</p>
-      <h2 class="section-title">Download</h2>
-      <p class="section-desc">The full desktop app, for the platform you actually use.</p>
+      <p class="section-kicker" data-i18n="index.download.kicker">take it home</p>
+      <h2 class="section-title" data-i18n="index.download.title">Download</h2>
+      <p class="section-desc" data-i18n="index.download.desc">The full desktop app, for the platform you actually use.</p>
       <div class="download-grid">
         <a href="https://github.com/rkaluzny/frettool/releases/download/v1.4.2/FretTool-Setup-1.4.2-x86_64.exe" class="download-card" data-platform="windows">
           <div class="dl-icon">
             <img src="img/windows-brands-solid-full.svg" alt="Windows icon" loading="lazy" decoding="async">
           </div>
-          <span class="dl-name">Windows</span>
+          <span class="dl-name" data-i18n="index.download.windows">Windows</span>
           <span class="dl-ext">.exe</span>
         </a>
         <a href="https://github.com/rkaluzny/frettool/releases/download/v1.4.2/FretTool-1.4.2-x86_64.AppImage" class="download-card" data-platform="linux">
           <div class="dl-icon">
             <img src="img/linux-brands-solid-full.svg" alt="Linux icon" loading="lazy" decoding="async">
           </div>
-          <span class="dl-name">Linux</span>
+          <span class="dl-name" data-i18n="index.download.linux">Linux</span>
           <span class="dl-ext">.AppImage</span>
         </a>
         <a href="https://github.com/rkaluzny/frettool/releases/download/v1.4.2/FretTool-1.4.2.dmg" class="download-card" data-platform="macos">
           <div class="dl-icon">
             <img src="img/apple-brands-solid-full.svg" alt="macOS icon" loading="lazy" decoding="async">
           </div>
-          <span class="dl-name">macOS</span>
+          <span class="dl-name" data-i18n="index.download.macos">macOS</span>
           <span class="dl-ext">.dmg</span>
         </a>
       </div>
-      <p class="dl-note">All releases live on <a href="https://github.com/rkaluzny/frettool/releases" target="_blank" rel="noopener">GitHub</a>. Source code is MIT licensed — poke at it all you like.</p>
+      <p class="dl-note" data-i18n="index.download.note" data-i18n-html>All releases live on <a href="https://github.com/rkaluzny/frettool/releases" target="_blank" rel="noopener">GitHub</a>. Source code is MIT licensed — poke at it all you like.</p>
     </div>
   </section>
   </main>
   
   <footer class="footer">
     <div class="container footer-inner">
-      <span>FretTool &mdash; built with care, MIT licensed</span>
+      <span data-i18n="index.footer.tagline">FretTool &mdash; built with care, MIT licensed</span>
         <nav class="footer-nav" aria-label="Footer">
-          <a href="#features">Features</a>
-          <a href="#demo">Demo</a>
-          <a href="#download">Download</a>
-          <a href="faq.html">FAQ</a>
-          <a href="donate.html">Support Us</a>
-          <a href="privacy.html">Privacy</a>
-          <a href="legal.html">Legal Notice</a>
-          <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener">GitHub</a>
+          <a href="#features" data-i18n="nav.features">Features</a>
+          <a href="#demo" data-i18n="nav.demo">Demo</a>
+          <a href="#download" data-i18n="nav.download">Download</a>
+          <a href="faq.html" data-i18n="nav.faq">FAQ</a>
+          <a href="donate.html" data-i18n="nav.support">Support Us</a>
+          <a href="privacy.html" data-i18n="nav.privacy">Privacy</a>
+          <a href="legal.html" data-i18n="nav.legal">Legal Notice</a>
+          <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener" data-i18n="nav.github">GitHub</a>
         </nav>
     </div>
   </footer>

@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FAQ — FretTool</title>
+  <title data-i18n="page.title_faq">FAQ — FretTool</title>
   <meta name="description" content="Frequently asked questions about FretTool — installation, security warnings, and common gotchas on Windows, macOS, and Linux.">
   <link rel="canonical" href="https://frettool.com/faq.html">
   <link rel="icon" type="image/png" href="img/logo.png">
   <link rel="stylesheet" href="style.css">
+  <script src="i18n.js" defer></script>
 </head>
 <body>
   <a href="#faq" class="skip-link">Skip to content</a>
@@ -20,11 +21,12 @@
         Fret<span class="logo-accent">Tool</span>
       </span>
       <nav class="nav" id="mainNav">
-        <a href="index.html#features">Features</a>
-        <a href="index.html#demo">Demo</a>
-        <a href="index.html#download">Download</a>
-        <a href="faq.html">FAQ</a>
-        <a href="donate.html">Support Us</a>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#demo" data-i18n="nav.demo">Demo</a>
+        <a href="index.html#download" data-i18n="nav.download">Download</a>
+        <a href="faq.html" data-i18n="nav.faq">FAQ</a>
+        <a href="donate.html" data-i18n="nav.support">Support Us</a>
+        <div id="langSelector" class="lang-selector"></div>
       </nav>
       <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -35,9 +37,9 @@
   <main>
     <section class="faq-hero">
       <div class="container">
-        <p class="section-kicker">stuff you might wonder</p>
-        <h1 class="section-title">Frequently Asked Questions</h1>
-        <p class="section-desc">Quick answers to the things people run into most. Can't find yours? Open an issue on <a href="https://github.com/rkaluzny/frettool/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+        <p class="section-kicker" data-i18n="faq.hero.kicker">stuff you might wonder</p>
+        <h1 class="section-title" data-i18n="faq.hero.title">Frequently Asked Questions</h1>
+        <p class="section-desc" data-i18n="faq.hero.desc" data-i18n-html>Quick answers to the things people run into most. Can't find yours? Open an issue on <a href="https://github.com/rkaluzny/frettool/issues" target="_blank" rel="noopener">GitHub</a>.</p>
       </div>
     </section>
 
@@ -47,11 +49,11 @@
 
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>Windows says FretTool is a virus — what gives?</span>
+              <span data-i18n="faq.q1.question">Windows says FretTool is a virus — what gives?</span>
               <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              <div class="faq-answer-inner">
+              <div class="faq-answer-inner" data-i18n="faq.q1.answer" data-i18n-html>
                 <p>It's not a virus — it's <strong>Windows SmartScreen</strong> being cautious. Because FretTool is a small, independently-built app without an expensive Extended Validation (EV) code-signing certificate, Microsoft flags it with a warning the first time you run it.</p>
                 <p>If you downloaded FretTool from the official GitHub releases page, it's safe. To get past SmartScreen:</p>
                 <ol>
@@ -65,11 +67,11 @@
 
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>macOS won't let me open the app — what should I do?</span>
+              <span data-i18n="faq.q2.question">macOS won't let me open the app — what should I do?</span>
               <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              <div class="faq-answer-inner">
+              <div class="faq-answer-inner" data-i18n="faq.q2.answer" data-i18n-html>
                 <p>That's <strong>Gatekeeper</strong> doing its job. Because FretTool isn't notarized by Apple (that costs $99/year), macOS blocks it on first launch. Here's how to open it:</p>
                 <ol>
                   <li>Open the <code>.dmg</code> file and drag FretTool to your Applications folder.</li>
@@ -85,11 +87,11 @@
 
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>Why does my Linux AppImage not do anything when I double-click it?</span>
+              <span data-i18n="faq.q3.question">Why does my Linux AppImage not do anything when I double-click it?</span>
               <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              <div class="faq-answer-inner">
+              <div class="faq-answer-inner" data-i18n="faq.q3.answer" data-i18n-html>
                 <p>The AppImage probably isn't marked as executable. Fix it in a terminal:</p>
                 <ol>
                   <li>Navigate to where you downloaded the file.</li>
@@ -103,11 +105,11 @@
 
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>How do I update to a newer version?</span>
+              <span data-i18n="faq.q4.question">How do I update to a newer version?</span>
               <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              <div class="faq-answer-inner">
+              <div class="faq-answer-inner" data-i18n="faq.q4.answer" data-i18n-html>
                 <p>FretTool has a built-in updater. Go to <strong>Dashboard → Settings → About</strong> and click <strong>Check for Updates</strong>. If a new version is available, you'll be prompted to download it.</p>
                 <p>You can always grab the latest release directly from <a href="https://github.com/rkaluzny/frettool/releases" target="_blank" rel="noopener">GitHub</a> too.</p>
               </div>
@@ -116,11 +118,11 @@
 
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>Where does FretTool store my projects?</span>
+              <span data-i18n="faq.q5.question">Where does FretTool store my projects?</span>
               <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              <div class="faq-answer-inner">
+              <div class="faq-answer-inner" data-i18n="faq.q5.answer" data-i18n-html>
                 <p>Your projects live in FretTool's app data folder:</p>
                 <ul>
                   <li><strong>Windows:</strong> <code>%APPDATA%/FretTool/</code></li>
@@ -134,11 +136,11 @@
 
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>Why does my antivirus flag the Windows exe?</span>
+              <span data-i18n="faq.q6.question">Why does my antivirus flag the Windows exe?</span>
               <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              <div class="faq-answer-inner">
+              <div class="faq-answer-inner" data-i18n="faq.q6.answer" data-i18n-html>
                 <p>PyInstaller (the tool that bundles Python apps into executables) has a bootloader that some antivirus programs heuristically flag as suspicious — even though it's harmless. It's a <a href="https://github.com/pyinstaller/pyinstaller/issues/4698" target="_blank" rel="noopener">well-known issue</a> affecting tons of open-source Python apps.</p>
                 <p>If your antivirus quarantines FretTool, you'll need to add an exception. The app is <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener">open source</a> — you can inspect every line of code yourself.</p>
               </div>
@@ -147,11 +149,11 @@
 
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>Does FretTool work on tablets or ARM Macs?</span>
+              <span data-i18n="faq.q7.question">Does FretTool work on tablets or ARM Macs?</span>
               <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              <div class="faq-answer-inner">
+              <div class="faq-answer-inner" data-i18n="faq.q7.answer" data-i18n-html>
                 <p>The current builds are for <strong>x86_64</strong> processors. Apple Silicon (M1/M2/M3) Macs can run them through <strong>Rosetta 2</strong> — macOS will offer to install it automatically the first time you open the app.</p>
                 <p>Native ARM builds aren't available yet, but it's on the roadmap.</p>
               </div>
@@ -160,11 +162,11 @@
 
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>Is FretTool really free?</span>
+              <span data-i18n="faq.q8.question">Is FretTool really free?</span>
               <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              <div class="faq-answer-inner">
+              <div class="faq-answer-inner" data-i18n="faq.q8.answer" data-i18n-html>
                 <p>Yep — 100% free and <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener">open source</a> (MIT licensed). No ads, no telemetry, no paywalls. If you'd like to support development, there's a <a href="donate.html">Support Us</a> page, but it's entirely optional.</p>
               </div>
             </div>
@@ -177,16 +179,16 @@
 
   <footer class="footer">
     <div class="container footer-inner">
-      <span>FretTool &mdash; built with care, MIT licensed</span>
+      <span data-i18n="index.footer.tagline">FretTool &mdash; built with care, MIT licensed</span>
       <nav class="footer-nav" aria-label="Footer">
-        <a href="index.html#features">Features</a>
-        <a href="index.html#demo">Demo</a>
-        <a href="index.html#download">Download</a>
-        <a href="faq.html">FAQ</a>
-        <a href="donate.html">Support Us</a>
-        <a href="privacy.html">Privacy</a>
-        <a href="legal.html">Legal Notice</a>
-        <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener">GitHub</a>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#demo" data-i18n="nav.demo">Demo</a>
+        <a href="index.html#download" data-i18n="nav.download">Download</a>
+        <a href="faq.html" data-i18n="nav.faq">FAQ</a>
+        <a href="donate.html" data-i18n="nav.support">Support Us</a>
+        <a href="privacy.html" data-i18n="nav.privacy">Privacy</a>
+        <a href="legal.html" data-i18n="nav.legal">Legal Notice</a>
+        <a href="https://github.com/rkaluzny/frettool" target="_blank" rel="noopener" data-i18n="nav.github">GitHub</a>
       </nav>
     </div>
   </footer>
@@ -205,6 +207,12 @@
           this.setAttribute('aria-expanded', 'true');
         }
       });
+    });
+    document.querySelector('.hamburger').addEventListener('click', function () {
+      var nav = document.getElementById('mainNav');
+      var expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !expanded);
+      nav.classList.toggle('open');
     });
   </script>
 </body>

@@ -1,0 +1,202 @@
+{
+  "nav": {
+    "features": "Funktionen",
+    "demo": "Demo",
+    "download": "Herunterladen",
+    "faq": "FAQ",
+    "support": "Unterstützen",
+    "privacy": "Datenschutz",
+    "legal": "Impressum",
+    "github": "GitHub"
+  },
+  "index": {
+    "hero": {
+      "kicker": "eine kleine Werkstatt für deine Griffbrett-Ideen",
+      "title": "FretTool",
+      "sub": "Griffbrett-Diagrammeditor",
+      "desc": "Skizziere Akkorde, Tonleitern und Griffwege so, wie du denkst — klicken zum Setzen einer Note, Barré-Griffbildungen entstehen von selbst, Beschriftungen hinzufügen, dann als PDF verschicken.",
+      "try_demo": "Online-Demo ausprobieren",
+      "get_app": "App herunterladen"
+    },
+    "features": {
+      "kicker": "was es kann",
+      "title": "Eine freundliche Kiste voller Griffbrett-Tricks",
+      "desc": "Alles, was du brauchst, um einen Song zu skizzieren — ohne dich mit der Software herumschlagen zu müssen."
+    },
+    "feature1": {
+      "title": "Noten nach Gefühl setzen",
+      "desc": "Linksklick zum Setzen eines Punktes. Mit Zusatzkommando erhältst du ein Dreieck, ein Quadrat oder einen kleinen Punkt für Durchgangsnoten."
+    },
+    "feature2": {
+      "title": "Barré, die von selbst entstehen",
+      "desc": "Setze Punkte auf benachbarten Saiten auf dem gleichen Bund — und ein Barré erscheint. Teile es, füge es zusammen und färbe es beliebig um."
+    },
+    "feature3": {
+      "title": "Beschriftungen für Menschen",
+      "desc": "Beschriftet jeden Punkt mit einem zwei Zeichen langen Hinweis — Fingernummern, Intervalle, alles was dir hilft, dich zu erinnern."
+    },
+    "feature4": {
+      "title": "X für die Stummen",
+      "desc": " Rechtsklick auf eine leere Stelle, um eine Saite als stumm oder offen zu markieren. Kein Rätseln mehr, welche Saiten schweigen."
+    },
+    "feature5": {
+      "title": "Druckfertige PDFs",
+      "desc": "Exportiere gestochen scharfe Diagramme mit Ctrl+P. Gib sie deiner Band, hefte sie an den Kühlschrank, unterrichte eine Stunde."
+    },
+    "feature6": {
+      "title": "Gemacht, um dir zu passen",
+      "desc": "2–12 Saiten, 1–24 Bünde, dunkel oder hell, zehn Sprachen und jede Tastenkombination umstellbar. Es passt sich deinen Gewohnheiten an."
+    },
+    "demo": {
+      "kicker": "probier es aus",
+      "title": "Live-Demo",
+      "desc": "Ein echtes, klickbares Griffbrett — probiere ein paar Dinge aus, die die Desktop-App kann.",
+      "chord_name_placeholder": "Akkord- oder Tonleitername — z.B. C-Dur 7",
+      "title_counter": "0 / 60",
+      "frets": "Bünde",
+      "strings": "Saiten",
+      "shape": "Punktform",
+      "undo": "↶ Rückgängig",
+      "redo": "↷ Wiederholen",
+      "clear": "Löschen",
+      "desc_placeholder": "Eine Notiz an dein zukünftiges Ich — max. 250 Zeichen",
+      "desc_counter": "0 / 250"
+    },
+    "help": {
+      "title": "Anleitung",
+      "left_click": "Punkt setzen / entfernen",
+      "shape_buttons": "Wähle Kreis, Dreieck, Quadrat oder klein",
+      "modifier_click": "Auf Quadrat / Dreieck ändern",
+      "right_click": "X-Markierung / Beschriftung hinzufügen",
+      "scroll": "Punkt-Farbe wechseln",
+      "click_barre": "Auswählen, dann ↑/↓ zum Teilen",
+      "delete": "Schwebenden Punkt entfernen",
+      "undo_redo": "Rückgängig / Wiederholen"
+    },
+    "download": {
+      "kicker": "nimm es mit nach Hause",
+      "title": "Herunterladen",
+      "desc": "Die vollständige Desktop-App für die Plattform, die du tatsächlich nutzt.",
+      "windows": "Windows",
+      "linux": "Linux",
+      "macos": "macOS",
+      "note": "Alle Versionen sind auf GitHub verfügbar. Der Quellcode ist MIT-lizenziert — schau ihn dir so oft du möchtest an."
+    },
+    "footer": {
+      "tagline": "FretTool — mit Liebe gebaut, MIT-lizenziert"
+    }
+  },
+  "faq": {
+    "hero": {
+      "kicker": "Dinge, über die man sich vielleicht Gedanken macht",
+      "title": "Häufig gestellte Fragen",
+      "desc": "Schnelle Antworten auf die häufigsten Probleme. Keine passende dabei? Öffne ein Ticket auf GitHub."
+    },
+    "q1": {
+      "question": "Windows sagt, FretTool ist ein Virus — was soll das?",
+      "answer": "<p>Es ist kein Virus — es ist das <strong>Windows SmartScreen</strong>, das vorsichtig ist. Weil FretTool eine kleine, unabhängig entwickelte App ohne ein teures Extended Validation (EV) Code-Signing-Zertifikat ist, meldet Microsoft es beim ersten Ausführen mit einer Warnung.</p><p>Wenn du FretTool von der offiziellen GitHub-Releases-Seite heruntergeladen hast, ist es sicher. So umgehst du SmartScreen:</p><ol><li>Wenn du <em>„Windows hat deinen PC geschützt\"</em> siehst, klicke auf <strong>Weitere Informationen</strong>.</li><li>Dann klicke auf <strong>Trotzdem ausführen</strong>.</li></ol><p>Windows merkt sich deine Wahl und wird dich nicht wieder stören.</p>"
+    },
+    "q2": {
+      "question": "macOS lässt mich die App nicht öffnen — was soll ich tun?",
+      "answer": "<p>Das ist <strong>Gatekeeper</strong>, der seinen Job macht. Weil FretTool nicht von Apple notarisiert ist (das kostet 99 $/Jahr), blockiert macOS es beim ersten Start. So öffnest du es:</p><ol><li>Öffne die <code>.dmg</code>-Datei und ziehe FretTool in deinen Programme-Ordner.</li><li>Suche FretTool im <strong>Finder</strong> (klicke noch nicht doppelt).</li><li><strong>Rechtsklick</strong> (oder Control+Klick) auf die App und wähle <strong>Öffnen</strong>.</li><li>Ein Dialog sagt, sie stamme von einem nicht identifizierten Entwickler — klicke trotzdem auf <strong>Öffnen</strong>.</li></ol><p>Das musst du nur einmal machen. Danach startet es normal.</p><p><strong>Tipp:</strong> Wenn das Ziehen in den Programmefordner nicht funktioniert, kannst du es auch aus dem Downloads-Ordner ausführen — gleicher Rechtsklick → Öffnen-Trick.</p>"
+    },
+    "q3": {
+      "question": "Warum tut mein Linux-AppImage nichts, wenn ich es anklicke?",
+      "answer": "<p>Das AppImage ist wahrscheinlich nicht als ausführbar markiert. Behebe es im Terminal:</p><ol><li>Navigiere zu dem Ort, wo du die Datei heruntergeladen hast.</li><li>Führe <code>chmod +x FretTool-*.AppImage</code> aus.</li><li>Klicke erneut doppelt — oder führe <code>./FretTool-*.AppImage</code> direkt im Terminal aus.</li></ol><p>Einige Dateimanager erlauben auch Rechtsklick → Eigenschaften → Berechtigungen → „Ausführen der Datei als Programm zulassen\".</p>"
+    },
+    "q4": {
+      "question": "Wie aktualisiere ich auf eine neuere Version?",
+      "answer": "<p>FretTool hat einen eingebauten Updater. Gehe zu <strong>Dashboard → Einstellungen → Über</strong> und klicke auf <strong>Nach Updates suchen</strong>. Wenn eine neue Version verfügbar ist, wirst du zum Herunterladen aufgefordert.</p><p>Du kannst das neueste Release auch immer direkt von <a href=\"https://github.com/rkaluzny/frettool/releases\" target=\"_blank\" rel=\"noopener\">GitHub</a> herunterladen.</p>"
+    },
+    "q5": {
+      "question": "Wo speichert FretTool meine Projekte?",
+      "answer": "<p>Deine Projekte liegen in FretTool's App-Daten-Ordner:</p><ul><li><strong>Windows:</strong> <code>%APPDATA%/FretTool/</code></li><li><strong>macOS:</strong> <code>~/Library/Application Support/FretTool/</code></li><li><strong>Linux:</strong> <code>~/.local/share/FretTool/</code></li></ul><p>Du kannst einzelne Projekte als JSON über das Dashboard exportieren, wenn du sie sichern oder auf einen anderen Computer verschieben möchtest.</p>"
+    },
+    "q6": {
+      "question": "Warum meldet mein Antivirus die Windows-EXE?",
+      "answer": "<p>PyInstaller (das Werkzeug, das Python-Apps in ausführbare Dateien verpackt) hat einen Bootloader, den einige Antivirenprogramme verdächtig finden — obwohl er harmlos ist. Es ist ein <a href=\"https://github.com/pyinstaller/pyinstaller/issues/4698\" target=\"_blank\" rel=\"noopener\">bekanntes Problem</a>, das viele Open-Source-Python-Apps betrifft.</p><p>Wenn dein Antivirus FretTool quarantänisiert, musst du eine Ausnahme hinzufügen. Die App ist <a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">Open Source</a> — du kannst jede Codezeile selbst prüfen.</p>"
+    },
+    "q7": {
+      "question": "Funktioniert FretTool auf Tablets oder ARM-Macs?",
+      "answer": "<p>Die aktuellen Builds sind für <strong>x86_64</strong>-Prozessoren. Apple-Silicon-Macs (M1/M2/M3) können sie über <strong>Rosetta 2</strong> ausführen — macOS bietet an, es automatisch beim ersten Öffnen der App zu installieren.</p><p>Native ARM-Builds sind noch nicht verfügbar, aber sie stehen auf der Roadmap.</p>"
+    },
+    "q8": {
+      "question": "Ist FretTool wirklich kostenlos?",
+      "answer": "<p>Ja — 100 % kostenlos und <a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">Open Source</a> (MIT-lizenziert). Keine Werbung, keine Telemetrie, keine Bezahlschranken. Wenn du die Entwicklung unterstützen möchtest, gibt es eine <a href=\"donate.html\">Unterstützungsseite</a>, aber das ist völlig freiwillig.</p>"
+    }
+  },
+  "donate": {
+    "hero": {
+      "kicker": "danke, dass du vorbeischaust",
+      "title": "FretTool unterstützen",
+      "sub": "Halte es kostenlos, halte es wachsend",
+      "desc": "Wir halten FretTool kostenlos und Open Source — keine Werbung, nie. Wenn du uns ermutigen möchtest, neue Funktionen und Patches hinzuzufügen, kannst du gerne spenden."
+    },
+    "section": {
+      "kicker": "wie du helfen kannst",
+      "title": "Spenden",
+      "desc": "Deine Unterstützung ist sehr willkommen."
+    },
+    "note": "Zahlungen werden über PayPal abgewickelt. Du benötigst kein PayPal-Konto, um mit Karte zu zahlen.",
+    "support_btn": "Unterstützen",
+    "feature1": {
+      "title": "Für immer kostenlos",
+      "desc": "Keine Bezahlschranken, keine gesperrten Funktionen. Spenden sind vollständig freiwillig — FretTool wird immer kostenlos herunterladbar und nutzbar sein."
+    },
+    "feature2": {
+      "title": "Open Source",
+      "desc": "Der Code liegt auf GitHub unter der MIT-Lizenz. Forke ihn, lerne von ihm, remixe ihn — Beiträge willkommen."
+    },
+    "feature3": {
+      "title": "Keine Werbung",
+      "desc": "FretTool verpflichtet sich, ein nahtloses Erlebnis ohne aufdringliche Werbung zu bieten."
+    }
+  },
+  "privacy": {
+    "hero": {
+      "kicker": "Datenschutz",
+      "title": "Datenschutzerklärung",
+      "desc": "Zuletzt aktualisiert: Juli 2026"
+    },
+    "h1": "Übersicht",
+    "p1": "FretTool respektiert deine Privatsphäre. Die interaktive Griffbrett-Demo auf dieser Website läuft vollständig in deinem Browser (clientseitig). Keine personenbezogenen Daten werden von FretTool selbst erhoben, gespeichert oder übertragen, wenn du die Demo nutzt.",
+    "h2": "Von Dritten verarbeitete Daten",
+    "h3_paypal": "PayPal",
+    "p_paypal": "Die Unterstützungsseite enthält einen PayPal-Spenden-Button. Wenn du spendest, verarbeitet PayPal (PayPal (Europe) S.à.r.l. & Cie, S.C.A., 22-24 Boulevard Royal, L-2449 Luxemburg) deine Zahlung auf eigener Infrastruktur. PayPal kann deinen Namen, deine E-Mail-Adresse, Zahlungsdetails und IP-Adresse gemäß seiner eigenen Datenschutzerklärung erheben. FretTool erhält keine Zahlungsinformationen, speichert sie nicht und verarbeitet sie nicht.",
+    "h2_cookies": "Keine Cookies",
+    "p_cookies": "Diese Website setzt keine Cookies und verwendet keine Tracking-, Analyse- oder Werbe-Skripte. Die Demo speichert keine Nutzerdaten auf irgendeinem Server.",
+    "h2_nodata": "Keine Datenerhebung",
+    "p_nodata": "FretTool erhebt, speichert oder teilt keine personenbezogenen Daten. Es gibt keine Registrierung, kein Login und keine serverseitige Speicherung von Griffbrett-Diagrammen.",
+    "h2_rights": "Deine Rechte",
+    "p_rights": "Da FretTool keine personenbezogenen Daten erhebt, gibt es nichts einzusehen, zu berichtigen oder zu löschen. Wenn du Fragen zu dieser Datenschutzerklärung hast, kannst du dich über die Kontaktdaten auf der Impressum-Seite melden.",
+    "h2_changes": "Änderungen",
+    "p_changes": "Diese Richtlinie kann gelegentlich aktualisiert werden. Das „Zuletzt aktualisierte\" Datum oben auf dieser Seite spiegelt die neueste Über wider."
+  },
+  "legal": {
+    "hero": {
+      "kicker": "Rechtliches",
+      "title": "Impressum",
+      "desc": "Impressum — Angaben gemäß §5 TMG"
+    },
+    "h_operator": "Betreiber",
+    "operator": "Robin Kaluzny<br>E-Mail: <a href=\"mailto:robin.jerome.kaluzny@gmail.com\">robin.jerome.kaluzny@gmail.com</a>",
+    "h_supervision": "Aufsicht",
+    "supervision": "Mick Kaluzny<br>E-Mail: <a href=\"mailto:mkaluzny.ch@gmail.com\">mkaluzny.ch@gmail.com</a>",
+    "h_project": "Projekt",
+    "project": "FretTool — Griffbrett-Diagrammeditor<br>Website: <a href=\"https://rkaluzny.github.io/frettool/\">https://rkaluzny.github.io/frettool/</a><br>Quellcode: <a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">github.com/rkaluzny/frettool</a>",
+    "h_license": "Lizenz",
+    "license": "FretTool wird unter der MIT-Lizenz veröffentlicht. Du darfst die Software verwenden, kopieren, modifizieren, zusammenführen, veröffentlichen, verteilen, unterlizenzieren und/oder verkaufen, vorbehaltlich der Bedingungen der Lizenz. Die Software wird „wie besehen\" bereitgestellt, ohne jegliche Gewährleistung.",
+    "h_disclaimer": "Haftungsausschluss",
+    "h_liability_content": "Haftung für Inhalte",
+    "liability_content": "Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Es kann jedoch keine Garantie übernommen werden, dass die Inhalte korrekt, vollständig oder aktuell sind. Als Dienstebin ich für eigene Inhalte auf diesen Seiten nach allgemeinem Recht verantwortlich. Es besteht keine Pflicht, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.",
+    "h_liability_links": "Haftung für Links",
+    "liability_links": "Diese Website enthält Links zu externen Websites Dritter. Ich habe keinen Einfluss auf den Inhalt und die Gestaltung dieser Seiten. Daher wird für derartige fremde Inhalte keine Haftung übernommen. Der jeweilige Anbieter oder Betreiber der verlinkten Seiten ist stets für deren Inhalt verantwortlich.",
+    "h_copyright": "Urheberrecht",
+    "copyright": "Die von mir auf dieser Website erstellten Inhalte und Werke unterliegen dem Urheberrecht (soweit anwendbar). Vervielfältigung, Bearbeitung, Verbreitung oder jede Art der Verwertung jenseits der MIT-Lizenz bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Autors oder Urhebers."
+  },
+  "page.title_index": "FretTool — Griffbrett-Diagrammeditor & Akkorddiagramm-Ersteller",
+  "page.title_faq": "FAQ — FretTool",
+  "page.title_donate": "FretTool unterstützen",
+  "page.title_privacy": "Datenschutzerklärung — FretTool",
+  "page.title_legal": "Impressum — FretTool"
+}

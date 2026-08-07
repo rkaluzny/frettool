@@ -1,0 +1,202 @@
+{
+  "nav": {
+    "features": "Fonctionnalités",
+    "demo": "Démo",
+    "download": "Télécharger",
+    "faq": "FAQ",
+    "support": "Soutenir",
+    "privacy": "Confidentialité",
+    "legal": "Mentions légales",
+    "github": "GitHub"
+  },
+  "index": {
+    "hero": {
+      "kicker": "un petit atelier pour vos idées de manche",
+      "title": "FretTool",
+      "sub": "Éditeur de diagrammes de manche",
+      "desc": "Esquissez des accords, des gammes et des doigtés comme vous les imaginez — cliquez pour placer une note, les barres se forment toutes seules, ajoutez une étiquette, puis exportez le tout en PDF.",
+      "try_demo": "Essayer la démo en ligne",
+      "get_app": "Obtenir l'application"
+    },
+    "features": {
+      "kicker": "ce qu'il fait",
+      "title": "Une boîte à astuces pour manche",
+      "desc": "Tout ce qu'il faut pour cartographier un morceau — sans se battre avec son logiciel."
+    },
+    "feature1": {
+      "title": "Placez les notes au feeling",
+      "desc": "Clic gauche pour poser un point. Avec une touche modifiante, vous obtenez un carré, un triangle ou un petit point pour les notes de passage."
+    },
+    "feature2": {
+      "title": "Des barres qui apparaissent toutes seules",
+      "desc": "Placez des points sur des cordes voisines au même fret et une barre apparaît. Divisez-la, fusionnez-la et recoloriez-la comme vous voulez."
+    },
+    "feature3": {
+      "title": "Des étiquettes pour les humains",
+      "desc": "Taguez n'importe quel point avec une note de deux caractères — numéros de doigts, intervalles, tout ce qui vous aide à retenir."
+    },
+    "feature4": {
+      "title": "X pour les cordes muettes",
+      "desc": "Clic droit sur un endroit vide pour marquer une corde comme muette ou ouverte. Fini les devinettes sur les cordes qui restent silencieuses."
+    },
+    "feature5": {
+      "title": "Des PDF prêts à imprimer",
+      "desc": "Exportez des diagrammes nets avec Ctrl+P. Donnez-les à votre groupe, affichez-les sur le réfrigérateur, donnez un cours."
+    },
+    "feature6": {
+      "title": "Fait pour vous",
+      "desc": "2–12 cordes, 1–24 frets, sombre ou clair, dix langues, et chaque raccourci reconfigurable. Il s'adapte à vos habitudes."
+    },
+    "demo": {
+      "kicker": "essayez-le",
+      "title": "Démo en direct",
+      "desc": "Un vrai manche cliquable — essayez quelques fonctionnalités de l'application de bureau.",
+      "chord_name_placeholder": "Nom d'accord ou de gamme — ex. C majeur 7",
+      "title_counter": "0 / 60",
+      "frets": "Frets",
+      "strings": "Cordes",
+      "shape": "Forme de point",
+      "undo": "↶ Annuler",
+      "redo": "↷ Rétablir",
+      "clear": "Effacer",
+      "desc_placeholder": "Une note pour votre futur vous — max 250 caractères",
+      "desc_counter": "0 / 250"
+    },
+    "help": {
+      "title": "Comment jouer",
+      "left_click": "Placer / retirer un point",
+      "shape_buttons": "Choisir cercle, triangle, carré ou petit",
+      "modifier_click": "Forcer en carré / triangle",
+      "right_click": "Marqueur X / ajouter une étiquette",
+      "scroll": "Faire défiler les couleurs d'un point",
+      "click_barre": "Sélectionnez-le, puis ↑/↓ pour diviser",
+      "delete": "Supprimer le point survolé",
+      "undo_redo": "Annuler / rétablir"
+    },
+    "download": {
+      "kicker": "ramenez-le à la maison",
+      "title": "Télécharger",
+      "desc": "L'application de bureau complète, pour la plateforme que vous utilisez vraiment.",
+      "windows": "Windows",
+      "linux": "Linux",
+      "macos": "macOS",
+      "note": "Toutes les versions sont sur GitHub. Le code source est sous licence MIT — bidouillez-le à volonté."
+    },
+    "footer": {
+      "tagline": "FretTool — construit avec soin, sous licence MIT"
+    }
+  },
+  "faq": {
+    "hero": {
+      "kicker": "ce que vous pourriez vous demander",
+      "title": "Questions fréquemment posées",
+      "desc": "Des réponses rapides aux problèmes les plus courants. Vous ne trouvez pas la vôtre ? Ouvrez un ticket sur GitHub."
+    },
+    "q1": {
+      "question": "Windows dit que FretTool est un virus — pourquoi ?",
+      "answer": "<p>Ce n'est pas un virus — c'est <strong>Windows SmartScreen</strong> qui est prudent. Comme FretTool est une petite application indépendante sans certificat de signature coûteux (EV), Microsoft l'avertit lors de la première exécution.</p><p>Si vous avez téléchargé FretTool depuis la page officielle des releases GitHub, c'est sûr. Pour contourner SmartScreen :</p><ol><li>Lorsque vous voyez <em>« Windows a protégé votre PC »</em>, cliquez sur <strong>Plus d'infos</strong>.</li><li>Puis cliquez sur <strong>Exécuter quand même</strong>.</li></ol><p>Windows mémorisera votre choix et ne vous dérangera plus.</p>"
+    },
+    "q2": {
+      "question": "macOS ne me laisse pas ouvrir l'application — que faire ?",
+      "answer": "<p>C'est <strong>Gatekeeper</strong> qui fait son travail. Comme FretTool n'est pas notarisé par Apple (ça coûte 99 $/an), macOS le bloque au premier lancement. Voici comment l'ouvrir :</p><ol><li>Ouvrez le fichier <code>.dmg</code> et glissez FretTool dans votre dossier Applications.</li><li>Trouvez FretTool dans le <strong>Finder</strong> (ne double-cliquez pas encore).</li><li><strong>Clic droit</strong> (ou Contrôle+Clic) sur l'application et choisissez <strong>Ouvrir</strong>.</li><li>Un dialogue indique qu'elle provient d'un développeur non identifié — cliquez quand même sur <strong>Ouvrir</strong>.</li></ol><p>Vous n'avez à faire cela qu'une fois. Après, il se lancera normalement.</p><p><strong>Astuce :</strong> Si le glisser-déposer ne fonctionne pas, vous pouvez aussi l'exécuter depuis votre dossier Téléchargements — même astuce clic droit → Ouvrir.</p>"
+    },
+    "q3": {
+      "question": "Pourquoi mon AppImage Linux ne fait rien quand je double-clique ?",
+      "answer": "<p>L'AppImage n'est probablement pas marqué comme exécutable. Corrigez-le dans un terminal :</p><ol><li>Accédez à l'emplacement du téléchargement.</li><li>Exécutez <code>chmod +x FretTool-*.AppImage</code></li><li>Double-cliquez à nouveau — ou exécutez <code>./FretTool-*.AppImage</code> depuis le terminal.</li></ol><p>Certains gestionnaires de fichiers permettent aussi clic droit → Propriétés → Permissions → « Autoriser l'exécution du fichier comme programme ».</p>"
+    },
+    "q4": {
+      "question": "Comment passer à une version plus récente ?",
+      "answer": "<p>FretTool a un intégré. Allez dans <strong>Tableau de bord → Paramètres → À propos</strong> et cliquez sur <strong>Vérifier les mises à jour</strong>. Si une nouvelle version est disponible, vous serez invité à la télécharger.</p><p>Vous pouvez toujours télécharger la dernière version directement depuis <a href=\"https://github.com/rkaluzny/frettool/releases\" target=\"_blank\" rel=\"noopener\">GitHub</a>.</p>"
+    },
+    "q5": {
+      "question": "Où FretTool stocke-t-il mes projets ?",
+      "answer": "<p>Vos projets se trouvent dans le dossier de données de FretTool :</p><ul><li><strong>Windows :</strong> <code>%APPDATA%/FretTool/</code></li><li><strong>macOS :</strong> <code>~/Library/Application Support/FretTool/</code></li><li><strong>Linux :</strong> <code>~/.local/share/FretTool/</code></li></ul><p>Vous pouvez exporter des projets individuels en JSON depuis le tableau de bord si vous voulez les sauvegarder ou les transférer vers une autre machine.</p>"
+    },
+    "q6": {
+      "question": "Pourquoi mon antivirus signale-t-il l'exécutable Windows ?",
+      "answer": "<p>PyInstaller (l'outil qui compile les applications Python en exécutables) a un chargeur de démarrage que certains antivirus signalent comme suspect par heuristique — bien qu'il soit inoffensif. C'est un <a href=\"https://github.com/pyinstaller/pyinstaller/issues/4698\" target=\"_blank\" rel=\"noopener\">problème bien connu</a> qui affecte de nombreuses applications Python open source.</p><p>Si votre antivirus met FretTool en quarantaine, vous devrez ajouter une exception. L'application est <a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">open source</a> — vous pouvez inspecter chaque ligne de code vous-même.</p>"
+    },
+    "q7": {
+      "question": "FretTool fonctionne-t-il sur tablettes ou Mac ARM ?",
+      "answer": "<p>Les builds actuels sont pour processeurs <strong>x86_64</strong>. Les Mac Apple Silicon (M1/M2/M3) peuvent les exécuter via <strong>Rosetta 2</strong> — macOS proposera de l'installer automatiquement au premier lancement.</p><p>Les builds ARM natifs ne sont pas encore disponibles, mais c'est sur la feuille de route.</p>"
+    },
+    "q8": {
+      "question": "FretTool est-il vraiment gratuit ?",
+      "answer": "<p>Oui — 100 % gratuit et <a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">open source</a> (sous licence MIT). Pas de publicité, pas de télémétrie, pas de paywall. Si vous souhaitez soutenir le développement, il y a une page <a href=\"donate.html\">Soutenir</a>, mais c'est entièrement facultatif.</p>"
+    }
+  },
+  "donate": {
+    "hero": {
+      "kicker": "merci de votre visite",
+      "title": "Soutenir FretTool",
+      "sub": "Gardez-le gratuit, gardez-le grandir",
+      "desc": "Nous gardons FretTool gratuit et open source — sans publicité, jamais. Si vous souhaitez nous encourager à ajouter de nouvelles fonctionnalités et correctifs, vous pouvez faire un don."
+    },
+    "section": {
+      "kicker": "comment aider",
+      "title": "Faire un don",
+      "desc": "Votre soutien est très apprécié."
+    },
+    "note": "Les paiements sont traités par PayPal. Vous n'avez pas besoin d'un compte PayPal pour payer par carte.",
+    "support_btn": "Soutenir",
+    "feature1": {
+      "title": "Gratuit pour toujours",
+      "desc": "Pas de paywall, pas de fonctionnalités verrouillées. Les dons sont entièrement facultatifs — FretTool sera toujours gratuit à télécharger et à utiliser."
+    },
+    "feature2": {
+      "title": "Open source",
+      "desc": "Le code vit sur GitHub sous licence MIT. Forkez-le, apprenez de lui, remixez-le — contributions bienvenues."
+    },
+    "feature3": {
+      "title": "Pas de publicité",
+      "desc": "FretTool s'engage à fournir une expérience fluide sans aucune publicité intrusive."
+    }
+  },
+  "privacy": {
+    "hero": {
+      "kicker": "confidentialité",
+      "title": "Politique de confidentialité",
+      "desc": "Dernière mise à jour : juillet 2026"
+    },
+    "h1": "Aperçu",
+    "p1": "FretTool respecte votre vie privée. La démo interactive de manche sur ce site fonctionne entièrement dans votre navigateur (côté client). Aucune donnée personnelle n'est collectée, stockée ou transmise par FretTool lui-même lorsque vous utilisez la démo.",
+    "h2": "Données traitées par des tiers",
+    "h3_paypal": "PayPal",
+    "p_paypal": "La page Soutenir inclut un bouton de don PayPal. Lorsque vous faites un don, PayPal (PayPal (Europe) S.à.r.l. & Cie, S.C.A., 22-24 Boulevard Royal, L-2449 Luxembourg) traite votre paiement sur sa propre infrastructure. PayPal peut collecter votre nom, adresse e-mail, détails de paiement et adresse IP conformément à sa propre politique de confidentialité. FretTool ne reçoit, ne stocke ni ne traite aucune information de paiement.",
+    "h2_cookies": "Pas de cookies",
+    "p_cookies": "Ce site n'utilise aucun cookie ni aucun script de suivi, d'analyse ou de publicité. La démo ne stocke aucune donnée utilisateur sur un serveur.",
+    "h2_nodata": "Pas de collecte de données",
+    "p_nodata": "FretTool ne collecte, ne stocke ni ne partage aucune donnée personnelle. Il n'y a pas d'inscription, pas de connexion et aucun stockage côté serveur de diagrammes de manche.",
+    "h2_rights": "Vos droits",
+    "p_rights": "Comme aucune donnée personnelle n'est collectée par FretTool, il n'y a rien à consulter, rectifier ou supprimer. Si vous avez des questions sur cette politique de confidentialité, vous pouvez nous contacter via les coordonnées sur la page Mentions légales.",
+    "h2_changes": "Modifications",
+    "p_changes": "Cette politique peut être mise à jour occasionnellement. La date de « Dernière mise à jour » en haut de cette page reflète la dernière révision."
+  },
+  "legal": {
+    "hero": {
+      "kicker": "légal",
+      "title": "Mentions légales",
+      "desc": "Impressum — informations conformément au §5 TMG"
+    },
+    "h_operator": "Exploitant",
+    "operator": "Robin Kaluzny<br>E-Mail : <a href=\"mailto:robin.jerome.kaluzny@gmail.com\">robin.jerome.kaluzny@gmail.com</a>",
+    "h_supervision": "Supervision",
+    "supervision": "Mick Kaluzny<br>E-Mail : <a href=\"mailto:mkaluzny.ch@gmail.com\">mkaluzny.ch@gmail.com</a>",
+    "h_project": "Projet",
+    "project": "FretTool — Éditeur de diagrammes de manche<br>Site web : <a href=\"https://rkaluzny.github.io/frettool/\">https://rkaluzny.github.io/frettool/</a><br>Code source : <a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">github.com/rkaluzny/frettool</a>",
+    "h_license": "Licence",
+    "license": "FretTool est publié sous licence MIT. Vous êtes libre d'utiliser, copier, modifier, fusionner, publier, distribuer, sous-licencier et/ou vendre des copies du logiciel, sous réserve des conditions de la licence. Le logiciel est fourni « tel quel », sans garantie d'aucune sorte.",
+    "h_disclaimer": "Avertissement",
+    "h_liability_content": "Responsabilité pour le contenu",
+    "liability_content": "Les contenus de ce site ont été créés avec le plus grand soin. Cependant, aucune garantie ne peut être donnée que le contenu est correct, complet ou à jour. En tant que prestataire, je suis responsable de mon propre contenu sur ces pages en vertu du droit commun. Il n'y a aucune obligation de surveiller les informations transmises ou stockées par des tiers ou d'enquêter sur des circonstances indiquant une activité illégale.",
+    "h_liability_links": "Responsabilité pour les liens",
+    "liability_links": "Ce site contient des liens vers des sites externes sur lesquels je n'ai aucune influence. Par conséquent, je n'assume aucune responsabilité pour ces contenus externes. Le fournisseur ou l'exploitant respectif des pages liées est toujours responsable de leur contenu.",
+    "h_copyright": "Droit d'auteur",
+    "copyright": "Les contenus et œuvres créés par l'exploitant sur ce site sont soumis au droit d'auteur (le cas échéant). La reproduction, le traitement, la distribution ou toute forme commercialisation de ces matériaux au-delà du cadre de la licence MIT nécessite le consentement écrit préalable de l'auteur ou du créateur respectif."
+  },
+  "page.title_index": "FretTool — Éditeur de diagrammes de manche et créateur de grilles d'accords",
+  "page.title_faq": "FAQ — FretTool",
+  "page.title_donate": "Soutenir FretTool",
+  "page.title_privacy": "Politique de confidentialité — FretTool",
+  "page.title_legal": "Mentions légales — FretTool"
+}

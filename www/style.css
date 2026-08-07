@@ -1176,6 +1176,96 @@ a:hover {
   transform: scaleX(1);
 }
 
+/* Language selector */
+.lang-selector {
+  position: relative;
+  margin-left: 20px;
+}
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 8px 14px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-body);
+}
+
+.lang-btn:hover {
+  background: var(--surface-hover);
+  border-color: rgba(55, 64, 225, 0.4);
+}
+
+.lang-globe {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.lang-current {
+  white-space: nowrap;
+}
+
+.lang-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 6px;
+  min-width: 180px;
+  box-shadow: var(--shadow-soft);
+  z-index: 150;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease;
+  font-family: var(--font-body);
+}
+
+.lang-option:hover {
+  background: var(--accent-soft);
+}
+
+.lang-option.active {
+  background: var(--accent-soft);
+  color: var(--accent-light);
+  font-weight: 700;
+}
+
+.lang-flag {
+  font-size: 18px;
+  line-height: 1;
+}
+
+[dir="rtl"] .lang-dropdown {
+  right: auto;
+  left: 0;
+}
+
 /* Hero entrance */
 @keyframes heroRise {
   from {

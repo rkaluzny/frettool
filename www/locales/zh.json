@@ -1,0 +1,202 @@
+{
+  "nav": {
+    "features": "功能",
+    "demo": "演示",
+    "download": "下载",
+    "faq": "常见问题",
+    "support": "支持我们",
+    "privacy": "隐私",
+    "legal": "法律声明",
+    "github": "GitHub"
+  },
+  "index": {
+    "hero": {
+      "kicker": "你的指板创意小工坊",
+      "title": "FretTool",
+      "sub": "指板图编辑器",
+      "desc": "像你思考的那样画出和弦、音阶和指法——点击放置音符，横按自动形成，添加标签，然后导出为PDF。",
+      "try_demo": "试试在线演示",
+      "get_app": "获取应用"
+    },
+    "features": {
+      "kicker": "功能介绍",
+      "title": "一套友好的指板技巧工具箱",
+      "desc": "规划一首歌曲所需的一切——无需与软件搏斗。"
+    },
+    "feature1": {
+      "title": "凭感觉放置音符",
+      "desc": "左键点击放置圆点。按住修饰键可得到方形、三角形，或小圆点来表示经过音。"
+    },
+    "feature2": {
+      "title": "横按自动出现",
+      "desc": "在相邻弦的相同品位放置圆点，横按就会自动出现。随心拆分、合并和重新着色。"
+    },
+    "feature3": {
+      "title": "人性化的标签",
+      "desc": "用两个字符标记任意圆点——手指编号、音程，任何能帮助你记住的东西。"
+    },
+    "feature4": {
+      "title": "标记静音弦",
+      "desc": "右键点击空白处标记某根弦为静音或开放。不再猜测哪根弦保持安静。"
+    },
+    "feature5": {
+      "title": "打印就绪的PDF",
+      "desc": "用Ctrl+P导出清晰的图表。交给乐队伙伴，钉在冰箱上，或用于教学。"
+    },
+    "feature6": {
+      "title": "为你量身打造",
+      "desc": "2–12根弦，1–24个品位，深色或浅色主题，十种语言，每个快捷键都可以重绑。它顺应你的习惯。"
+    },
+    "demo": {
+      "kicker": "试试看",
+      "title": "在线演示",
+      "desc": "一个真实的、可点击的指板——试试桌面应用的几个功能。",
+      "chord_name_placeholder": "和弦或音阶名称——例如 C大调7",
+      "title_counter": "0 / 60",
+      "frets": "品位",
+      "strings": "琴弦",
+      "shape": "圆点形状",
+      "undo": "↶ 撤销",
+      "redo": "↷ 重做",
+      "clear": "清除",
+      "desc_placeholder": "给未来自己的便条——最多250个字符",
+      "desc_counter": "0 / 250"
+    },
+    "help": {
+      "title": "操作指南",
+      "left_click": "放置/移除圆点",
+      "shape_buttons": "选择圆形、三角形、方形或小圆点",
+      "modifier_click": "强制切换为方形/三角形",
+      "right_click": "X标记/添加标签",
+      "scroll": "循环圆点颜色",
+      "click_barre": "选中它，然后按↑/↓拆分",
+      "delete": "移除悬停的圆点",
+      "undo_redo": "撤销/重做"
+    },
+    "download": {
+      "kicker": "带回家",
+      "title": "下载",
+      "desc": "完整的桌面应用，适用于你实际使用的平台。",
+      "windows": "Windows",
+      "linux": "Linux",
+      "macos": "macOS",
+      "note": "所有版本都在GitHub上。源代码使用MIT许可证——随便看。"
+    },
+    "footer": {
+      "tagline": "FretTool——精心打造，MIT许可"
+    }
+  },
+  "faq": {
+    "hero": {
+      "kicker": "你可能想知道的事情",
+      "title": "常见问题",
+      "desc": "针对最常遇到问题的快速解答。没找到你的问题？在GitHub上开一个issue。"
+    },
+    "q1": {
+      "question": "Windows说FretTool是病毒——怎么回事？",
+      "answer": "<p>它不是病毒——是<strong>Windows SmartScreen</strong>在谨慎行事。因为FretTool是一个小型独立应用，没有昂贵的EV代码签名证书，微软在首次运行时会对它发出警告。</p><p>如果你从官方GitHub发布页面下载了FretTool，它是安全的。要绕过SmartScreen：</p><ol><li>当你看到<em>「Windows已保护你的电脑」</em>时，点击<strong>更多信息</strong>。</li><li>然后点击<strong>仍要运行</strong>。</li></ol><p>Windows会记住你的选择，不会再打扰你。</p>"
+    },
+    "q2": {
+      "question": "macOS不让我打开应用——我该怎么办？",
+      "answer": "<p>那是<strong>Gatekeeper</strong>在履行职责。因为FretTool没有经过苹果公证（那需要$99/年），macOS会在首次启动时阻止它。以下是打开方法：</p><ol><li>打开<code>.dmg</code>文件，将FretTool拖到应用程序文件夹。</li><li>在<strong>Finder</strong>中找到FretTool（先不要双击）。</li><li><strong>右键点击</strong>（或Control+点击）应用并选择<strong>打开</strong>。</li><li>对话框会提示它来自未识别的开发者——无论如何点击<strong>打开</strong>。</li></ol><p>你只需要这样做一次。之后它就会正常启动。</p><p><strong>提示：</strong>如果拖到应用程序文件夹不起作用，你也可以从下载文件夹运行它——同样的右键→打开技巧适用。</p>"
+    },
+    "q3": {
+      "question": "为什么我的Linux AppImage双击后没有反应？",
+      "answer": "<p>AppImage可能没有被标记为可执行。在终端中修复：</p><ol><li>导航到你下载文件的位置。</li><li>运行<code>chmod +x FretTool-*.AppImage</code></li><li>再次双击——或从终端运行<code>./FretTool-*.AppImage</code>。</li></ol><p>一些文件管理器也允许右键→属性→权限→「允许以程序身份执行文件」。</p>"
+    },
+    "q4": {
+      "question": "如何更新到新版本？",
+      "answer": "<p>FretTool有内置更新器。前往<strong>仪表盘→设置→关于</strong>，点击<strong>检查更新</strong>。如果有新版本可用，系统会提示你下载。</p><p>你也可以随时直接从<a href=\"https://github.com/rkaluzny/frettool/releases\" target=\"_blank\" rel=\"noopener\">GitHub</a>下载最新版本。</p>"
+    },
+    "q5": {
+      "question": "FretTool把我的项目存在哪里？",
+      "answer": "<p>你的项目存放在FretTool的应用数据文件夹中：</p><ul><li><strong>Windows：</strong><code>%APPDATA%/FretTool/</code></li><li><strong>macOS：</strong><code>~/Library/Application Support/FretTool/</code></li><li><strong>Linux：</strong><code>~/.local/share/FretTool/</code></li></ul><p>你可以从仪表盘将单个项目导出为JSON，以备份或迁移到另一台机器。</p>"
+    },
+    "q6": {
+      "question": "为什么我的杀毒软件会标记Windows exe？",
+      "answer": "<p>PyInstaller（将Python应用打包成可执行文件的工具）有一个引导加载程序，一些杀毒软件会启发式地将其标记为可疑——尽管它无害。这是一个<a href=\"https://github.com/pyinstaller/pyinstaller/issues/4698\" target=\"_blank\" rel=\"noopener\">众所周知的问题</a>，影响了许多开源Python应用。</p><p>如果你的杀毒软件将FretTool隔离，你需要添加例外。该应用是<a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">开源的</a>——你可以自己检查每一行代码。</p>"
+    },
+    "q7": {
+      "question": "FretTool能在平板或ARM Mac上运行吗？",
+      "answer": "<p>当前版本是为<strong>x86_64</strong>处理器构建的。Apple Silicon（M1/M2/M3）Mac可以通过<strong>Rosetta 2</strong>运行——macOS会在你首次打开应用时自动提议安装它。</p><p>原生ARM版本尚不可用，但已在路线图中。</p>"
+    },
+    "q8": {
+      "question": "FretTool真的是免费的吗？",
+      "answer": "<p>是的——100%免费且<a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">开源</a>（MIT许可）。无广告、无遥测、无付费墙。如果你想支持开发，有一个<a href=\"donate.html\">支持页面</a>，但完全是可选的。</p>"
+    }
+  },
+  "donate": {
+    "hero": {
+      "kicker": "感谢你的到来",
+      "title": "支持FretTool",
+      "sub": "保持免费，保持成长",
+      "desc": "我们保持FretTool免费且开源——永远没有广告。如果你想鼓励我们添加新功能和补丁，欢迎捐赠。"
+    },
+    "section": {
+      "kicker": "如何帮助",
+      "title": "捐赠",
+      "desc": "我们非常感谢你的支持。"
+    },
+    "note": "付款由PayPal处理。你不需要PayPal账户即可用卡支付。",
+    "support_btn": "支持我们",
+    "feature1": {
+      "title": "永远免费",
+      "desc": "没有付费墙，没有锁定功能。捐赠完全是可选的——FretTool将永远免费下载和使用。"
+    },
+    "feature2": {
+      "title": "开源",
+      "desc": "代码在GitHub上以MIT许可证存在。Fork它，向它学习，重新混合它——欢迎贡献。"
+    },
+    "feature3": {
+      "title": "无广告",
+      "desc": "FretTool致力于提供无缝体验，没有任何侵入性广告。"
+    }
+  },
+  "privacy": {
+    "hero": {
+      "kicker": "隐私",
+      "title": "隐私政策",
+      "desc": "最后更新：2026年7月"
+    },
+    "h1": "概述",
+    "p1": "FretTool尊重你的隐私。本网站上的互动指板演示完全在你的浏览器中运行（客户端）。当你使用演示时，FretTool本身不收集、存储或传输任何个人数据。",
+    "h2": "第三方处理的数据",
+    "h3_paypal": "PayPal",
+    "p_paypal": "支持页面包含一个PayPal捐赠按钮。当你进行捐赠时，PayPal（PayPal (Europe) S.à.r.l. & Cie, S.C.A., 22-24 Boulevard Royal, L-2449 卢森堡）在自己的基础设施上处理你的付款。PayPal可能根据其隐私政策收集你的姓名、电子邮件、付款详情和IP地址。FretTool不接收、存储或处理任何付款信息。",
+    "h2_cookies": "无cookie",
+    "p_cookies": "本网站不设置任何cookie，也不使用任何跟踪、分析或广告脚本。演示不在任何服务器上存储用户数据。",
+    "h2_nodata": "无数据收集",
+    "p_nodata": "FretTool不收集、存储或共享任何个人数据。没有注册、没有登录，也没有服务器端存储指板图。",
+    "h2_rights": "你的权利",
+    "p_rights": "由于FretTool不收集任何个人数据，因此没有可访问、更正或删除的内容。如果你对本隐私政策有疑问，可以通过法律声明页面上的联系方式联系我们。",
+    "h2_changes": "变更",
+    "p_changes": "本政策可能偶尔更新。页面顶部的「最后更新」日期反映了最新版本。"
+  },
+  "legal": {
+    "hero": {
+      "kicker": "法律",
+      "title": "法律声明",
+      "desc": "Impressum——根据§5 TMG的信息"
+    },
+    "h_operator": "运营者",
+    "operator": "Robin Kaluzny<br>电子邮件：<a href=\"mailto:robin.jerome.kaluzny@gmail.com\">robin.jerome.kaluzny@gmail.com</a>",
+    "h_supervision": "监督",
+    "supervision": "Mick Kaluzny<br>电子邮件：<a href=\"mailto:mkaluzny.ch@gmail.com\">mkaluzny.ch@gmail.com</a>",
+    "h_project": "项目",
+    "project": "FretTool——指板图编辑器<br>网站：<a href=\"https://rkaluzny.github.io/frettool/\">https://rkaluzny.github.io/frettool/</a><br>源代码：<a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">github.com/rkaluzny/frettool</a>",
+    "h_license": "许可证",
+    "license": "FretTool在MIT许可证下发布。你可以自由使用、复制、修改、合并、发布、分发、再许可和/或销售该软件的副本，但须遵守许可证的条件。软件按「原样」提供，不附带任何形式的保证。",
+    "h_disclaimer": "免责声明",
+    "h_liability_content": "内容责任",
+    "liability_content": "本网站的内容是经过最大努力创建的。然而，不能保证内容的正确性、完整性或时效性。作为服务提供商，我根据一般法律对页面上的内容负责。没有义务监控传输或存储的第三方信息或调查表明非法活动的情况。",
+    "h_liability_links": "链接责任",
+    "liability_links": "本网站包含指向外部第三方网站的链接。我对这些页面的内容和设计没有影响。因此，不对这些外部内容承担责任。链接页面的各自提供者或运营商始终对其内容负责。",
+    "h_copyright": "版权",
+    "copyright": "运营者在本网站上创建的内容和作品受版权法（如适用）约束。复制、处理、分发或任何形式的商业化超出MIT许可证范围的材料，需要相应作者或创作者的书面同意。"
+  },
+  "page.title_index": "FretTool — 指板图编辑器和和弦图制作工具",
+  "page.title_faq": "常见问题 — FretTool",
+  "page.title_donate": "支持 FretTool",
+  "page.title_privacy": "隐私政策 — FretTool",
+  "page.title_legal": "法律声明 — FretTool"
+}

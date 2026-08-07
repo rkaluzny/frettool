@@ -155,6 +155,7 @@
     let groups = [];
     for (let f in byFret) {
       f = parseInt(f);
+      if (f === 0) continue;
       let strings = byFret[f].sort((a, b) => a - b);
       let runs = [];
       let cur = [strings[0]];
@@ -668,7 +669,6 @@
     }
 
     // Place new dot
-    if (f === 0) return;
     pushHistory();
     pos.add(pk);
     xPos.delete(pk);

@@ -1,0 +1,202 @@
+{
+  "nav": {
+    "features": "Features",
+    "demo": "Demo",
+    "download": "Download",
+    "faq": "FAQ",
+    "support": "Support Us",
+    "privacy": "Privacy",
+    "legal": "Legal Notice",
+    "github": "GitHub"
+  },
+  "index": {
+    "hero": {
+      "kicker": "a little workshop for your fretboard ideas",
+      "title": "FretTool",
+      "sub": "Fretboard Diagram Editor",
+      "desc": "Sketch chords, scales and fingerings the way you think about them — click to drop a note, let barres form by themselves, scribble a label, then send it off as a PDF.",
+      "try_demo": "Try the online demo",
+      "get_app": "Get the app"
+    },
+    "features": {
+      "kicker": "what it does",
+      "title": "A friendly box of fretboard tricks",
+      "desc": "Everything you need to map out a song — without fighting your software."
+    },
+    "feature1": {
+      "title": "Place notes by feel",
+      "desc": "Left-click to drop a dot. Hold a modifier and you get a square, a triangle, or a wee one for passing tones."
+    },
+    "feature2": {
+      "title": "Barres that just happen",
+      "desc": "Put dots on neighbouring strings at the same fret and a barre appears. Split, merge and recolour it however you like."
+    },
+    "feature3": {
+      "title": "Labels for humans",
+      "desc": "Tag any dot with a two-character note — finger numbers, intervals, anything that helps you remember."
+    },
+    "feature4": {
+      "title": "X for the muted ones",
+      "desc": "Right-click an empty spot to mark a string as muted or open. No more guessing which strings stay quiet."
+    },
+    "feature5": {
+      "title": "Print-ready PDFs",
+      "desc": "Export crisp diagrams with Ctrl+P. Hand them to your band, pin them to the fridge, teach a lesson."
+    },
+    "feature6": {
+      "title": "Made to fit you",
+      "desc": "2–12 strings, 1–24 frets, dark or light, ten languages, and every hotkey rebindable. It bends to your habit."
+    },
+    "demo": {
+      "kicker": "give it a go",
+      "title": "Live Demo",
+      "desc": "A real, clickable fretboard — try a few of the things the desktop app does.",
+      "chord_name_placeholder": "Chord or scale name — e.g. C major 7",
+      "title_counter": "0 / 60",
+      "frets": "Frets",
+      "strings": "Strings",
+      "shape": "Dot shape",
+      "undo": "↶ Undo",
+      "redo": "↷ Redo",
+      "clear": "Clear",
+      "desc_placeholder": "A note to your future self — max 250 characters",
+      "desc_counter": "0 / 250"
+    },
+    "help": {
+      "title": "How to play",
+      "left_click": "Place / remove a dot",
+      "shape_buttons": "Pick circle, triangle, square, or small",
+      "modifier_click": "Override to square / triangle",
+      "right_click": "X marker / add a label",
+      "scroll": "Cycle a dot's colours",
+      "click_barre": "Select it, then ↑/↓ to split",
+      "delete": "Remove the hovered dot",
+      "undo_redo": "Undo / redo"
+    },
+    "download": {
+      "kicker": "take it home",
+      "title": "Download",
+      "desc": "The full desktop app, for the platform you actually use.",
+      "windows": "Windows",
+      "linux": "Linux",
+      "macos": "macOS",
+      "note": "All releases live on GitHub. Source code is MIT licensed — poke at it all you like."
+    },
+    "footer": {
+      "tagline": "FretTool — built with care, MIT licensed"
+    }
+  },
+  "faq": {
+    "hero": {
+      "kicker": "stuff you might wonder",
+      "title": "Frequently Asked Questions",
+      "desc": "Quick answers to the things people run into most. Can't find yours? Open an issue on GitHub."
+    },
+    "q1": {
+      "question": "Windows says FretTool is a virus — what gives?",
+      "answer": "<p>It's not a virus — it's <strong>Windows SmartScreen</strong> being cautious. Because FretTool is a small, independently-built app without an expensive Extended Validation (EV) code-signing certificate, Microsoft flags it with a warning the first time you run it.</p><p>If you downloaded FretTool from the official GitHub releases page, it's safe. To get past SmartScreen:</p><ol><li>When you see <em>\"Windows protected your PC\"</em>, click <strong>More info</strong>.</li><li>Then click <strong>Run anyway</strong>.</li></ol><p>Windows will remember your choice and won't bother you again.</p>"
+    },
+    "q2": {
+      "question": "macOS won't let me open the app — what should I do?",
+      "answer": "<p>That's <strong>Gatekeeper</strong> doing its job. Because FretTool isn't notarized by Apple (that costs $99/year), macOS blocks it on first launch. Here's how to open it:</p><ol><li>Open the <code>.dmg</code> file and drag FretTool to your Applications folder.</li><li>Find FretTool in <strong>Finder</strong> (don't double-click it yet).</li><li><strong>Right-click</strong> (or Control+Click) the app and choose <strong>Open</strong>.</li><li>A dialog will say it's from an unidentified developer — click <strong>Open</strong> anyway.</li></ol><p>You only need to do this once. After that, it'll launch normally.</p><p><strong>Tip:</strong> If dragging to Applications doesn't work, you can also run it from your Downloads folder — same right-click → Open trick applies.</p>"
+    },
+    "q3": {
+      "question": "Why does my Linux AppImage not do anything when I double-click it?",
+      "answer": "<p>The AppImage probably isn't marked as executable. Fix it in a terminal:</p><ol><li>Navigate to where you downloaded the file.</li><li>Run <code>chmod +x FretTool-*.AppImage</code></li><li>Double-click it again — or just run <code>./FretTool-*.AppImage</code> from the terminal.</li></ol><p>Some file managers also let you right-click → Properties → Permissions → \"Allow executing file as program\".</p>"
+    },
+    "q4": {
+      "question": "How do I update to a newer version?",
+      "answer": "<p>FretTool has a built-in updater. Go to <strong>Dashboard → Settings → About</strong> and click <strong>Check for Updates</strong>. If a new version is available, you'll be prompted to download it.</p><p>You can always grab the latest release directly from <a href=\"https://github.com/rkaluzny/frettool/releases\" target=\"_blank\" rel=\"noopener\">GitHub</a> too.</p>"
+    },
+    "q5": {
+      "question": "Where does FretTool store my projects?",
+      "answer": "<p>Your projects live in FretTool's app data folder:</p><ul><li><strong>Windows:</strong> <code>%APPDATA%/FretTool/</code></li><li><strong>macOS:</strong> <code>~/Library/Application Support/FretTool/</code></li><li><strong>Linux:</strong> <code>~/.local/share/FretTool/</code></li></ul><p>You can export individual projects as JSON from the dashboard if you want to back them up or move them to another machine.</p>"
+    },
+    "q6": {
+      "question": "Why does my antivirus flag the Windows exe?",
+      "answer": "<p>PyInstaller (the tool that bundles Python apps into executables) has a bootloader that some antivirus programs heuristically flag as suspicious — even though it's harmless. It's a <a href=\"https://github.com/pyinstaller/pyinstaller/issues/4698\" target=\"_blank\" rel=\"noopener\">well-known issue</a> affecting tons of open-source Python apps.</p><p>If your antivirus quarantines FretTool, you'll need to add an exception. The app is <a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">open source</a> — you can inspect every line of code yourself.</p>"
+    },
+    "q7": {
+      "question": "Does FretTool work on tablets or ARM Macs?",
+      "answer": "<p>The current builds are for <strong>x86_64</strong> processors. Apple Silicon (M1/M2/M3) Macs can run them through <strong>Rosetta 2</strong> — macOS will offer to install it automatically the first time you open the app.</p><p>Native ARM builds aren't available yet, but it's on the roadmap.</p>"
+    },
+    "q8": {
+      "question": "Is FretTool really free?",
+      "answer": "<p>Yep — 100% free and <a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">open source</a> (MIT licensed). No ads, no telemetry, no paywalls. If you'd like to support development, there's a <a href=\"donate.html\">Support Us</a> page, but it's entirely optional.</p>"
+    }
+  },
+  "donate": {
+    "hero": {
+      "kicker": "thanks for stopping by",
+      "title": "Support FretTool",
+      "sub": "Keep it free, keep it growing",
+      "desc": "We're keeping FretTool free and open-source—no ads, ever. If you'd like to encourage us to add new features and patches, you're welcome to donate."
+    },
+    "section": {
+      "kicker": "how to help",
+      "title": "Donate",
+      "desc": "Your support is greatly appreciated."
+    },
+    "note": "Payments are processed by PayPal. You do not need a PayPal account to pay with a card.",
+    "support_btn": "Support Us",
+    "feature1": {
+      "title": "Free forever",
+      "desc": "No paywalls, no locked features. Donations are entirely optional — FretTool will always be free to download and use."
+    },
+    "feature2": {
+      "title": "Open source",
+      "desc": "The code lives on GitHub under the MIT license. Fork it, learn from it, remix it — contributions welcome."
+    },
+    "feature3": {
+      "title": "No ads",
+      "desc": "FretTool is committed to providing a seamless experience without any intrusive advertisements."
+    }
+  },
+  "privacy": {
+    "hero": {
+      "kicker": "privacy",
+      "title": "Privacy Policy",
+      "desc": "Last updated: July 2026"
+    },
+    "h1": "Overview",
+    "p1": "FretTool respects your privacy. The interactive fretboard demo on this website runs entirely in your browser (client-side). No personal data is collected, stored, or transmitted by FretTool itself when you use the demo.",
+    "h2": "Data processed by third parties",
+    "h3_paypal": "PayPal",
+    "p_paypal": "The Support Us page includes a PayPal donation button. When you make a donation, PayPal (PayPal (Europe) S.à.r.l. & Cie, S.C.A., 22-24 Boulevard Royal, L-2449 Luxembourg) processes your payment on its own infrastructure. PayPal may collect your name, email address, payment details, and IP address in accordance with its own Privacy Policy. FretTool does not receive, store, or process any payment information.",
+    "h2_cookies": "No cookies",
+    "p_cookies": "This website does not set any cookies or use any tracking, analytics, or advertising scripts. The demo stores no user data on any server.",
+    "h2_nodata": "No data collection",
+    "p_nodata": "FretTool does not collect, store, or share any personal data. There is no registration, no login, and no server-side storage of fretboard diagrams.",
+    "h2_rights": "Your rights",
+    "p_rights": "Since no personal data is collected by FretTool, there is nothing to access, rectify, or delete. If you have questions about this privacy policy, you can reach out via the contact details on the Legal Notice page.",
+    "h2_changes": "Changes",
+    "p_changes": "This policy may be updated occasionally. The \"Last updated\" date at the top of this page reflects the latest revision."
+  },
+  "legal": {
+    "hero": {
+      "kicker": "legal",
+      "title": "Legal Notice",
+      "desc": "Impressum — information pursuant to §5 TMG"
+    },
+    "h_operator": "Operator",
+    "operator": "Robin Kaluzny<br>E-Mail: <a href=\"mailto:robin.jerome.kaluzny@gmail.com\">robin.jerome.kaluzny@gmail.com</a>",
+    "h_supervision": "Supervision",
+    "supervision": "Mick Kaluzny<br>E-Mail: <a href=\"mailto:mkaluzny.ch@gmail.com\">mkaluzny.ch@gmail.com</a>",
+    "h_project": "Project",
+    "project": "FretTool — Fretboard Diagram Editor<br>Website: <a href=\"https://rkaluzny.github.io/frettool/\">https://rkaluzny.github.io/frettool/</a><br>Source code: <a href=\"https://github.com/rkaluzny/frettool\" target=\"_blank\" rel=\"noopener\">github.com/rkaluzny/frettool</a>",
+    "h_license": "License",
+    "license": "FretTool is released under the MIT License. You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, subject to the conditions of the license. The software is provided \"as is\", without warranty of any kind.",
+    "h_disclaimer": "Disclaimer",
+    "h_liability_content": "Liability for content",
+    "liability_content": "The contents of this website have been created with the utmost care. However, no guarantee can be given that the content is correct, complete, or up to date. As a service provider, I am responsible for my own content on these pages under general law. There is no obligation to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity.",
+    "h_liability_links": "Liability for links",
+    "liability_links": "This website contains links to external third-party websites. I have no influence over the content and design of those pages. Therefore, no liability is assumed for such external content. The respective provider or operator of the linked pages is always responsible for their content.",
+    "h_copyright": "Copyright",
+    "copyright": "The content and works created by the operator on this website are subject to copyright law (where applicable). Duplication, processing, distribution, or any form of commercialization of such material beyond the scope of the MIT license shall require the prior written consent of the respective author or creator."
+  },
+  "page.title_index": "FretTool — Fretboard Diagram Editor & Chord Chart Maker",
+  "page.title_faq": "FAQ — FretTool",
+  "page.title_donate": "Support FretTool",
+  "page.title_privacy": "Privacy Policy — FretTool",
+  "page.title_legal": "Legal Notice — FretTool"
+}
