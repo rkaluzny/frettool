@@ -16,6 +16,7 @@ def resource_path(relative_path):
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
+        self._cleanup_old_launchers()
         try:
             if sys.platform == "linux":
                 try:
@@ -61,6 +62,45 @@ class App(ctk.CTk):
         self.bind(hk["focus_description"], self._on_focus_description)
         self.bind(hk["dot_properties"], self._on_dot_properties)
         self.bind(hk["toggle_barre"], self._on_toggle_barre)
+
+    def _cleanup_old_launchers(self):
+        if sys.platform != "win32":
+            return
+        try:
+            import subprocess
+            exe_dir = os.path.dirname(os.path.normpath(sys.executable))
+            subprocess.run(
+                ['taskkill', '/F', '/FI', 'WINDOWTITLE eq FretTool*'],
+                capture_output=True, creationflags=0x08000000
+            )
+            result = subprocess.run(
+                ['wmic', 'process', 'where',
+                 'name="cmd.exe"', 'get', 'processid,commandline', '/format:csv'],
+                capture_output=True, text=True, creationflags=0x08000000
+            )
+            if result.returncode == 0 and result.stdout:
+                for line in result.stdout.strip().split('\n'):
+                    line = line.strip()
+                    if not line or 'FretTool' not in line:
+                        continue
+                    parts = line.split(',')
+                    for part in parts:
+                        part = part.strip()
+                        if part.isdigit():
+                            subprocess.run(
+                                ['taskkill', '/F', '/PID', part],
+                                capture_output=True, creationflags=0x08000000
+                            )
+                            break
+            for f in os.listdir(exe_dir):
+                low = f.lower()
+                if (low.endswith('.bat') or low.endswith('.vbs')) and 'launcher' in low:
+                    try:
+                        os.remove(os.path.join(exe_dir, f))
+                    except:
+                        pass
+        except:
+            pass
 
     def rebind_hotkeys(self):
         self._bind_hotkeys()
