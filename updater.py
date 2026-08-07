@@ -119,7 +119,10 @@ def install_update(filepath, quit_callback=None, version=None):
             target_dir = os.path.dirname(target)
             script = f"""@echo off
 timeout /t 4 /nobreak >nul 2>&1
+set attempts=0
 :retry
+set /a attempts+=1
+if %attempts% gtr 5 goto fail
 copy /y "{filepath}" "{target}" >nul 2>&1
 if errorlevel 1 (
   timeout /t 2 /nobreak >nul 2>&1
@@ -127,6 +130,10 @@ if errorlevel 1 (
 )
 del /f /q "{filepath}" >nul 2>&1
 start "" /d "{target_dir}" "{target}"
+del "%~f0"
+goto :eof
+:fail
+start "" "{filepath}"
 del "%~f0"
 """
         else:
