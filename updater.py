@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import re
 import threading
 import tempfile
 import subprocess
@@ -197,6 +198,71 @@ rm -f "$0"
         quit_callback()
 
 
+def _render_markdown_to_text(widget, text, font_normal, font_bold, font_code):
+    import tkinter as tk
+    text_widget = tk.Text(widget, wrap="word", font=font_normal, height=8,
+                          bg="#262d57", fg="#f1eeeb", relief="flat",
+                          padx=8, pady=8, cursor="arrow",
+                          borderwidth=0, highlightthickness=0)
+    text_widget.tag_configure("bold", font=font_bold)
+    text_widget.tag_configure("code", font=("Courier", 11), background="#1a2046")
+    text_widget.tag_configure("header", font=("Arial", 13, "bold"), spacing3=6)
+    text_widget.tag_configure("bullet", lmargin1=12, lmargin2=24)
+    text_widget.tag_configure("link", foreground="#5d64f2", underline=1)
+    text_widget.tag_configure("italic", font=("Arial", 11, "italic"))
+
+    lines = text[:3000].split('\n')
+    in_code_block = False
+
+    for line in lines:
+        if line.strip().startswith('```'):
+            in_code_block = not in_code_block
+            continue
+        if in_code_block:
+            text_widget.insert("end", line + '\n', "code")
+            continue
+
+        stripped = line.strip()
+        if stripped.startswith('#'):
+            level = len(stripped) - len(stripped.lstrip('#'))
+            content = stripped[level:].strip()
+            text_widget.insert("end", content + '\n', "header")
+        elif stripped.startswith('- ') or stripped.startswith('* '):
+            content = stripped[2:]
+            text_widget.insert("end", chr(8226) + " " + content + '\n', "bullet")
+        elif stripped == '':
+            text_widget.insert("end", '\n')
+        else:
+            _insert_inline_markdown(text_widget, line + '\n')
+
+    text_widget.configure(state="disabled")
+    return text_widget
+
+
+def _insert_inline_markdown(text_widget, text):
+    import re
+    pattern = re.compile(r'(\*\*\*(.+?)\*\*\*|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|\[(.+?)\]\((.+?\))|([^*`\[\n]+))')
+    pos = 0
+    for match in pattern.finditer(text):
+        if match.start() > pos:
+            text_widget.insert("end", text[pos:match.start()])
+        if match.group(2):
+            text_widget.insert("end", match.group(2), "bold")
+        elif match.group(3):
+            text_widget.insert("end", match.group(3), "bold")
+        elif match.group(4):
+            text_widget.insert("end", match.group(4), "italic")
+        elif match.group(5):
+            text_widget.insert("end", match.group(5), "code")
+        elif match.group(6):
+            text_widget.insert("end", match.group(6), "link")
+        elif match.group(8):
+            text_widget.insert("end", match.group(8))
+        pos = match.end()
+    if pos < len(text):
+        text_widget.insert("end", text[pos:])
+
+
 def show_update_dialog(parent, update_info):
     import customtkinter as ctk
 
@@ -209,7 +275,7 @@ def show_update_dialog(parent, update_info):
             dialog.attributes('-type', 'dialog')
         except:
             pass
-    dialog.minsize(480, 350)
+    dialog.minsize(480, 380)
 
     frame = ctk.CTkFrame(dialog, corner_radius=16)
     frame.pack(fill="both", expand=True, padx=20, pady=20)
@@ -223,16 +289,15 @@ def show_update_dialog(parent, update_info):
     ).pack(anchor="w", pady=(0, 12))
 
     if update_info.get("release_body"):
-        scroll = ctk.CTkScrollableFrame(frame, height=150, corner_radius=8)
+        scroll = ctk.CTkScrollableFrame(frame, height=160, corner_radius=8)
         scroll.pack(fill="x", pady=(0, 15))
-        ctk.CTkLabel(
-            scroll,
-            text=update_info["release_body"][:2000],
-            font=("Arial", 12),
-            justify="left",
-            anchor="w",
-            wraplength=420,
-        ).pack(fill="x", padx=8, pady=8)
+        md_widget = _render_markdown_to_text(
+            scroll, update_info["release_body"],
+            font_normal=("Arial", 11),
+            font_bold=("Arial", 11, "bold"),
+            font_code=("Courier", 11)
+        )
+        md_widget.pack(fill="both", expand=True, padx=4, pady=4)
 
     btn_frame = ctk.CTkFrame(frame, fg_color="transparent")
     btn_frame.pack(fill="x")

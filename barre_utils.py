@@ -147,10 +147,14 @@ def build_barre_groups_for_fret(fb, fret_idx: int, extra_standard_string: Option
 
 
 def get_barre_groups(fb) -> List[BarreGroup]:
+    cache = getattr(fb, "_barre_cache", None)
+    if cache is not None:
+        return cache
     frets = sorted({fret_idx for _, fret_idx in (getattr(fb, "positions", set()) or set()) if fret_idx > 0})
     groups: List[BarreGroup] = []
     for fret_idx in frets:
         groups.extend(build_barre_groups_for_fret(fb, fret_idx))
+    fb._barre_cache = groups
     return groups
 
 

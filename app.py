@@ -16,7 +16,7 @@ def resource_path(relative_path):
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self._cleanup_old_launchers()
+        threading.Thread(target=self._cleanup_old_launchers, daemon=True).start()
         try:
             if sys.platform == "linux":
                 try:

@@ -21,6 +21,10 @@ class FretboardData:
         self.dot_small: Dict[str, bool] = {}  # "s,f" -> True if alt+click (smaller dot)
         self.barre_excluded: Set[Tuple[int, int]] = set()  # positions disconnected from barres
         self.barres_disabled: bool = not CONFIG.get("barres_enabled_default", True)  # global disable for barre rendering
+        self._barre_cache = None
+
+    def invalidate_barre_cache(self):
+        self._barre_cache = None
 
     def to_dict(self):
         return {

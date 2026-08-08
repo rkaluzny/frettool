@@ -79,6 +79,8 @@ DEFAULT_SETTINGS = {
 }
 
 class SettingsManager:
+    _cache = None
+
     @staticmethod
     def get_settings_filepath():
         from persistence import _migrate_file
@@ -87,9 +89,13 @@ class SettingsManager:
 
     @staticmethod
     def load_settings():
+        if SettingsManager._cache is not None:
+            return SettingsManager._cache
+
         filepath = SettingsManager.get_settings_filepath()
         if not os.path.exists(filepath):
-            return DEFAULT_SETTINGS.copy()
+            SettingsManager._cache = DEFAULT_SETTINGS.copy()
+            return SettingsManager._cache
 
         try:
             with open(filepath, "r", encoding="utf-8") as f:
@@ -100,13 +106,16 @@ class SettingsManager:
                 settings["dimensions"].update(data["dimensions"])
             if "preset_colors" in data:
                 settings["preset_colors"] = data["preset_colors"]
+            SettingsManager._cache = settings
             return settings
         except Exception as e:
             print(f"Error loading settings: {e}")
-            return DEFAULT_SETTINGS.copy()
+            SettingsManager._cache = DEFAULT_SETTINGS.copy()
+            return SettingsManager._cache
 
     @staticmethod
     def save_settings(settings):
+        SettingsManager._cache = settings
         filepath = SettingsManager.get_settings_filepath()
         with open(filepath, "w", encoding="utf-8") as f:
             json.dump(settings, f, indent=4)

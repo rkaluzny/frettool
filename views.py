@@ -748,6 +748,8 @@ class EditorView(ctk.CTkFrame):
             handle.pack(side="left")
             handle.bind("<ButtonPress-3>", lambda e, idx=i: self._sidebar_drag_start_handle(e, idx))
             handle.bind("<ButtonPress-2>", lambda e, idx=i: self._sidebar_drag_start_handle(e, idx))
+            if sys.platform == "darwin":
+                handle.bind("<Control-Button-1>", lambda e, idx=i: self._sidebar_drag_start_handle(e, idx))
 
             btn = ctk.CTkButton(row_frame, text=fb.title or i18n.tr("editor.fretboard_name", number=i+1),
                                 fg_color="transparent", border_width=1, height=44,
@@ -872,6 +874,7 @@ class EditorView(ctk.CTkFrame):
 
                     if self.canvas_widget:
                         self.canvas_widget.update_dimensions()
+                    self.current_fretboard.invalidate_barre_cache()
         except: pass
 
         try:
@@ -942,6 +945,7 @@ class EditorView(ctk.CTkFrame):
         self.current_fretboard.dot_types = getattr(fb_data, "dot_types", {}) or {}
         self.current_fretboard.dot_small = getattr(fb_data, "dot_small", {}) or {}
         self.current_fretboard.barre_excluded = getattr(fb_data, "barre_excluded", set()) or set()
+        self.current_fretboard.invalidate_barre_cache()
 
         self.entry_title.delete(0, 'end')
         self.entry_title.insert(0, fb_data.title[:self.TITLE_MAX])

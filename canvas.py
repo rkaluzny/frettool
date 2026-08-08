@@ -327,6 +327,7 @@ class FretboardCanvas(ctk.CTkCanvas):
         if hasattr(self.data, "barre_excluded") and self.data.barre_excluded:
             self.data.barre_excluded.discard((s, f))
         self.selected_barre_key = None
+        self.data.invalidate_barre_cache()
 
     def _remove_note_and_recompute_barre(self, s, f):
         key = f"{s},{f}"
@@ -343,6 +344,7 @@ class FretboardCanvas(ctk.CTkCanvas):
         if hasattr(self.data, "barre_excluded") and self.data.barre_excluded:
             self.data.barre_excluded.discard((s, f))
 
+        self.data.invalidate_barre_cache()
         groups = get_barre_groups(self.data)
         self.selected_barre_key = None
         for group in groups:
@@ -424,8 +426,7 @@ class FretboardCanvas(ctk.CTkCanvas):
                     self.grid_hover = pos
 
         if (old_hovered_dot != self.hovered_pos) or (old_hovered_x != self.hovered_xpos) or (old_hovered_barre != self.hovered_barre_key) or (old_grid_hover != self.grid_hover):
-            self.draw()
-            self.configure(cursor="hand2" if (self.hovered_pos or self.hovered_xpos or self.hovered_barre_key or self.grid_hover) else "arrow")
+            self.update_hover()
 
     def on_leave(self, event):
         self.hovered_pos = None
@@ -433,8 +434,7 @@ class FretboardCanvas(ctk.CTkCanvas):
         self.hovered_barre_key = None
         self.grid_hover = None
         self._destroy_color_preview()
-        self.draw()
-        self.configure(cursor="arrow")
+        self.update_hover()
 
     def on_mousewheel(self, event):
         """Cycle through preset colors on hovered dot / barre (mouse wheel / touchpad / w/s keys)."""
@@ -491,6 +491,7 @@ class FretboardCanvas(ctk.CTkCanvas):
                 self.data.dot_colors[f"{s},{f}"] = new_color
 
             self._show_color_preview(event, new_color, presets)
+            self.data.invalidate_barre_cache()
             self.draw()
             self.on_change()
             return
@@ -514,6 +515,7 @@ class FretboardCanvas(ctk.CTkCanvas):
             self.data.dot_colors[key] = new_color
             self._show_color_preview(event, new_color, presets)
 
+        self.data.invalidate_barre_cache()
         self.draw()
         self.on_change()
 
@@ -542,8 +544,64 @@ class FretboardCanvas(ctk.CTkCanvas):
             self.data.barre_excluded.add(break_pos)
 
         self.selected_barre_key = None
+        self.data.invalidate_barre_cache()
         self.draw()
         self.on_change()
+
+    def _draw_hover_items(self, margin_x, margin_y_top, fret_w, string_h):
+        string_count = max(2, int(getattr(self.data, "string_count", CONFIG["string_count"])))
+        if self.grid_hover:
+            if not get_preview_barre_groups(self.data, self.grid_hover):
+                s, f = self.grid_hover
+                if f == 0:
+                    cx = margin_x - 25
+                    cy = margin_y_top + s * string_h
+                    radius = 11
+                else:
+                    cx = margin_x + (f - 0.5) * fret_w
+                    cy = margin_y_top + s * string_h
+                    radius = CONFIG["dimensions"]["dot_radius"]
+                self.create_oval(cx - radius, cy - radius, cx + radius, cy + radius,
+                                fill=CONFIG["colors"]["dot_hover"], outline="", stipple="gray50", tags="hover")
+                self.create_oval(cx - radius, cy - radius, cx + radius, cy + radius,
+                                outline="#ffffff", width=2, tags="hover")
+
+        if self.hovered_pos:
+            s, f = self.hovered_pos
+            cy = margin_y_top + s * string_h
+            if f == 0:
+                cx = margin_x - 25
+            else:
+                cx = margin_x + (f - 0.5) * fret_w
+            hit_radius = 20
+            self.create_rectangle(cx - hit_radius - 4, cy - hit_radius - 4,
+                                cx + hit_radius + 4, cy + hit_radius + 4,
+                                fill="", outline=CONFIG["colors"]["dot_hover"], width=2, tags="hover")
+
+        if self.hovered_xpos:
+            s, f = self.hovered_xpos
+            cy = margin_y_top + s * string_h
+            if f == 0:
+                cx = margin_x - 25
+            else:
+                cx = margin_x + (f - 0.5) * fret_w
+            hit_radius = 20
+            self.create_rectangle(cx - hit_radius - 4, cy - hit_radius - 4,
+                                cx + hit_radius + 4, cy + hit_radius + 4,
+                                fill="", outline=CONFIG["colors"]["dot_hover"], width=2, tags="hover")
+
+    def update_hover(self):
+        self.delete("hover")
+        w = self.winfo_width()
+        h = self.winfo_height()
+        if w < 100 or h < 100:
+            return
+        margin_x = CONFIG["dimensions"]["margin_side"]
+        margin_y_top = CONFIG["dimensions"]["margin_top"]
+        fret_w = (w - 2 * margin_x) / self.data.num_frets
+        string_h = (h - margin_y_top - CONFIG["dimensions"]["margin_bottom"]) / (max(2, int(getattr(self.data, "string_count", CONFIG["string_count"]))) - 1)
+        self._draw_hover_items(margin_x, margin_y_top, fret_w, string_h)
+        self.configure(cursor="hand2" if (self.hovered_pos or self.hovered_xpos or self.hovered_barre_key or self.grid_hover) else "arrow")
 
     def draw(self):
         self.delete("all")
@@ -903,6 +961,7 @@ class FretboardCanvas(ctk.CTkCanvas):
         if pos in x_positions:
             self.data.x_positions.discard(pos)
             self.selected_barre_key = None
+            self.data.invalidate_barre_cache()
             self.draw()
             self.on_change()
             return
@@ -922,6 +981,7 @@ class FretboardCanvas(ctk.CTkCanvas):
                     if k.startswith(prefix):
                         self.data.dot_colors.pop(k, None)
 
+        self.data.invalidate_barre_cache()
         self.draw()
         self.on_change()
 
@@ -1028,5 +1088,6 @@ class FretboardCanvas(ctk.CTkCanvas):
             self.data.dot_small[key] = True
 
         self.selected_barre_key = None
+        self.data.invalidate_barre_cache()
         self.draw()
         self.on_change()
