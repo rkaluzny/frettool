@@ -113,34 +113,10 @@ def install_update(filepath, quit_callback=None, version=None):
     script_path = filepath + "_launcher.bat" if sys.platform == "win32" else filepath + ".sh"
 
     if sys.platform == "win32":
-        current_exe = os.path.normpath(sys.executable)
-        is_python = os.path.basename(current_exe).lower().startswith("python")
-        if not is_python and os.path.isfile(current_exe):
-            target = current_exe
-            target_dir = os.path.dirname(target)
-            script = f"""@echo off
-timeout /t 4 /nobreak >nul 2>&1
-set attempts=0
-:retry
-set /a attempts+=1
-if %attempts% gtr 5 goto fail
-copy /y "{filepath}" "{target}" >nul 2>&1
-if errorlevel 1 (
-  timeout /t 2 /nobreak >nul 2>&1
-  goto retry
-)
+        script = f"""@echo off
+timeout /t 2 /nobreak >nul 2>&1
+"{filepath}" /SILENT /SUPPRESSMSGBOXES /NORESTART
 del /f /q "{filepath}" >nul 2>&1
-start "" /d "{target_dir}" "{target}"
-del "%~f0"
-goto :eof
-:fail
-start "" "{filepath}"
-del "%~f0"
-"""
-        else:
-            script = f"""@echo off
-timeout /t 3 /nobreak >nul 2>&1
-start "" "{filepath}"
 del "%~f0"
 """
         with open(script_path, "w") as f:
